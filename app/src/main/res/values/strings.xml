@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">PlaceNotifier</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_place_picker">Map</string>
+
+
+    <string name="ok_button_text">OK</string>
+    <string name="cancel_button_text">Cancel</string>
+
+
+    <string name="active_notifications_list">Active notifiers</string>
+    <string name="synchronization_menu">Synchronization</string>
+    <string name="settings_menu">Settings</string>
+    <string name="info_menu">Info</string>
+    <string name="title_activity_notifications_list">NotificationsListActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="general_menu_group">general</string>
+    <string name="others_menu_group">other</string>
+</resources>
