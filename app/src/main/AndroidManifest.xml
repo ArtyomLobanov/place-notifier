@@ -38,10 +38,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+
         <activity
-            android:name=".PlacePicker"
-            android:label="@string/title_activity_place_picker"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".NotificationEditor"
+            android:label="@string/title_activity_notification_editor"/>
 
     </application>
 

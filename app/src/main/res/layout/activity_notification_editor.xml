@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:orientation="vertical">
+            <include layout="@layout/customize_bar"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/time_settings_bar"/>
+            <include layout="@layout/customize_bar"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/place_settings_bar"/>
+        </LinearLayout>
+
+    </ScrollView>
+    <Button
+        android:id="@+id/editor_ok_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/ok_button_text"/>
+</LinearLayout>

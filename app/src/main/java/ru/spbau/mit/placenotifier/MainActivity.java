@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,16 +65,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Fragment fragment = null;
-        if (id == R.id.active_notifications_menu) {
-            fragment = new NotificationsList();
-        } else if (id == R.id.synchronization_menu) {
-            fragment = new SynchronizationFragment();
-        } else if (id == R.id.info_menu) {
-            fragment = new InfoFragment();
-        } else if (id == R.id.settings_menu) {
-            fragment = new SettingsFragment();
+        Fragment fragment;
+        switch (item.getItemId()) {
+            case R.id.active_notifications_menu:
+                fragment = new NotificationsList();
+                break;
+            case R.id.synchronization_menu:
+                fragment = new SynchronizationFragment();
+                break;
+            case R.id.info_menu:
+                fragment = new InfoFragment();
+                break;
+            case R.id.settings_menu:
+                fragment = new SettingsFragment();
+                break;
+            case R.id.test_editor:
+                testEditor();
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            default: throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
 
         FragmentManager m = getFragmentManager();
@@ -84,5 +95,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // just for test
+    public void testEditor() {
+        Intent intent = new Intent(this, NotificationEditor.class);
+        startActivityForResult(intent, 13);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // just for test
+        if (requestCode == 13 && resultCode == RESULT_OK) {
+            Toast.makeText(this, "you choose time:" + data.getIntExtra("time_settings", -1) +
+                    "\n and place: " + data.getIntExtra("place_settings", -1), Toast.LENGTH_LONG).show();
+        }
+    }
 }
