@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/res/merged/debug/drawable-mdpi/ic_action_stat_share.png",
+        "source": "/home/daphne/Загрузки/place-notifier-master/app/src/main/res/drawable-mdpi/ic_action_stat_share.png"
+    },
+    {
+        "merged": "/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/res/merged/debug/drawable-mdpi/ic_action_stat_reply.png",
+        "source": "/home/daphne/Загрузки/place-notifier-master/app/src/main/res/drawable-mdpi/ic_action_stat_reply.png"
+    }
+]
