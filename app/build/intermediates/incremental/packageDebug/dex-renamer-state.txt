@@ -1,7 +1,0 @@
-#Sat Nov 19 12:36:31 MSK 2016
-base.0=/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_2b0127a5f0bba61f92c7e21e05583fb503822405
-renamed.1=classes.dex
-renamed.0=classes2.dex
-file.1=/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_4def278a70d50f020e8b5ce7f7c67d17665f8109/classes.dex
-base.1=/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_4def278a70d50f020e8b5ce7f7c67d17665f8109
-file.0=/home/daphne/Загрузки/place-notifier-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_2b0127a5f0bba61f92c7e21e05583fb503822405/classes.dex
