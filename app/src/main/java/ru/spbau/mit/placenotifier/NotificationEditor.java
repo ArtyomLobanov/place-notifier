@@ -9,8 +9,6 @@ import android.widget.Button;
 import ru.spbau.mit.placenotifier.customizers.AlternativeCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
 
-import static android.app.Activity.RESULT_OK;
-
 public class NotificationEditor extends AppCompatActivity {
 
     @Override
