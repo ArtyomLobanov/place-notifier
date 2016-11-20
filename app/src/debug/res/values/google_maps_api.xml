@@ -1,5 +1,5 @@
 <resources>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-       PUT_HERE_OUR_KEY
+       PUT_KEY_HERE
     </string>
 </resources>

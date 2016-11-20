@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,9 +21,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public static ServiceReminder reminder;
+
+    private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +36,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         reminder = new ServiceReminder(this, this);
         reminder.thread.start();
@@ -64,7 +70,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment;
         switch (item.getItemId()) {
             case R.id.active_notifications_menu:
@@ -81,8 +87,11 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.test_editor:
                 testEditor();
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.test_place_picker:
+                testPlacePicker();
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default: throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
@@ -90,8 +99,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager m = getFragmentManager();
         m.beginTransaction().replace(R.id.container, fragment).commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -101,12 +109,30 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, 13);
     }
 
+    // just for test
+    public void testPlacePicker() {
+
+        Intent i = PlacePicker.builder()
+                .addHotPoint(new HotPoint("Spb", new LatLng(59.939095, 30.315868)))
+                .addHotPoint(new HotPoint("Msc", new LatLng(55.755814, 37.617635)))
+                .addHotPoint(new HotPoint("Nizhny Novgorod", new LatLng(56.326887, 44.005986)))
+                .addHotPoint(new HotPoint("Khabarovsk", new LatLng(48.472584, 135.057732)))
+                .build(this);
+        startActivityForResult(i, 14);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // just for test
         if (requestCode == 13 && resultCode == RESULT_OK) {
             Toast.makeText(this, "you choose time:" + data.getIntExtra("time_settings", -1) +
                     "\n and place: " + data.getIntExtra("place_settings", -1), Toast.LENGTH_LONG).show();
+        } else if (requestCode == 14 && resultCode == RESULT_OK) {
+            LatLng position = PlacePicker.getSelectedPoint(data);
+            Toast.makeText(this, "you choose point:" + position.longitude +
+                    " : " + position.latitude, Toast.LENGTH_LONG).show();
+        } else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
         }
     }
 }
