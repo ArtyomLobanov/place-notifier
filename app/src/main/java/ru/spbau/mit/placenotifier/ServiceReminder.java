@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
 
-
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
@@ -17,8 +16,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class ServiceReminder {
 
-    private Context mContext;
     public ReminderThread thread;
+    private Context mContext;
 
     ServiceReminder(Context c, Activity m) {
         mContext = c;
@@ -61,15 +60,16 @@ public class ServiceReminder {
 
     public class ReminderThread extends Thread {
         public Activity main;
+
         ReminderThread(Activity m) {
             main = m;
         }
+
         @Override
         public void run() {
             try {
                 startChecking(main);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 /*
                 Some processing.
                 */
