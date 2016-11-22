@@ -13,7 +13,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class ServiceReminder {
 
-    private static final long VERY_LONG_TIME = 300000;
+    private static final long VERY_LONG_TIME = 30000;
 
     private ReminderThread thread;
     private Context mContext;
@@ -55,6 +55,10 @@ public class ServiceReminder {
         NotificationManager mNotifyMgr =
                 (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(1, not);
+    }
+
+    public ReminderThread getThread() {
+        return thread;
     }
 
     public class ReminderThread extends Thread {

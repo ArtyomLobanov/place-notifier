@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         reminder = new ServiceReminder(this, this);
-        reminder.thread.start();
+        reminder.getThread().start();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
