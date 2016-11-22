@@ -21,10 +21,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-subprojects {
-    apply plugin: 'checkstyle'
-    checkstyle {
-        configFile = new File(rootDir, "checkstyle.xml")
-    }
-}

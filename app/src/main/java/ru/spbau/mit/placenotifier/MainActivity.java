@@ -15,7 +15,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static ServiceReminder reminder;
+    private static ServiceReminder reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

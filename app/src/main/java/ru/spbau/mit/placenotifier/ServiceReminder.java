@@ -7,16 +7,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-/**
- * Created by daphne on 19.11.16.
- */
-
 public class ServiceReminder {
 
-    public ReminderThread thread;
+    private static final long VERY_LONG_TIME = 300000;
+
+    private ReminderThread thread;
     private Context mContext;
 
     ServiceReminder(Context c, Activity m) {
@@ -31,7 +30,7 @@ public class ServiceReminder {
         sending notification with identifier 1.
          */
         while (true) {
-            Thread.sleep(300000);
+            Thread.sleep(VERY_LONG_TIME);
             sendNotification(main, 1);
         }
     }
@@ -59,7 +58,7 @@ public class ServiceReminder {
     }
 
     public class ReminderThread extends Thread {
-        public Activity main;
+        private Activity main;
 
         ReminderThread(Activity m) {
             main = m;
@@ -70,9 +69,7 @@ public class ServiceReminder {
             try {
                 startChecking(main);
             } catch (InterruptedException e) {
-                /*
-                Some processing.
-                */
+                Log.wtf("Reminder service:", e.getMessage());
             }
         }
     }
