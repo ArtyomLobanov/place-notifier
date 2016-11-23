@@ -32,3 +32,41 @@ dependencies {
     compile 'com.android.support:support-v13:+'
     testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'checkstyle'
+
+
+task checkstyleMain (type: Checkstyle) {
+    ignoreFailures = false
+    showViolations = true
+    source 'src/main', 'src/release'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    exclude '**/BuildConfig.java'
+    reports {
+        xml.destination "$project.buildDir/reports/checkstyle/main.xml"
+    }
+    classpath = files()
+    configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+task checkstyleTest (type: Checkstyle){
+    ignoreFailures = false
+    showViolations = false
+    source 'src/androidTest'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    exclude '**/BuildConfig.java'
+    reports {
+        xml.destination "$project.buildDir/reports/checkstyle/test.xml"
+    }
+    classpath = files()
+    configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+task checkstyle(dependsOn:['checkstyleMain']){
+    description 'Runs Checkstyle inspection against Android sourcesets.'
+    group = 'Code Quality'
+}
