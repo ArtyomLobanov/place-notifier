@@ -1,10 +1,8 @@
 package ru.spbau.mit.placenotifier;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,19 +11,19 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static ServiceReminder reminder;
+
+    // todo do something with this
+    @SuppressLint("StaticFieldLeak")
+    private static ServiceReminder reminder;
 
     private DrawerLayout drawerLayout;
 
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         reminder = new ServiceReminder(this, this);
-        reminder.thread.start();
+        reminder.getThread().start();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -93,7 +91,8 @@ public class MainActivity extends AppCompatActivity
                 testPlacePicker();
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            default: throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
+            default:
+                throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
 
         FragmentManager m = getFragmentManager();
@@ -125,12 +124,13 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // just for test
         if (requestCode == 13 && resultCode == RESULT_OK) {
-            Toast.makeText(this, "you choose time:" + data.getIntExtra("time_settings", -1) +
-                    "\n and place: " + data.getIntExtra("place_settings", -1), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "you choose time:" + data.getIntExtra("time_settings", -1)
+                    + "\n and place: " + data.getIntExtra("place_settings", -1), Toast.LENGTH_LONG)
+                    .show();
         } else if (requestCode == 14 && resultCode == RESULT_OK) {
             LatLng position = PlacePicker.getSelectedPoint(data);
-            Toast.makeText(this, "you choose point:" + position.longitude +
-                    " : " + position.latitude, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "you choose point:" + position.longitude
+                    + " : " + position.latitude, Toast.LENGTH_LONG).show();
         } else if (resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
         }

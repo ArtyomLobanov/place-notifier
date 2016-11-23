@@ -24,9 +24,10 @@ public class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
 
     @Override
     public void observe(@Nullable View view) {
-        if (view == null) return;
-        TextView messageView = (TextView) view.findViewById(R.id.message_view);
-        messageView.setText(messageText);
+        if (view != null) {
+            TextView messageView = (TextView) view.findViewById(R.id.message_view);
+            messageView.setText(messageText);
+        }
     }
 
     @Override

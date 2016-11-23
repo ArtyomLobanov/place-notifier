@@ -1,15 +1,13 @@
 package ru.spbau.mit.placenotifier;
 
-import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 
-/**
- * Created by daphne on 19.11.16.
- */
 
+@SuppressWarnings("unused")
 public class Synchronization {
-    public Button sync;
+    private Button sync;
+
     Synchronization() {
         sync.setOnClickListener(new View.OnClickListener() {
             @Override

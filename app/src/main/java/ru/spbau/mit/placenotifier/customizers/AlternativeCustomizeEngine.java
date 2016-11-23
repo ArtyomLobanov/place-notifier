@@ -24,7 +24,7 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     private ViewPager viewPager = null;
 
     @SafeVarargs
-    public AlternativeCustomizeEngine(String title, CustomizeEngine<T> ...customizers) {
+    public AlternativeCustomizeEngine(String title, CustomizeEngine<T>... customizers) {
         this.customizers = new ArrayList<>(Arrays.asList(customizers));
         this.title = title;
     }
@@ -43,10 +43,12 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         TextView titleView = (TextView) view.findViewById(R.id.customize_bar_title);
         viewPager = (ViewPager) view.findViewById(R.id.customize_bar_view_pager);
 
-        if (titleView == null)
+        if (titleView == null) {
             throw new IllegalArgumentException("Wrong view layout: customize_bar_title not found");
-        if (viewPager == null)
+        }
+        if (viewPager == null) {
             throw new IllegalArgumentException("Wrong view layout: customize_bar_view_pager not found");
+        }
 
         titleView.setText(title);
         viewPager.setAdapter(new BarAdapter());
@@ -54,7 +56,9 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     @Override
     public boolean isReady() {
-        if (viewPager == null) return false;
+        if (viewPager == null) {
+            return false;
+        }
         int activePage = viewPager.getCurrentItem();
         return customizers.get(activePage).isReady();
     }
@@ -62,8 +66,9 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     @NonNull
     @Override
     public T getValue() {
-        if (viewPager == null)
-            throw new WrongStateException(CustomizeEngine.onNullObservedViewExceptionMessage);
+        if (viewPager == null) {
+            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
+        }
         int activePage = viewPager.getCurrentItem();
         return customizers.get(activePage).getValue();
     }
@@ -74,7 +79,9 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
      */
     @Override
     public boolean setValue(@Nullable T value) {
-        if (viewPager == null) return false;
+        if (viewPager == null) {
+            return false;
+        }
         for (CustomizeEngine<T> customizer : customizers) {
             if (customizer.setValue(value)) {
                 // don't want to use plain for-cycle here
@@ -89,7 +96,7 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     private class BarAdapter extends PagerAdapter {
 
         @Override
-        public Object instantiateItem(ViewGroup collection, int position){
+        public Object instantiateItem(ViewGroup collection, int position) {
             View view = View.inflate(collection.getContext(),
                     customizers.get(position).expectedViewLayout(), null);
             customizers.get(position).observe(view);
@@ -98,17 +105,17 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         }
 
         @Override
-        public void destroyItem(ViewGroup collection, int position, Object view){
+        public void destroyItem(ViewGroup collection, int position, Object view) {
             collection.removeView((View) view);
         }
 
         @Override
-        public int getCount(){
+        public int getCount() {
             return customizers.size();
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object){
+        public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
     }

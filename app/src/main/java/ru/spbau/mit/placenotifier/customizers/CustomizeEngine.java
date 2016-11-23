@@ -5,15 +5,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+@SuppressWarnings("WeakerAccess")
 public interface CustomizeEngine<T> {
 
-    String onNullObservedViewExceptionMessage =
-            "Wrong view state for that operation: " +
-                    "there is no observed view ";
+    String ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE =
+            "Wrong view state for that operation: "
+                    + "there is no observed view ";
 
-    String onNotReadyStateExceptionMessage =
-            "Wrong view state for that operation: " +
-                    "not all view's field are filled in";
+    @SuppressWarnings("unused")
+    String ON_NOT_READY_STATE_EXCEPTION_MESSAGE =
+            "Wrong view state for that operation: "
+                    + "not all view's field are filled in";
 
     /**
      * Define type of view, which can be observed by this CustomizeEngine.

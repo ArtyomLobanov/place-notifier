@@ -17,12 +17,14 @@ public class NotificationEditor extends AppCompatActivity {
         setContentView(R.layout.activity_notification_editor);
 
         // just a rough draft
-        final AlternativeCustomizeEngine<Integer> timeCustomizer = new AlternativeCustomizeEngine<Integer>("Time settings",
+        final AlternativeCustomizeEngine<Integer> timeCustomizer
+                = new AlternativeCustomizeEngine<Integer>("Time settings",
                 new ConstantCustomizeEngine<>("no matter 1", 1),
                 new ConstantCustomizeEngine<>("no matter 2", 2),
                 new ConstantCustomizeEngine<>("no matter 3", 3));
         timeCustomizer.observe(findViewById(R.id.time_settings_bar));
-        final AlternativeCustomizeEngine<Integer> placeCustomizer = new AlternativeCustomizeEngine<Integer>("Place settings",
+        final AlternativeCustomizeEngine<Integer> placeCustomizer
+                = new AlternativeCustomizeEngine<Integer>("Place settings",
                 new ConstantCustomizeEngine<>("no matter 1", 1),
                 new ConstantCustomizeEngine<>("no matter 2", 2),
                 new ConstantCustomizeEngine<>("no matter 3", 3));

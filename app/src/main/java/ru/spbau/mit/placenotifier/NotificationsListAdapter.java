@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.Objects;
 
+@SuppressWarnings("WeakerAccess")
 public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 
     public NotificationsListAdapter(Context context, ArrayList<Notification> items) {
@@ -39,14 +40,14 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
      * Save links to internal view and to described notification
      * Used as tag for item-views
      */
-    private class NotificationsListItemHolder implements OnClickListener {
+    private final class NotificationsListItemHolder implements OnClickListener {
 
-        Notification notification;
         final View view;
         final TextView name;
         final TextView description;
         final ToggleButton powerButton;
         final Button removeButton;
+        Notification notification;
 
         private NotificationsListItemHolder(@NonNull Context context) {
             view = View.inflate(context, R.layout.notifications_list_item, null);

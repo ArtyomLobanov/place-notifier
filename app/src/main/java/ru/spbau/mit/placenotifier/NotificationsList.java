@@ -28,7 +28,7 @@ public class NotificationsList extends Fragment {
 
     void justForTest() {
         for (int i = 0; i < 15; i++) { // just for tests
-            adapter.add(new Notification("notif" + i , "com" + i));
+            adapter.add(new Notification("notif" + i, "com" + i));
         }
     }
 }
