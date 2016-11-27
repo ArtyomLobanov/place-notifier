@@ -24,7 +24,6 @@ public class NotificationsList extends Fragment {
         adapter = new NotificationsListAdapter(getActivity(), lst);
         listView.setAdapter(adapter);
         justForTest();
-        FragmentActivity activity;
         return result;
     }
 

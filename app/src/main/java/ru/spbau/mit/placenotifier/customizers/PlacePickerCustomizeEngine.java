@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier.customizers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,8 +18,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import ru.spbau.mit.placenotifier.PlacePicker;
 import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.predicates.Beacon;
 
-public class PlacePikerCustomizeEngine implements CustomizeEngine<LatLng>, OnMapReadyCallback,
+public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
         ActivityProducer.ResultListener, GoogleMap.OnMapClickListener {
 
     private static final String SELECTED_LOCATION_KEY = "selected_location_state";
@@ -32,7 +34,7 @@ public class PlacePikerCustomizeEngine implements CustomizeEngine<LatLng>, OnMap
     private MapView mapView;
 
 
-    public PlacePikerCustomizeEngine(String title, ActivityProducer activityProducer, int id) {
+    public PlacePickerCustomizeEngine(String title, ActivityProducer activityProducer, int id) {
         this.activityProducer = activityProducer;
         this.id = id;
         this.title = title;
@@ -67,22 +69,30 @@ public class PlacePikerCustomizeEngine implements CustomizeEngine<LatLng>, OnMap
 
     @NonNull
     @Override
-    public LatLng getValue() {
+    public Beacon getValue() {
         if (map == null) {
             throw new WrongStateException(ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
         }
         if (result == null) {
             throw new WrongStateException(ON_NOT_READY_STATE_EXCEPTION_MESSAGE);
         }
-        return result;
+        return new Beacon(result);
     }
 
     @Override
-    public boolean setValue(@Nullable LatLng value) {
+    public boolean setValue(@Nullable Beacon value) {
         if (mapView == null) {
             return false;
         }
-        result = value;
+        if (value == null) {
+            result = null;
+            updateCamera();
+            return true;
+        }
+        if (value.getAddress() != null) {
+            return false;
+        }
+        result = new LatLng(value.getLatitude(), value.getLongitude());
         updateCamera();
         return true;
     }

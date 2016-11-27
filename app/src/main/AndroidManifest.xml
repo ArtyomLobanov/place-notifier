@@ -46,6 +46,7 @@
 
         <activity
             android:name=".NotificationEditor"
+            android:theme="@style/AppTheme"
             android:label="@string/title_activity_notification_editor"/>
 
     </application>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,15 +13,18 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import ru.spbau.mit.placenotifier.customizers.ActivityProducer;
+import ru.spbau.mit.placenotifier.customizers.AddressPickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.AlternativeCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
-import ru.spbau.mit.placenotifier.customizers.PlacePikerCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
+import ru.spbau.mit.placenotifier.predicates.Beacon;
 
-public class NotificationEditor extends Activity implements ActivityProducer{
+public class NotificationEditor extends AppCompatActivity implements ActivityProducer{
 
     private ArrayList<ResultListener> listeners;
 
     AlternativeCustomizeEngine<Integer> timeCustomizer;
+    AlternativeCustomizeEngine<?> testCustomizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +40,12 @@ public class NotificationEditor extends Activity implements ActivityProducer{
                 new ConstantCustomizeEngine<>("no matter 2", 2),
                 new ConstantCustomizeEngine<>("no matter 3", 3));
         final AlternativeCustomizeEngine<?> testCustomizer
-                = new AlternativeCustomizeEngine<LatLng>("Time settings",
-                new PlacePikerCustomizeEngine("Choose point on map", this, 1),
-                new PlacePikerCustomizeEngine("Choose point on map", this, 2));
+                = new AlternativeCustomizeEngine<Beacon>("Time settings",
+                new PlacePickerCustomizeEngine("Choose point on map", this, 1),
+                new PlacePickerCustomizeEngine("Choose point on map", this, 2),
+                new AddressPickerCustomizeEngine(this, "Write down your address here"));
         testCustomizer.observe(findViewById(R.id.test_bar));
+        this.testCustomizer = testCustomizer;
         this.timeCustomizer = timeCustomizer;
         timeCustomizer.observe(findViewById(R.id.time_settings_bar));
         final AlternativeCustomizeEngine<Integer> placeCustomizer
@@ -64,14 +70,17 @@ public class NotificationEditor extends Activity implements ActivityProducer{
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             timeCustomizer.restoreState(savedInstanceState.getBundle("time_state"));
+            testCustomizer.restoreState(savedInstanceState.getBundle("time2_state"));
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle("time_state", timeCustomizer.saveState());
+        outState.putBundle("time2_state", testCustomizer.saveState());
     }
 
     @Override
