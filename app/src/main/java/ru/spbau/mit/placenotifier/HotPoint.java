@@ -28,6 +28,7 @@ public class HotPoint implements Parcelable {
     public HotPoint(String name, LatLng position) {
         this.name = name;
         this.position = position;
+        Thread d = new Thread(() -> {});
     }
 
     protected HotPoint(Parcel in) {

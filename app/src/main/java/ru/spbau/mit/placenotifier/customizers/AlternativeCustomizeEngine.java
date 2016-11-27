@@ -1,5 +1,7 @@
 package ru.spbau.mit.placenotifier.customizers;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -8,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import ru.spbau.mit.placenotifier.R;
 
@@ -18,15 +20,20 @@ import ru.spbau.mit.placenotifier.R;
  */
 public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
-    private final ArrayList<CustomizeEngine<T>> customizers;
+    private static final String CHILDREN_STATES_ARRAY_KEY = "children_states_array_key";
+    private static final String ACTIVE_PAGE_NUMBER_KEY = "active_page_number_key";
+
+    private final List<CustomizeEngine<T>> customizers;
     private final String title;
 
     private ViewPager viewPager = null;
+    private Bundle[] savedStates;
 
     @SafeVarargs
     public AlternativeCustomizeEngine(String title, CustomizeEngine<T>... customizers) {
-        this.customizers = new ArrayList<>(Arrays.asList(customizers));
+        this.customizers = Arrays.asList(customizers);
         this.title = title;
+        savedStates = new Bundle[customizers.length];
     }
 
     @Override
@@ -36,6 +43,7 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     @Override
     public void observe(@Nullable View view) {
+        Arrays.fill(savedStates, null);
         if (view == null) {
             viewPager = null;
             return;
@@ -86,11 +94,54 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
             if (customizer.setValue(value)) {
                 // don't want to use plain for-cycle here
                 int index = customizers.indexOf(customizer);
+                savedStates[index] = null;
                 viewPager.setCurrentItem(index);
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void restoreState(Bundle state) {
+        if (viewPager == null) {
+            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
+        }
+        if (state == null) {
+            return;
+        }
+        Parcelable[] childrenState = state.getParcelableArray(CHILDREN_STATES_ARRAY_KEY);
+        Integer activePageNumber = state.getInt(ACTIVE_PAGE_NUMBER_KEY, -1);
+        if (childrenState == null || childrenState.length != savedStates.length
+                || !(0 <= activePageNumber && activePageNumber < childrenState.length)) {
+            throw new WrongStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
+        }
+        for (int i = 0; i < savedStates.length; i++) {
+            savedStates[i] = (Bundle) childrenState[i];
+        }
+        viewPager.setCurrentItem(activePageNumber);
+        viewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    @Nullable
+    @Override
+    public Bundle saveState() {
+        Bundle state = new Bundle();
+        Bundle[] childrenState = new Bundle[customizers.size()];
+        for (int i = 0; i < childrenState.length; i++) {
+            childrenState[i] = customizers.get(i).saveState();
+        }
+        state.putParcelableArray(CHILDREN_STATES_ARRAY_KEY, childrenState);
+        state.putInt(ACTIVE_PAGE_NUMBER_KEY, viewPager.getCurrentItem());
+        return state;
+    }
+
+    private void validateItem(int position) {
+        if (savedStates[position] == null) {
+            return;
+        }
+        customizers.get(position).restoreState(savedStates[position]);
+        savedStates[position] = null;
     }
 
     private class BarAdapter extends PagerAdapter {
@@ -100,6 +151,7 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
             View view = View.inflate(collection.getContext(),
                     customizers.get(position).expectedViewLayout(), null);
             customizers.get(position).observe(view);
+            validateItem(position);
             collection.addView(view);
             return view;
         }

@@ -1,5 +1,6 @@
 package ru.spbau.mit.placenotifier.customizers;
 
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +11,11 @@ public interface CustomizeEngine<T> {
 
     String ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE =
             "Wrong view state for that operation: "
-                    + "there is no observed view ";
+                    + "there is no observed view";
+
+    String ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE =
+            "Wrong view state for that operation: "
+                    + "saved state not suitable for this customize engine";
 
     @SuppressWarnings("unused")
     String ON_NOT_READY_STATE_EXCEPTION_MESSAGE =
@@ -57,6 +62,17 @@ public interface CustomizeEngine<T> {
      * @return true in case of success
      */
     boolean setValue(@Nullable T value);
+
+    /**
+     * Restore state after screen rotation
+     */
+    void restoreState(@Nullable Bundle state);
+
+    /**
+     * Save state before screen rotation
+     */
+    @Nullable
+    Bundle saveState();
 
     class WrongStateException extends RuntimeException {
         WrongStateException(String message) {

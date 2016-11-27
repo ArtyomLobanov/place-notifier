@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class NotificationsList extends Fragment {
         adapter = new NotificationsListAdapter(getActivity(), lst);
         listView.setAdapter(adapter);
         justForTest();
+        FragmentActivity activity;
         return result;
     }
 
