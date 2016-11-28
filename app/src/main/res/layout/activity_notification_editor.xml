@@ -16,7 +16,7 @@
             android:divider="@drawable/horizontal_line_separator">
             <include layout="@layout/customize_bar"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 android:id="@+id/time_settings_bar"/>
             <include layout="@layout/customize_bar"
                 android:layout_width="match_parent"

@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/customize_engine_address_picker_title"
         android:textColor="@android:color/background_dark"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:layout_margin="10dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -17,10 +18,12 @@
         android:inputType="none"
         android:ems="10"
         android:id="@+id/customize_engine_address_input"
-        android:lines="1" />
+        android:lines="1"
+        android:layout_margin="10dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/customize_engine_address_picker_monitor" />
+        android:id="@+id/customize_engine_address_picker_monitor"
+        android:layout_margin="10dp" />
 </LinearLayout>

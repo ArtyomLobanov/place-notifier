@@ -45,4 +45,6 @@
 
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
+    <string name="customize_engine_time_interval_from">from</string>
+    <string name="customize_engine_time_interval_to">to</string>
 </resources>

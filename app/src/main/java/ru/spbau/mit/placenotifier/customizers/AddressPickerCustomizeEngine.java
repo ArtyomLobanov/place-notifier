@@ -101,6 +101,9 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     @Nullable
     @Override
     public Bundle saveState() {
+        if (monitor == null || input == null) {
+            return null;
+        }
         Bundle state = new Bundle();
         state.putParcelable(MONITOR_STATE_KEY, monitor.onSaveInstanceState());
         state.putParcelable(INPUT_STATE_KEY, input.onSaveInstanceState());

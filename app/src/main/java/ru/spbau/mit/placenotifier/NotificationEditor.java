@@ -17,13 +17,15 @@ import ru.spbau.mit.placenotifier.customizers.AddressPickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.AlternativeCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.TimeIntervalCustomizeEngine;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
+import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class NotificationEditor extends AppCompatActivity implements ActivityProducer{
 
     private ArrayList<ResultListener> listeners;
 
-    AlternativeCustomizeEngine<Integer> timeCustomizer;
+    AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
     AlternativeCustomizeEngine<?> testCustomizer;
 
     @Override
@@ -34,11 +36,11 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         setContentView(R.layout.activity_notification_editor);
 
         // just a rough draft
-        final AlternativeCustomizeEngine<Integer> timeCustomizer
-                = new AlternativeCustomizeEngine<Integer>("Time settings",
-                new ConstantCustomizeEngine<>("no matter 1", 1),
-                new ConstantCustomizeEngine<>("no matter 2", 2),
-                new ConstantCustomizeEngine<>("no matter 3", 3));
+        final AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer
+                = new AlternativeCustomizeEngine<>("Time settings",
+                new ConstantCustomizeEngine<>("no matter 1", null),
+                new ConstantCustomizeEngine<>("no matter 2", null),
+                new TimeIntervalCustomizeEngine(this, "Choose time interval"));
         final AlternativeCustomizeEngine<?> testCustomizer
                 = new AlternativeCustomizeEngine<Beacon>("Time settings",
                 new PlacePickerCustomizeEngine("Choose point on map", this, 1),
