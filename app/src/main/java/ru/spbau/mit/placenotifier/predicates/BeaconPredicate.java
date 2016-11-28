@@ -32,4 +32,8 @@ public class BeaconPredicate<T> implements SerializablePredicate<T> {
         throw new UnsupportedOperationException("Beacon predicate can't work with that object: "
                 + place);
     }
+
+    public Beacon getBeacon() {
+        return beacon;
+    }
 }

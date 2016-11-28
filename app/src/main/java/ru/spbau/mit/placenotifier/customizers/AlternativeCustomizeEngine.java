@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -91,11 +92,12 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
             return false;
         }
         for (CustomizeEngine<T> customizer : customizers) {
+            // // TODO: 28.11.2016 bug: views may not be created, so customizers may be no ready
             if (customizer.setValue(value)) {
                 // don't want to use plain for-cycle here
                 int index = customizers.indexOf(customizer);
-                savedStates[index] = null;
                 viewPager.setCurrentItem(index);
+                savedStates[index] = null;
                 return true;
             }
         }

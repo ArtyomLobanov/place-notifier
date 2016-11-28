@@ -1,19 +1,45 @@
 package ru.spbau.mit.placenotifier;
 
-public class Notification {
+import android.location.Location;
+
+import java.io.Serializable;
+
+import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
+
+public class Notification implements Serializable{
     // TODO: 12.11.2016 think about structure
     boolean isActive;
-    String name;
-    String comment;
-//    something like that, maybe
-//    but i'm not sure, that use com.google.android.gms.maps.model.LatLng is good idea
-//
-//    and maybe we should use something like Data or Calendar and Location here
-//    Predicate<LatLng> placePredicate;
-//    Predicate<Long> timePredicate;
+    private final String name;
+    private final String comment;
 
-    public Notification(String name, String comment) {
+    private final SerializablePredicate<Location> placePredicate;
+    private final SerializablePredicate<Long> timePredicate;
+
+    public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
+                        SerializablePredicate<Long> timePredicate) {
         this.name = name;
         this.comment = comment;
+        this.placePredicate = placePredicate;
+        this.timePredicate = timePredicate;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public SerializablePredicate<Long> getTimePredicate() {
+        return timePredicate;
+    }
+
+    public SerializablePredicate<Location> getPlacePredicate() {
+        return placePredicate;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getName() {
+        return name;
     }
 }

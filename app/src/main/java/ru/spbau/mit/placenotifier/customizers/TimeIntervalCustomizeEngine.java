@@ -157,6 +157,9 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     @Nullable
     @Override
     public Bundle saveState() {
+        if (fromTime == null || toTime == null) {
+            return null;
+        }
         Bundle state = new Bundle();
         state.putLong(FROM_TIME_VALUE_KEY, from.getTimeInMillis());
         state.putLong(TO_TIME_VALUE_KEY, to.getTimeInMillis());

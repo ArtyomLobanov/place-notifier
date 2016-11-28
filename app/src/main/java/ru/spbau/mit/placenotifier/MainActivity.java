@@ -123,11 +123,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // just for test
-        if (requestCode == 13 && resultCode == RESULT_OK) {
-            Toast.makeText(this, "you choose time:" + data.getIntExtra("time_settings", -1)
-                    + "\n and place: " + data.getIntExtra("place_settings", -1), Toast.LENGTH_LONG)
-                    .show();
-        } else if (requestCode == 14 && resultCode == RESULT_OK) {
+        if (requestCode == 14 && resultCode == RESULT_OK) {
             LatLng position = PlacePicker.getSelectedPoint(data);
             Toast.makeText(this, "you choose point:" + position.longitude
                     + " : " + position.latitude, Toast.LENGTH_LONG).show();

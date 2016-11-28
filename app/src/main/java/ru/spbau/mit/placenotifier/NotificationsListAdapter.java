@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,14 +12,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Objects;
+
+import ru.spbau.mit.placenotifier.predicates.Beacon;
+import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 
 @SuppressWarnings("WeakerAccess")
 public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 
+    private final Context context;
+
     public NotificationsListAdapter(Context context, ArrayList<Notification> items) {
         super(context, R.layout.notifications_list_item, items);
+        this.context = context;
     }
 
     @NonNull
@@ -59,6 +68,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 
             powerButton.setOnClickListener(this);
             removeButton.setOnClickListener(this);
+            name.setOnClickListener(this);
         }
 
         /**
@@ -66,8 +76,8 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
          */
         void reset(@NonNull Notification notification) {
             this.notification = notification;
-            name.setText(notification.name);
-            description.setText(notification.comment);
+            name.setText(notification.getName());
+            description.setText(notification.getComment());
             powerButton.setChecked(notification.isActive);
         }
 
@@ -79,6 +89,12 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
             } else if (v == powerButton) {
                 notification.isActive = powerButton.isChecked();
                 // TODO: 12.11.2016  update information in database
+            } else {
+
+                Beacon b = new Beacon(new LatLng(59.939095, 30.315868));
+                Intent intent = new Intent(context, NotificationEditor.class);
+                intent.putExtra("notification", notification);
+                context.startActivity(intent);
             }
         }
     }

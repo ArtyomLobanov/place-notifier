@@ -1,14 +1,13 @@
 package ru.spbau.mit.placenotifier;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import com.google.android.gms.maps.model.LatLng;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -19,14 +18,15 @@ import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.TimeIntervalCustomizeEngine;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
+import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class NotificationEditor extends AppCompatActivity implements ActivityProducer{
 
     private ArrayList<ResultListener> listeners;
-
-    AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
-    AlternativeCustomizeEngine<?> testCustomizer;
+    private AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
+    private AlternativeCustomizeEngine<Beacon> placeCustomizer;
+    private AlternativeCustomizeEngine<Object> otherCustomizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,37 +36,42 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         setContentView(R.layout.activity_notification_editor);
 
         // just a rough draft
-        final AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer
-                = new AlternativeCustomizeEngine<>("Time settings",
+        timeCustomizer = new AlternativeCustomizeEngine<>("Time settings",
                 new ConstantCustomizeEngine<>("no matter 1", null),
                 new ConstantCustomizeEngine<>("no matter 2", null),
                 new TimeIntervalCustomizeEngine(this, "Choose time interval"));
-        final AlternativeCustomizeEngine<?> testCustomizer
-                = new AlternativeCustomizeEngine<Beacon>("Time settings",
+        timeCustomizer.observe(findViewById(R.id.time_settings_bar));
+        placeCustomizer = new AlternativeCustomizeEngine<>("Place settings",
                 new PlacePickerCustomizeEngine("Choose point on map", this, 1),
                 new PlacePickerCustomizeEngine("Choose point on map", this, 2),
                 new AddressPickerCustomizeEngine(this, "Write down your address here"));
-        testCustomizer.observe(findViewById(R.id.test_bar));
-        this.testCustomizer = testCustomizer;
-        this.timeCustomizer = timeCustomizer;
-        timeCustomizer.observe(findViewById(R.id.time_settings_bar));
-        final AlternativeCustomizeEngine<Integer> placeCustomizer
-                = new AlternativeCustomizeEngine<Integer>("Place settings",
-                new ConstantCustomizeEngine<>("no matter 1", 1),
-                new ConstantCustomizeEngine<>("no matter 2", 2),
-                new ConstantCustomizeEngine<>("no matter 3", 3));
         placeCustomizer.observe(findViewById(R.id.place_settings_bar));
+        otherCustomizer = new AlternativeCustomizeEngine<>("Others settings",
+                new ConstantCustomizeEngine<>("option 1", 1),
+                new ConstantCustomizeEngine<>("option 2", 2),
+                new ConstantCustomizeEngine<>("option 3", 3));
+        otherCustomizer.observe(findViewById(R.id.other_settings_bar));
         Button okButton = (Button) findViewById(R.id.editor_ok_button);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("time_settings", timeCustomizer.getValue());
-                intent.putExtra("place_settings", placeCustomizer.getValue());
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+        okButton.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
         });
+        if (savedInstanceState == null) {
+            loadNotification();
+        }
+    }
+
+    // only for demo
+    private void loadNotification() {
+        Notification n = (Notification) getIntent().getSerializableExtra("notification");
+        if (n == null) return;
+        EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
+        nameEditor.setText(n.getName());
+        EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
+        commentEditor.setText(n.getComment());
+        BeaconPredicate<?> pr = (BeaconPredicate<?>) n.getPlacePredicate();
+        placeCustomizer.setValue(pr.getBeacon());
     }
 
     @Override
@@ -74,7 +79,12 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             timeCustomizer.restoreState(savedInstanceState.getBundle("time_state"));
-            testCustomizer.restoreState(savedInstanceState.getBundle("time2_state"));
+            placeCustomizer.restoreState(savedInstanceState.getBundle("place_state"));
+            otherCustomizer.restoreState(savedInstanceState.getBundle("others_state"));
+            EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
+            EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
+            nameEditor.onRestoreInstanceState(savedInstanceState.getParcelable("name_editor"));
+            commentEditor.onRestoreInstanceState(savedInstanceState.getParcelable("comment_editor"));
         }
     }
 
@@ -82,7 +92,12 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle("time_state", timeCustomizer.saveState());
-        outState.putBundle("time2_state", testCustomizer.saveState());
+        outState.putBundle("place_state", placeCustomizer.saveState());
+        outState.putBundle("others_state", otherCustomizer.saveState());
+        EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
+        EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
+        outState.putParcelable("name_editor", nameEditor.onSaveInstanceState());
+        outState.putParcelable("comment_editor", commentEditor.onSaveInstanceState());
     }
 
     @Override
