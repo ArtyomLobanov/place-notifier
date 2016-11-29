@@ -8,38 +8,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
-public class Beacon implements Serializable {
-    private final double latitude;
-    private final double longitude;
-    private final String address;
-
-    public Beacon(@NonNull Location location) {
-        latitude = location.getLatitude();
-        longitude =  location.getLongitude();
-        this.address = null;
-    }
-
-    public Beacon(@NonNull Address address) {
-        latitude = address.getLatitude();
-        longitude =  address.getLongitude();
-        this.address = address.toString();
-    }
-
-    public Beacon(@NonNull Address address, String addressLine) {
-        latitude = address.getLatitude();
-        longitude =  address.getLongitude();
-        this.address = addressLine;
-    }
-
-    public Beacon(@NonNull LatLng location) {
-        latitude = location.latitude;
-        longitude =  location.longitude;
-        address = null;
-    }
+public abstract class Beacon implements Serializable {
 
     public float distanceTo(double latitude, double longitude) {
         float[] res = new float[1];
-        Location.distanceBetween(latitude, longitude, this.latitude, this.longitude, res);
+        Location.distanceBetween(latitude, longitude, getLatitude(), getLongitude(), res);
         return res[0];
     }
 
@@ -55,15 +28,7 @@ public class Beacon implements Serializable {
         return distanceTo(address.getLatitude(), address.getLongitude());
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
+    public abstract double getLatitude();
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public String getAddress() {
-        return address;
-    }
+    public abstract double getLongitude();
 }

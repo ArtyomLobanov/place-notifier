@@ -72,6 +72,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         commentEditor.setText(n.getComment());
         BeaconPredicate<?> pr = (BeaconPredicate<?>) n.getPlacePredicate();
         placeCustomizer.setValue(pr.getBeacon());
+        timeCustomizer.setValue(n.getTimePredicate());
     }
 
     @Override

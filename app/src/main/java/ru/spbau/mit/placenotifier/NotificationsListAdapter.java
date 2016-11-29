@@ -2,6 +2,8 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -14,11 +16,14 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
+import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
 @SuppressWarnings("WeakerAccess")
 public class NotificationsListAdapter extends ArrayAdapter<Notification> {
@@ -78,7 +83,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
             this.notification = notification;
             name.setText(notification.getName());
             description.setText(notification.getComment());
-            powerButton.setChecked(notification.isActive);
+            powerButton.setChecked(notification.isActive());
         }
 
         @Override
@@ -87,11 +92,9 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
                 remove(notification);
                 // TODO: 12.11.2016  remove notification from database
             } else if (v == powerButton) {
-                notification.isActive = powerButton.isChecked();
+                powerButton.isChecked();
                 // TODO: 12.11.2016  update information in database
             } else {
-
-                Beacon b = new Beacon(new LatLng(59.939095, 30.315868));
                 Intent intent = new Intent(context, NotificationEditor.class);
                 intent.putExtra("notification", notification);
                 context.startActivity(intent);

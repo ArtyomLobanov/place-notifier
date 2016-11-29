@@ -17,7 +17,6 @@ public interface CustomizeEngine<T> {
             "Wrong view state for that operation: "
                     + "saved state not suitable for this customize engine";
 
-    @SuppressWarnings("unused")
     String ON_NOT_READY_STATE_EXCEPTION_MESSAGE =
             "Wrong view state for that operation: "
                     + "not all view's field are filled in";
@@ -37,7 +36,7 @@ public interface CustomizeEngine<T> {
      *
      * @param view The view which will be observed
      */
-    void observe(@Nullable View view);
+    void observe(@NonNull View view);
 
     /**
      * @return if observed view is in right state to create instance of T.
@@ -61,17 +60,17 @@ public interface CustomizeEngine<T> {
      *
      * @return true in case of success
      */
-    boolean setValue(@Nullable T value);
+    boolean setValue(@NonNull T value);
 
     /**
      * Restore state after screen rotation
      */
-    void restoreState(@Nullable Bundle state);
+    void restoreState(@NonNull Bundle state);
 
     /**
      * Save state before screen rotation
      */
-    @Nullable
+    @NonNull
     Bundle saveState();
 
     class WrongStateException extends RuntimeException {

@@ -14,29 +14,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 
 public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
-    private static final String INPUT_STATE_KEY = "input_state_key";
+    private static final String REQUEST_VALUE_KEY = "request_key";
     private static final String MONITOR_STATE_KEY = "monitor_state_key";
+    private static final String RESULT_KEY = "result_key";
 
 
     private final ActivityProducer activityProducer;
     private final InputListener inputListener;
     private final String titleMessage;
     private EditText input;
-    private TextView monitor;
+    private Monitor monitor;
 
     private Address result;
+    private String request;
 
     public AddressPickerCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
         this.activityProducer = activityProducer;
         inputListener = new InputListener();
         this.titleMessage = titleMessage;
+        monitor = new Monitor();
+        request = "";
     }
 
     @Override
@@ -45,27 +51,27 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     }
 
     private void clean() {
-        result = null;
         if (input != null) {
             input.removeTextChangedListener(inputListener);
             input = null;
         }
-        monitor = null;
+        monitor.observe(null);
     }
 
     @Override
-    public void observe(@Nullable View view) {
+    public void observe(@NonNull View view) {
         clean();
-        if (view != null) {
-            TextView titleView =
-                    (TextView) view.findViewById(R.id.customize_engine_address_picker_title);
-            titleView.setText(titleMessage);
-            input = (EditText) view.findViewById(R.id.customize_engine_address_input);
-            input.setText("");
-            input.addTextChangedListener(inputListener);
-            monitor = (TextView) view.findViewById(R.id.customize_engine_address_picker_monitor);
-            reportError("Empty address");
-        }
+        TextView titleView =
+                (TextView) view.findViewById(R.id.customize_engine_address_picker_title);
+        titleView.setText(titleMessage);
+
+        input = (EditText) view.findViewById(R.id.customize_engine_address_input);
+        input.setText(request);
+        input.addTextChangedListener(inputListener);
+
+        TextView display =
+                (TextView) view.findViewById(R.id.customize_engine_address_picker_monitor);
+        monitor.observe(display);
     }
 
     @Override
@@ -76,63 +82,108 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     @NonNull
     @Override
     public Beacon getValue() {
-        return new Beacon(result);
+        if (result == null) {
+            throw new WrongStateException(ON_NOT_READY_STATE_EXCEPTION_MESSAGE);
+        }
+        return new AddressBeacon(result, request);
     }
 
     @Override
-    public boolean setValue(@Nullable Beacon value) {
-        return false;
+    public boolean setValue(@NonNull Beacon value) {
+        if (value.getClass() != AddressBeacon.class) {
+            return false;
+        }
+        AddressBeacon addressBeacon = (AddressBeacon) value;
+        request = addressBeacon.getAddressLine();
+        result = addressBeacon.getAddress();
+        monitor.reportSuccess("Cached address");
+        return true;
     }
 
     @Override
-    public void restoreState(@Nullable Bundle state) {
-        if (input == null) {
-            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
+    public void restoreState(@NonNull Bundle state) {
+        request = state.getString(REQUEST_VALUE_KEY);
+        if (request == null) {
+            throw new WrongStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
         }
-        if (state == null) {
-            return;
+        result = state.getParcelable(RESULT_KEY);
+        if (input != null) {
+            input.setText(request);
         }
-        input.onRestoreInstanceState(state.getParcelable(INPUT_STATE_KEY));
-        monitor.onRestoreInstanceState(state.getParcelable(MONITOR_STATE_KEY));
-        reportWarning("Searching...");
-        updateResult();
+        TextView display = monitor.display;
+        monitor = (Monitor) state.getSerializable(MONITOR_STATE_KEY);
+        if (monitor == null) {
+            throw new WrongStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
+        }
+        monitor.observe(display);
+        if (result == null) {
+            updateResult();
+        }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Bundle saveState() {
-        if (monitor == null || input == null) {
-            return null;
-        }
         Bundle state = new Bundle();
-        state.putParcelable(MONITOR_STATE_KEY, monitor.onSaveInstanceState());
-        state.putParcelable(INPUT_STATE_KEY, input.onSaveInstanceState());
+        state.putString(REQUEST_VALUE_KEY, request);
+        state.putSerializable(MONITOR_STATE_KEY, monitor);
+        state.putParcelable(RESULT_KEY, result);
         return state;
     }
 
-    private void reportWarning(String message) {
-        monitor.setText(message);
-        monitor.setTextColor(Color.MAGENTA);
-    }
-
-    private void reportError(String message) {
-        monitor.setText(message);
-        monitor.setTextColor(Color.RED);
-    }
-
-    private void reportSuccess(String message) {
-        monitor.setText(message);
-        monitor.setTextColor(Color.GREEN);
-    }
-
     private void updateResult() {
-        String address = input.getText().toString();
-        if (address.length() == 0) {
+        if (request.length() == 0) {
             result = null;
-            reportError("Empty address");
+            monitor.reportError("Empty address");
         } else {
-            AsyncTask<Void, Void, List<Address>> task = new AddressSearcher(address);
+            AsyncTask<Void, Void, List<Address>> task = new AddressSearcher(request);
             task.execute();
+        }
+    }
+
+    private static class Monitor implements Serializable {
+
+        private final static int SUCCESS = 0;
+        private final static int WARNING = 1;
+        private final static int ERROR = 2;
+        private final static int[] COLORS = {Color.GREEN, Color.MAGENTA, Color.RED};
+
+        transient TextView display;
+        int status;
+        String text;
+
+        Monitor() {
+            reportError("Empty address");
+        }
+
+        void observe(@Nullable TextView textView) {
+            display = textView;
+            updateDisplay();
+        }
+
+        void reportWarning(@NonNull String message) {
+            report(WARNING, message);
+        }
+
+        void reportError(@NonNull String message) {
+            report(ERROR, message);
+        }
+
+        void reportSuccess(@NonNull String message) {
+            report(SUCCESS, message);
+        }
+
+        private void report(int status, @NonNull String message) {
+            this.status = status;
+            text = message;
+            updateDisplay();
+        }
+
+        private void updateDisplay() {
+            if (display != null) {
+                display.setText(text);
+                display.setTextColor(COLORS[status]);
+            }
         }
     }
 
@@ -140,7 +191,7 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            reportWarning("Searching...");
+            monitor.reportWarning("Searching...");
         }
 
         @Override
@@ -150,6 +201,10 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (s.toString().equals(request) && result != null) {
+                return;
+            }
+            request = s.toString();
             updateResult();
         }
     }
@@ -176,18 +231,18 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
         @Override
         protected void onPostExecute(List<Address> addresses) {
-            if (input == null || !input.getText().toString().equals(request)) {
+            if (input == null || !AddressPickerCustomizeEngine.this.request.equals(request)) {
                 return; // our information is out of date
             }
             if (addresses == null || addresses.isEmpty()) {
-                reportError("Address was not found");
+                monitor.reportError("Address was not found");
                 result = null;
             } else if (addresses.size() > 1) {
-                reportWarning("Address is not unique");
+                monitor.reportWarning("Address is not unique");
                 result = addresses.get(0);
             } else {
-                reportSuccess("Address is valid");
                 result = addresses.get(0);
+                monitor.reportSuccess("Address is valid");
             }
         }
     }

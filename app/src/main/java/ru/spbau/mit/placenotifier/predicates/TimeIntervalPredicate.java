@@ -14,4 +14,12 @@ public class TimeIntervalPredicate implements SerializablePredicate<Long> {
     public boolean apply(Long aLong) {
         return from <= aLong && aLong <= to;
     }
+
+    public long getTo() {
+        return to;
+    }
+
+    public long getFrom() {
+        return from;
+    }
 }

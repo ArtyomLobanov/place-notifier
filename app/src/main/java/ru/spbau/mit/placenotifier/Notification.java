@@ -8,7 +8,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class Notification implements Serializable{
     // TODO: 12.11.2016 think about structure
-    boolean isActive;
+    private final boolean isActive;
     private final String name;
     private final String comment;
 
@@ -16,11 +16,12 @@ public class Notification implements Serializable{
     private final SerializablePredicate<Long> timePredicate;
 
     public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
-                        SerializablePredicate<Long> timePredicate) {
+                        SerializablePredicate<Long> timePredicate, boolean isActive) {
         this.name = name;
         this.comment = comment;
         this.placePredicate = placePredicate;
         this.timePredicate = timePredicate;
+        this.isActive = isActive;
     }
 
     public boolean isActive() {

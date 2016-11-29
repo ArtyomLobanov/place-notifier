@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#2c9a1d</color>
     <color name="colorPrimaryDark">#336811</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#30b21e</color>
     <color name="colorNotificationView">#ffe640</color>
 </resources>

@@ -1,23 +1,22 @@
 package ru.spbau.mit.placenotifier;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.location.Location;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.android.gms.maps.model.LatLng;
-
+import java.io.IOException;
 import java.util.ArrayList;
 
+import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
+import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
 public class NotificationsList extends Fragment {
 
@@ -37,10 +36,19 @@ public class NotificationsList extends Fragment {
     }
 
     void justForTest() {
-        Beacon b = new Beacon(new LatLng(59.939095, 30.315868));
+        Geocoder g = new Geocoder(getActivity());
+        Address address = null;
+        try {
+             address = g.getFromLocationName("Moscow", 1).get(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Beacon b = new AddressBeacon(address, "capital of russia (test)");
+        TimeIntervalPredicate p = new TimeIntervalPredicate(System.currentTimeMillis(),
+                System.currentTimeMillis() + 60*1000 * 10);
         for (int i = 0; i < 15; i++) { // just for tests
             adapter.add(new Notification("notif" + i, "com" + i,
-                    new BeaconPredicate<>(b, 10), null));
+                    new BeaconPredicate<>(b, 10), p, true));
         }
     }
 }

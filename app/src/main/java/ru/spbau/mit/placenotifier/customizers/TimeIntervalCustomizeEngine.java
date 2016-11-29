@@ -4,8 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -49,8 +49,6 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
             toTime.setOnClickListener(null);
             toDate.setOnClickListener(null);
         }
-        from = null;
-        to = null;
         fromTime = null;
         fromDate = null;
         toTime = null;
@@ -58,19 +56,19 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     @Override
-    public void observe(@Nullable View view) {
+    public void observe(@NonNull View view) {
         clean();
-        if (view == null) {
-            return;
-        }
         ((TextView) view.findViewById(R.id.customize_engine_time_interval_title))
-                .setText(titleMessage); ;
+                .setText(titleMessage);
+        ;
 
         fromTime = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_time);
         fromDate = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_date);
         toTime = (TextView) view.findViewById(R.id.customize_engine_time_interval_to_time);
         toDate = (TextView) view.findViewById(R.id.customize_engine_time_interval_to_date);
-        setupInitialValues();
+        if (from == null || to == null) {
+            setupInitialValues();
+        }
         updateViews();
         setupListeners(fromTime, fromDate, from);
         setupListeners(toTime, toDate, to);
@@ -86,6 +84,9 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     private void updateViews() {
+        if (fromTime == null || toTime == null) {
+            return;
+        }
         fromTime.setText(DateUtils.formatDateTime(activityProducer.getContext(),
                 from.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
         fromDate.setText(DateUtils.formatDateTime(activityProducer.getContext(),
@@ -137,32 +138,36 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     @Override
-    public boolean setValue(@Nullable SerializablePredicate<Long> value) {
-        return false;
+    public boolean setValue(@NonNull SerializablePredicate<Long> value) {
+        if (value.getClass() != TimeIntervalPredicate.class) {
+            Log.wtf("time wtf:", "kwrebkud");
+            return false;
+        }
+        TimeIntervalPredicate timeIntervalPredicate = (TimeIntervalPredicate) value;
+        if (from == null || to == null) {
+            setupInitialValues();
+        }
+        from.setTimeInMillis(timeIntervalPredicate.getFrom());
+        to.setTimeInMillis(timeIntervalPredicate.getTo());
+        updateViews();
+        return true;
     }
 
     @Override
-    public void restoreState(@Nullable Bundle state) {
-        if (fromTime == null) {
-            throw new WrongStateException(ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
-        }
-        if (state == null) {
-            return;
-        }
-        from.setTimeInMillis(state.getLong(FROM_TIME_VALUE_KEY));
-        to.setTimeInMillis(state.getLong(TO_TIME_VALUE_KEY));
+    public void restoreState(@NonNull Bundle state) {
+        from = (Calendar) state.getSerializable(FROM_TIME_VALUE_KEY);
+        to = (Calendar) state.getSerializable(TO_TIME_VALUE_KEY);
+        Log.wtf("loaded : ", (from != null) + " " + (to != null));
         updateViews();
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Bundle saveState() {
-        if (fromTime == null || toTime == null) {
-            return null;
-        }
         Bundle state = new Bundle();
-        state.putLong(FROM_TIME_VALUE_KEY, from.getTimeInMillis());
-        state.putLong(TO_TIME_VALUE_KEY, to.getTimeInMillis());
+        state.putSerializable(FROM_TIME_VALUE_KEY, from);
+        state.putSerializable(TO_TIME_VALUE_KEY, to);
+        Log.wtf("saved : ", (from != null) + " " + (to != null));
         return state;
     }
 }

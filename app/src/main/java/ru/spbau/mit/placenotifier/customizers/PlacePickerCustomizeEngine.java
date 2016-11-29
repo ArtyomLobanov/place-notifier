@@ -2,11 +2,8 @@ package ru.spbau.mit.placenotifier.customizers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ru.spbau.mit.placenotifier.PlacePicker;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
+import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
 public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
         ActivityProducer.ResultListener, GoogleMap.OnMapClickListener {
@@ -32,8 +30,6 @@ public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMa
     private final String title;
     private GoogleMap map;
     private LatLng result;
-    private MapView mapView;
-
 
     public PlacePickerCustomizeEngine(String title, ActivityProducer activityProducer, int id) {
         this.activityProducer = activityProducer;
@@ -47,20 +43,21 @@ public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMa
         return R.layout.customize_engine_place_piker;
     }
 
-    @Override
-    public void observe(@Nullable View view) {
-        map = null;
-        result = null;
-        mapView = null;
-        if (view == null) {
-            return;
+    private void clean() {
+        if (map != null) {
+            map.setOnMapClickListener(null);
+            map = null;
         }
+    }
+
+    @Override
+    public void observe(@NonNull View view) {
+        clean();
         TextView titleView = (TextView) view.findViewById(R.id.customize_engine_place_piker_title);
         titleView.setText(title);
-        mapView = (MapView) view.findViewById(R.id.customize_engine_place_piker_map);
+        MapView mapView = (MapView) view.findViewById(R.id.customize_engine_place_piker_map);
         mapView.onCreate(null);
         mapView.getMapAsync(this);
-
     }
 
     @Override
@@ -77,40 +74,27 @@ public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMa
         if (result == null) {
             throw new WrongStateException(ON_NOT_READY_STATE_EXCEPTION_MESSAGE);
         }
-        return new Beacon(result);
+        return new LatLngBeacon(result);
     }
 
     @Override
-    public boolean setValue(@Nullable Beacon value) {
-        if (mapView == null) {
+    public boolean setValue(@NonNull Beacon value) {
+        if (value.getClass() != LatLngBeacon.class) {
             return false;
         }
-        if (value == null) {
-            result = null;
-            updateCamera();
-            return true;
-        }
-        if (value.getAddress() != null) {
-            return false;
-        }
-        result = new LatLng(value.getLatitude(), value.getLongitude());
+        LatLngBeacon latLngBeacon = (LatLngBeacon) value;
+        result = latLngBeacon.getLatLng();
         updateCamera();
         return true;
     }
 
     @Override
-    public void restoreState(@Nullable Bundle state) {
-        if (mapView == null) {
-            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
-        }
-        if (state == null) {
-            return;
-        }
+    public void restoreState(@NonNull Bundle state) {
         result = state.getParcelable(SELECTED_LOCATION_KEY);
         updateCamera();
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Bundle saveState() {
         Bundle state = new Bundle();
@@ -119,12 +103,14 @@ public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMa
     }
 
     private void updateCamera() {
-        if (map == null || result == null) {
+        if (map == null) {
             return;
         }
         map.clear();
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(result, DEFAULT_MAP_SCALE));
-        map.addMarker(new MarkerOptions().position(result));
+        if (result != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(result, DEFAULT_MAP_SCALE));
+            map.addMarker(new MarkerOptions().position(result));
+        }
     }
 
     @Override
