@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="e5343c9d19cb19ff55f6b268c7f3fe8c9d224f6f">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-c20ce7f49dc223c15431357b4d5381fc3e422d55.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar"
+        revision="24.0.3"
+        sha1="42a25dc3219429f0e5d060061f71acb49bf010a0">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/hamcrest-core-1.3-a7ecb0595db11944e1afb5baae6138293e13f705.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support.test/exposed-instrumentation-api-publish/0.5/jars/classes.jar"
+        revision="24.0.3"
+        sha1="905f3e63973d47fedf2d945fa31d8c0f0c98816e">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/classes-152b6a040736bf88d19f8b9cc30b8cefe9445a91.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/8.1.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="4477ea44f5ec5ad064022a22691732d7638ff197">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-e69c98b65ddb41c205437ba798bb87687fe64c38.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/2.0.1/516c03b21d50a644d538de0f0369c620989cd8f0/jsr305-2.0.1.jar"
+        revision="24.0.3"
+        sha1="516c03b21d50a644d538de0f0369c620989cd8f0">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/jsr305-2.0.1-74ec2df6779dd17f8717889bdc97e68ff30b95fe.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="4ccbcda5c72027c7f7c14be9ff8640d9cb0d8da0">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-fcb1b01b3da7a68bfb072eb3860ff61ea8fb3164.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-library/1.3/4785a3c21320980282f9f33d0d1264a69040538f/hamcrest-library-1.3.jar"
+        revision="24.0.3"
+        sha1="4785a3c21320980282f9f33d0d1264a69040538f">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/hamcrest-library-1.3-713228c55f294a796d0e6c804889f2cc10843bac.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-integration/1.3/5de0c73fef18917cd85d0ab70bb23818685e4dfd/hamcrest-integration-1.3.jar"
+        revision="24.0.3"
+        sha1="5de0c73fef18917cd85d0ab70bb23818685e4dfd">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/hamcrest-integration-1.3-105d3ac975d37e6a1aeb23cceed49177d6e7a701.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="07daa0b6e1d455c82a38422ffe287c18823d339a">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-3692ac5067c81361fd092861ca9306bc8aeb2991.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Android/Sdk/platforms/android-24/android.jar"
+        revision="24.0.3"
+        sha1="d49cc0972df7adf495d3ad3d0cf71c0ec517ace4">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackRuntimeLibraries/debug/jars/8000/40/android-ee298205bfcba0d1bebb91c00d3c619c8e3fa39a.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/8.1.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="d0dda274b703dd9c5bb056867649d22b4171ae7d">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-a2aca31452a66fa8d18e0c815d71f7a652c6c0cb.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
+        revision="24.0.3"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/javax.inject-1-3f15e3f583c8d6bba9ea789181e3af6315ce7489.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-v13/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="6ac094121e75b4b87432beb9305d70c68ec6dcab">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-35b82d2bf9304e2d33d5cab9e54ecc8d7faee78d.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/8.1.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="2a7e47da654546f9457deb6132364f1bf33a1857">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-1c225f7958a6ac561bcaeb4725ca84cc15fd484c.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support.test/rules/0.5/jars/classes.jar"
+        revision="24.0.3"
+        sha1="7e11799d8a26bfa5d48acafe012ee5545b9bf468">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/classes-84b60390888904b6099921cb91b71579e0a64568.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/javax.annotation/javax.annotation-api/1.2/479c1e06db31c432330183f5cae684163f186146/javax.annotation-api-1.2.jar"
+        revision="24.0.3"
+        sha1="479c1e06db31c432330183f5cae684163f186146">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/javax.annotation-api-1.2-54f40ff476bbab5cad6ef54de6a0803b7b6e731b.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support.test.espresso/espresso-idling-resource/2.2.2/jars/classes.jar"
+        revision="24.0.3"
+        sha1="a890ee8445927649d9ed50f625a315d8758688be">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/classes-f0c01984e7bcfe6e51d4c1658799662d814c46f6.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="665d21a8a069c96b4d9e8b434f5096d865b4e261">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-b8b09cd94f99c88cc0feae4f008ff9825281d0b8.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="75b1f366ff0bbc78f8b1f7cf0dc82e7c53afef6a">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-22872af7425d23d0e97bdd8987403af8102e420c.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/24.2.1/jars/classes.jar"
+        revision="24.0.3"
+        sha1="94bc1dfb84dcc8b6f6f8f7cc726d7b2dd39c1574">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-d3891153349c07b3215bb4142f79b320cd4bc7bf.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support.test.espresso/espresso-core/2.2.2/jars/classes.jar"
+        revision="24.0.3"
+        sha1="d115b0e9e1501135fe91254ba884fcbd83d374c0">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/classes-01689d01e6db5a5ef17df37f024d151531e9aa4e.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="f2e3b9bc1ec25f652e8007ce7774c991e38f6a00">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-d2ac5c647dd5e1125236b49186a997f3dd170885.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="ee5faf4dee5b6a4364bf51587871047dde7c703a">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-d4a74d3c96ac6962d1765f2c812a85e5229cf036.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/8.1.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="82825756edeeb3b56b15e73b2edd56e93da5a444">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-e5de0bfb2d7c8e767425e938f809421876c5b346.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar"
+        revision="24.0.3"
+        sha1="2973d150c0dc1fefe998f834810d68f278ea58ec">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/junit-4.12-86dcb93ab371f5c1c2d3393a35f91bb383a18bf5.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/jars/classes.jar"
+        revision="24.0.3"
+        sha1="43b2dba6b5a0b14527961b75329d0b90025f15ea">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-d4749b4b4a256185e84ea349dcdcab34720c70e7.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-7b0cfabc74d27f5ffebd21076d7f83c5f9d640a3.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="26674000177e45447a0326a6ad84612761199a13">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-1a4a5042fb3117c064fdb821cad5e053d4275265.jar" />
+    </item>
+    <item
+        jar="/home/daphne/.gradle/caches/modules-2/files-2.1/com.squareup/javawriter/2.1.1/67ff45d9ae02e583d0f9b3432a5ebbe05c30c966/javawriter-2.1.1.jar"
+        revision="24.0.3"
+        sha1="67ff45d9ae02e583d0f9b3432a5ebbe05c30c966">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/javawriter-2.1.1-3986f76cc31ed07af77e04734eef59fc8f5a9881.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.2.1/jars/classes.jar"
+        revision="24.0.3"
+        sha1="d5c731fc64c03dfe04d51134955b483551c35849">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-f5f9ce7eddbed22d51ad4aa609e80060423f13ad.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.0/jars/classes.jar"
+        revision="24.0.3"
+        sha1="76fb65a4b41ea42dab8a1310ed772a2420c96b52">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-a8a2afa04ccda27d5cecb3f0ccacf29f0dac5fde.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support.test/runner/0.5/jars/classes.jar"
+        revision="24.0.3"
+        sha1="796f9229948e907471c5595fbe94655ccf03ff73">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/androidTest/debug/jars/8000/1f/classes-558fddcef186076c2a4cf7172dff8a7bec79778c.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Android/Sdk/platforms/android-24/optional/org.apache.http.legacy.jar"
+        revision="24.0.3"
+        sha1="fb7023e781abb70ed1b0442eb611fbed295cae84">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackRuntimeLibraries/debug/jars/8000/40/org.apache.http.legacy-01c2537f75684944834a5e05eb65e3512477c949.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-v13/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="67355078cd30daae43f62ba47a4663ee6edb976e">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-f30107d0530de3df0c895e7a6eb6310b6165e5b4.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/design/24.2.1/jars/classes.jar"
+        revision="24.0.3"
+        sha1="e03f47f3d1017a093bb3239d4ec47c3447f40744">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-451e67a211d365a4b2aee7f16f24d65ce7b98ac7.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/24.2.1/jars/classes.jar"
+        revision="24.0.3"
+        sha1="7521486d9bfd2cd9e756e0cf75ed7d97f2ce2d3b">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-e331ee33e73deae1e641daa93daf4885ac2a960a.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/25.0.0/support-annotations-25.0.0.jar"
+        revision="24.0.3"
+        sha1="a22d2cc94da87b254451fa8ed28afc30b4653773">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/support-annotations-25.0.0-aee8bb5edbe1098ee05600d14b78e517921cc550.jar" />
+    </item>
+    <item
+        jar="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.0.0/jars/libs/internal_impl-25.0.0.jar"
+        revision="24.0.3"
+        sha1="3b61a70884adaf0be3fc06c70c801e3e6df13133">
+        <dex dex="/home/daphne/Загрузки/place-notifier-notifications-creating/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-25.0.0-88b6ea26c3541c2f3f6145f6af22e9ff7544af6e.jar" />
+    </item>
+
+</items>

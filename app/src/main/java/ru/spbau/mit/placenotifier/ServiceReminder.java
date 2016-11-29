@@ -6,37 +6,44 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.os.Handler;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 @SuppressWarnings("ALL")
 public class ServiceReminder {
 
-    private static final long VERY_LONG_TIME = 30000;
+    private Timer reminder;
+    private TimerTask task;
+    private Handler handler;
+    private AlarmManager manager;
+    private static final long MILLISEC_IN_MINUTE = 60000;
 
-    private ReminderThread thread;
-    private Context mContext;
-
-    ServiceReminder(Context c, Activity m) {
-        mContext = c;
-        thread = new ReminderThread(m);
+    ServiceReminder(Activity main) {
+        manager = new AlarmManager(main);
+        reminder = new Timer();
+        handler = new Handler();
+        task = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Cursor result = manager.getAlarms();
+                        sendNotification(main, result);
+                    }
+                });
+            }
+        };
+        reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
     }
 
-    public void startChecking(Activity main) throws InterruptedException {
-        /*
-        ServisReminder will send a request to database, get alarms to notify with
-        its identifiers and send notifications to user. But for demo it will just
-        sending notification with identifier 1.
-         */
-        while (true) {
-            Thread.sleep(VERY_LONG_TIME);
-            sendNotification(main, 1);
-        }
-    }
-
-    public void sendNotification(Activity main, int id) {
+    public void sendNotification(Activity main, Cursor result) {
         NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                 .setSmallIcon(R.drawable.alarm)
                 .setContentTitle("Alarm")
@@ -54,29 +61,9 @@ public class ServiceReminder {
                 );
         builder.setContentIntent(resultPendingIntent);
         NotificationManager mNotifyMgr =
-                (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+                (NotificationManager) main.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(1, not);
     }
 
-    public ReminderThread getThread() {
-        return thread;
-    }
-
-    public class ReminderThread extends Thread {
-        private Activity main;
-
-        ReminderThread(Activity m) {
-            main = m;
-        }
-
-        @Override
-        public void run() {
-            try {
-                startChecking(main);
-            } catch (InterruptedException e) {
-                Log.wtf("Reminder service:", e.getMessage());
-            }
-        }
-    }
 
 }
