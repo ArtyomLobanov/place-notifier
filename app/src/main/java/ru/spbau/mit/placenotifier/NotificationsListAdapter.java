@@ -2,8 +2,6 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -14,25 +12,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
-
-import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
-import ru.spbau.mit.placenotifier.predicates.Beacon;
-import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
-import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
 @SuppressWarnings("WeakerAccess")
 public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 
     private final Context context;
+    private final AlarmManager alarmManager;
 
-    public NotificationsListAdapter(Context context, ArrayList<Notification> items) {
-        super(context, R.layout.notifications_list_item, items);
+    public NotificationsListAdapter(Context context) {
+        super(context, R.layout.notifications_list_item);
         this.context = context;
+        alarmManager = new AlarmManager(context);
+        addAll(alarmManager.getAlarms());
     }
 
     @NonNull
@@ -56,12 +48,12 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
      */
     private final class NotificationsListItemHolder implements OnClickListener {
 
-        final View view;
-        final TextView name;
-        final TextView description;
-        final ToggleButton powerButton;
-        final Button removeButton;
-        Notification notification;
+        private final View view;
+        private final TextView name;
+        private final TextView description;
+        private final ToggleButton powerButton;
+        private final Button removeButton;
+        private Notification notification;
 
         private NotificationsListItemHolder(@NonNull Context context) {
             view = View.inflate(context, R.layout.notifications_list_item, null);
@@ -90,10 +82,13 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
         public void onClick(View v) {
             if (v == removeButton) {
                 remove(notification);
-                // TODO: 12.11.2016  remove notification from database
+                alarmManager.erase(notification);
             } else if (v == powerButton) {
-                powerButton.isChecked();
-                // TODO: 12.11.2016  update information in database
+                boolean isActive = powerButton.isChecked();
+                remove(notification);
+                notification = notification.change().setActive(isActive).build();
+                add(notification);
+                alarmManager.updateAlarm(notification);
             } else {
                 Intent intent = new Intent(context, NotificationEditor.class);
                 intent.putExtra("notification", notification);
