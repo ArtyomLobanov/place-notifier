@@ -15,7 +15,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private static ServiceReminder reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +28,6 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        reminder = new ServiceReminder(this, this);
-        reminder.getThread().start();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -60,15 +57,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        Fragment fragment = null;
-        if (id == R.id.active_notifications_menu) {
-            fragment = new NotificationsList();
-        } else if (id == R.id.synchronization_menu) {
-            fragment = new SynchronizationFragment();
-        } else if (id == R.id.info_menu) {
-            fragment = new InfoFragment();
-        } else if (id == R.id.settings_menu) {
-            fragment = new SettingsFragment();
+        Fragment fragment;
+        switch (id) {
+            case R.id.active_notifications_menu:
+                fragment = new NotificationsList();
+                break;
+            case R.id.synchronization_menu:
+                fragment = new SynchronizationFragment();
+                break;
+            case R.id.info_menu:
+                fragment = new InfoFragment();
+                break;
+            case R.id.settings_menu:
+                fragment = new SettingsFragment();
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected menu id");
         }
 
         FragmentManager m = getFragmentManager();
