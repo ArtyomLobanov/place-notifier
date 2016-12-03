@@ -21,6 +21,7 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
 
     private static final String CURRENT_POINT_KEY = "current_point_key";
     private static final String CACHED_VALUE_KEY = "current_value_key";
+    private static final int DEFAULT_DISCRETIZATION_RATE = 10000;
 
     private final String title_message;
     private final String measure_unit;
@@ -47,6 +48,13 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         this.rightBound = rightBound;
         this.discretizationRate = discretizationRate;
         listener = new SeekBarListener();
+    }
+
+    public NumericalValueCustomizeEngine(String title_message, String measure_unit,
+                                         NumericTransformer transformer,
+                                         double leftBound, double rightBound) {
+        this(title_message, measure_unit, transformer, leftBound, rightBound,
+                DEFAULT_DISCRETIZATION_RATE);
     }
 
     @Override

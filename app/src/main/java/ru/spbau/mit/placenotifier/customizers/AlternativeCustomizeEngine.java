@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.R;
@@ -31,6 +34,13 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     @SafeVarargs
     public AlternativeCustomizeEngine(String title, CustomizeEngine<T>... customizers) {
         this.customizers = Arrays.asList(customizers);
+        this.title = title;
+    }
+
+    public AlternativeCustomizeEngine(String title, Collection<CustomizeEngine<T>> customizers) {
+        List<CustomizeEngine<T>> copy = new ArrayList<>();
+        copy.addAll(customizers);
+        this.customizers = Collections.unmodifiableList(copy);
         this.title = title;
     }
 

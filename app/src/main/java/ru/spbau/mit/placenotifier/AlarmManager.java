@@ -42,7 +42,7 @@ public class AlarmManager {
         for (int i = 0; i < 5; i++) {
             res.add(new Notification("Auto-generated notification number " + i,
                     "created from address (Moscow)",
-                    new BeaconPredicate<>(b, 10), p, true, context));
+                    new BeaconPredicate(b, 10), p, true, context));
         }
         b = new LatLngBeacon(new LatLng(59.939095, 30.315868));
         p = new TimeIntervalPredicate(System.currentTimeMillis(),
@@ -50,7 +50,7 @@ public class AlarmManager {
         for (int i = 0; i < 5; i++) {
             res.add(new Notification("Auto-generated notification number " + (5 + i),
                     "created from latlng (Spb)",
-                    new BeaconPredicate<>(b, 10), p, true, context));
+                    new BeaconPredicate(b, 10), p, true, context));
         }
         return res;
     }

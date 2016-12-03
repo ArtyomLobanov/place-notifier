@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,8 +16,10 @@ import ru.spbau.mit.placenotifier.customizers.ActivityProducer;
 import ru.spbau.mit.placenotifier.customizers.AddressPickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.AlternativeCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.NumericalValueCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.PlacePredicateCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.TimeIntervalCustomizeEngine;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
@@ -25,9 +28,9 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 public class NotificationEditor extends AppCompatActivity implements ActivityProducer{
 
     private ArrayList<ResultListener> listeners;
-    private AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
-    private AlternativeCustomizeEngine<Beacon> placeCustomizer;
-    private AlternativeCustomizeEngine<Object> otherCustomizer;
+    private CustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
+    private CustomizeEngine<SerializablePredicate<Location>> placeCustomizer;
+    private CustomizeEngine<Object> otherCustomizer;
     private NumericalValueCustomizeEngine numCustomizer;
 
     @Override
@@ -42,12 +45,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
                 new ConstantCustomizeEngine<>("no matter 1", null),
                 new ConstantCustomizeEngine<>("no matter 2", null),
                 new TimeIntervalCustomizeEngine(this, "Choose time interval"));
-        timeCustomizer.observe(findViewById(R.id.time_settings_bar));
-        placeCustomizer = new AlternativeCustomizeEngine<>("Place settings",
-                new PlacePickerCustomizeEngine("Choose point on map", this, 1),
-                new PlacePickerCustomizeEngine("Choose point on map", this, 2),
-                new AddressPickerCustomizeEngine(this, "Write down your address here"));
-        placeCustomizer.observe(findViewById(R.id.place_settings_bar));
+        timeCustomizer.observe(findViewById(R.id.time_settings_bar));;
         otherCustomizer = new AlternativeCustomizeEngine<>("Others settings",
                 new ConstantCustomizeEngine<>("option 1", 1),
                 new ConstantCustomizeEngine<>("option 2", 2),
@@ -57,6 +55,13 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
                 NumericalValueCustomizeEngine.EXPONENTIAL_TRANSFORMER, 10, 1000, 100000);
         numCustomizer.observe(findViewById(R.id.num_bar));
         numCustomizer.setValue(566.0);
+
+        CustomizeEngine<Beacon> placeCustomizer2 = new AlternativeCustomizeEngine<>("Place settings",
+                new PlacePickerCustomizeEngine("Choose point on map", this, 1),
+                new PlacePickerCustomizeEngine("Choose point on map", this, 2),
+                new AddressPickerCustomizeEngine(this, "Write down your address here"));
+        placeCustomizer = new PlacePredicateCustomizeEngine(placeCustomizer2);
+        placeCustomizer.observe(findViewById(R.id.place_bar));
         Button okButton = (Button) findViewById(R.id.editor_ok_button);
         okButton.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -76,8 +81,8 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         nameEditor.setText(n.getName());
         EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
         commentEditor.setText(n.getComment());
-        BeaconPredicate<?> pr = (BeaconPredicate<?>) n.getPlacePredicate();
-        placeCustomizer.setValue(pr.getBeacon());
+        BeaconPredicate pr = (BeaconPredicate) n.getPlacePredicate();
+        placeCustomizer.setValue(pr);
         timeCustomizer.setValue(n.getTimePredicate());
     }
 

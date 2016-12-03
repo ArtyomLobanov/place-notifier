@@ -5,7 +5,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class BeaconPredicate<T> implements SerializablePredicate<T> {
+public class BeaconPredicate implements SerializablePredicate<Location> {
 
     private final Beacon beacon;
     private final double radius;
@@ -22,18 +22,19 @@ public class BeaconPredicate<T> implements SerializablePredicate<T> {
     }
 
     @Override
-    public boolean apply(T place) {
-        if (place.getClass() == LatLng.class)
-            return isInverted ^ (beacon.distanceTo((LatLng) place) < radius);
-        if (place.getClass() == Location.class)
-            return isInverted ^ (beacon.distanceTo((Location) place) < radius);
-        if (place.getClass() == Address.class)
-            return isInverted ^ (beacon.distanceTo((Address) place) < radius);
-        throw new UnsupportedOperationException("Beacon predicate can't work with that object: "
-                + place);
+    public boolean apply(Location place) {
+        return isInverted ^ (beacon.distanceTo(place) < radius);
     }
 
     public Beacon getBeacon() {
         return beacon;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public boolean isInverted() {
+        return isInverted;
     }
 }
