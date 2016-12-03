@@ -20,6 +20,7 @@ import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.NumericalValueCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePredicateCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.StringCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.TimeIntervalCustomizeEngine;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
@@ -27,6 +28,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class NotificationEditor extends AppCompatActivity implements ActivityProducer{
 
+    private CustomizeEngine<String> name;
     private ArrayList<ResultListener> listeners;
     private CustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
     private CustomizeEngine<SerializablePredicate<Location>> placeCustomizer;
@@ -68,6 +70,8 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
             setResult(RESULT_OK, intent);
             finish();
         });
+        name = new StringCustomizeEngine("Insert some String", 0);
+        name.observe(findViewById(R.id.name_input));
         if (savedInstanceState == null) {
             loadNotification();
         }
@@ -77,10 +81,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     private void loadNotification() {
         Notification n = (Notification) getIntent().getSerializableExtra("notification");
         if (n == null) return;
-        EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
-        nameEditor.setText(n.getName());
-        EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
-        commentEditor.setText(n.getComment());
+        name.setValue(n.getName());
         BeaconPredicate pr = (BeaconPredicate) n.getPlacePredicate();
         placeCustomizer.setValue(pr);
         timeCustomizer.setValue(n.getTimePredicate());
@@ -94,10 +95,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
             placeCustomizer.restoreState(savedInstanceState.getBundle("place_state"));
             otherCustomizer.restoreState(savedInstanceState.getBundle("others_state"));
             numCustomizer.restoreState(savedInstanceState.getBundle("num_state"));
-            EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
-            EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
-            nameEditor.onRestoreInstanceState(savedInstanceState.getParcelable("name_editor"));
-            commentEditor.onRestoreInstanceState(savedInstanceState.getParcelable("comment_editor"));
+            name.restoreState(savedInstanceState.getBundle("n_state"));
         }
     }
 
@@ -108,10 +106,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         outState.putBundle("place_state", placeCustomizer.saveState());
         outState.putBundle("others_state", otherCustomizer.saveState());
         outState.putBundle("num_state", numCustomizer.saveState());
-        EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
-        EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
-        outState.putParcelable("name_editor", nameEditor.onSaveInstanceState());
-        outState.putParcelable("comment_editor", commentEditor.onSaveInstanceState());
+        outState.putBundle("n_state", name.saveState());
     }
 
     @Override

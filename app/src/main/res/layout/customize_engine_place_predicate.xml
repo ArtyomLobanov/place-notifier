@@ -13,7 +13,7 @@
     <FrameLayout
         android:id="@+id/customize_engine_place_predicate_radius_picker"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="60dp">
 
     </FrameLayout>
 

@@ -19,7 +19,7 @@ import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 public class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredicate<Long>> {
 
     private static final String FROM_TIME_VALUE_KEY = "from_time_value_key";
-    private static final String TO_TIME_VALUE_KEY = "ro_time_value_key";
+    private static final String TO_TIME_VALUE_KEY = "to_time_value_key";
 
     private final ActivityProducer activityProducer;
     private final String titleMessage;
@@ -58,9 +58,8 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     @Override
     public void observe(@NonNull View view) {
         clean();
-        ((TextView) view.findViewById(R.id.customize_engine_time_interval_title))
-                .setText(titleMessage);
-        ;
+        TextView title = (TextView) view.findViewById(R.id.customize_engine_time_interval_title);
+        title.setText(titleMessage);
 
         fromTime = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_time);
         fromDate = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_date);
