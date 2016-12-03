@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-/**
- * Created by daphne on 29.11.16.
- */
+
 
 public class AlarmManager {
     private DBHelper dbHelper;
@@ -27,8 +27,9 @@ public class AlarmManager {
     private static final String NAME = "ALARM_NAME";
     private static final String COMMENT = "COMMENT";
     private static final String ID = "ID";
+    private static final String ACTIVE = "IS_ACTIVE";
 
-    private static final String [] COLUMNS = {ID, NAME, TIME, LOCATION, COMMENT};
+    private static final String [] COLUMNS = {ID, NAME, TIME, LOCATION, ACTIVE, COMMENT};
 
     private static final int VERSION = 1;
 
@@ -36,13 +37,24 @@ public class AlarmManager {
         dbHelper = new DBHelper(context);
     }
 
-    public Cursor getAlarms() {
+    public List<Notification> getAlarms() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        return database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
+        List <Notification> res = new ArrayList<Notification>();
+        Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
+        int n = cur.getCount();
+        cur.moveToFirst();
+        for (int i = 0; i < n; i++) {
+            res.add(new Notification(cur.getString(1), cur.getString(5),
+                    null, null, cur.getInt(4) > 0, cur.getString(0)));
+            //still need serialization
+            cur.moveToNext();
+        }
+        return res;
     }
 
     public void erase(Notification alarm) {
-        //then it have id...
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        database.delete(DATABASE_NAME, ID + "=?", new String[]{alarm.getIdentifier()});
     }
 
     public void insert(Notification alarm) {
@@ -55,14 +67,17 @@ public class AlarmManager {
                 contentValues.put(NAME, alarm.getName());
             }
             if (alarm.getPlacePredicate() != null) {
-                //there will be predicate then it is serializable
+                contentValues.put(LOCATION, alarm.getPlacePredicate().toString());
+                //still need serialization
             }
             if (alarm.getTimePredicate() != null) {
-                //there will be predicate then it is serializable
+                contentValues.put(TIME, alarm.getTimePredicate().toString());
+                //still need serialization
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
             }
+            contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
             database.insertOrThrow(DATABASE_NAME, null, contentValues);
             database.setTransactionSuccessful();
         } finally {
@@ -75,21 +90,24 @@ public class AlarmManager {
         try {
             database.beginTransaction();
             ContentValues contentValues = new ContentValues();
-            contentValues.put(ID, 0); //there will be id then alarm have this one
+            contentValues.put(ID, alarm.getIdentifier());
             if (alarm.getName() != null) {
                 contentValues.put(NAME, alarm.getName());
             }
             if (alarm.getPlacePredicate() != null) {
-                //there will be predicate then it is serializable
+                contentValues.put(LOCATION, alarm.getPlacePredicate().toString());
+                //still need serialization
             }
             if (alarm.getTimePredicate() != null) {
-                //there will be predicate then it is serializable
+                contentValues.put(TIME, alarm.getTimePredicate().toString());
+                //still need serialization
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
             }
+            contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
             database.update(DATABASE_NAME,
-                    contentValues, ID + "=?", new String[]{""});
+                    contentValues, ID + "=?", new String[]{alarm.getIdentifier()});
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
@@ -109,6 +127,7 @@ public class AlarmManager {
                     + NAME + " text, "
                     + TIME + " text, "
                     + LOCATION + " text, "
+                    + ACTIVE + " integer not null, "
                     + COMMENT + " text" + ");");
         }
 
