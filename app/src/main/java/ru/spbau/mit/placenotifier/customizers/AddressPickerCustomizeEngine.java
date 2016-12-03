@@ -132,7 +132,7 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     }
 
     private void updateResult() {
-        if (request.length() == 0) {
+        if (request.isEmpty()) {
             result = null;
             monitor.reportError("Empty address");
         } else {

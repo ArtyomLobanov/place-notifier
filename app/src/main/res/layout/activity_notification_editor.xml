@@ -48,18 +48,22 @@
                 android:ems="10"
                 android:id="@+id/notification_comment_editor" />
 
-            <include layout="@layout/customize_bar"
+            <include layout="@layout/customize_engine_alternative"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:id="@+id/time_settings_bar"/>
-            <include layout="@layout/customize_bar"
+            <include layout="@layout/customize_engine_alternative"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:id="@+id/place_settings_bar"/>
-            <include layout="@layout/customize_bar"
+            <include layout="@layout/customize_engine_alternative"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/other_settings_bar"/>
+            <include layout="@layout/customize_engine_numerical_value"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:id="@+id/other_settings_bar"/>
+                android:id="@+id/num_bar"/>
         </LinearLayout>
 
     </ScrollView>

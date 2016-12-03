@@ -36,14 +36,14 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     @Override
     public int expectedViewLayout() {
-        return R.layout.customize_bar;
+        return R.layout.customize_engine_alternative;
     }
 
     @Override
     public void observe(@NonNull View view) {
         cacheCurrentPageNumber();
-        TextView titleView = (TextView) view.findViewById(R.id.customize_bar_title);
-        viewPager = (ViewPager) view.findViewById(R.id.customize_bar_view_pager);
+        TextView titleView = (TextView) view.findViewById(R.id.customize_alternative_title);
+        viewPager = (ViewPager) view.findViewById(R.id.customize_alternative_view_pager);
 
         if (titleView == null) {
             throw new IllegalArgumentException("Wrong view layout: customize_bar_title not found");

@@ -3,15 +3,15 @@ package ru.spbau.mit.placenotifier;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
+import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
+@SuppressWarnings("WeakerAccess")
 public class Notification implements Serializable {
     private static final String DEFAULT_DEVICE_ID = "unidentified_device";
 
@@ -43,9 +43,7 @@ public class Notification implements Serializable {
     @SuppressLint("HardwareIds")
     @NonNull
     private static String createIdentifier(Context context) {
-        TelephonyManager manager =
-                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceID = null; // todo manager.getDeviceId();
+        String deviceID = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         if (deviceID == null) {
             Log.e("ID creating: ", "Device id is not available");
             deviceID = DEFAULT_DEVICE_ID;
@@ -115,14 +113,16 @@ public class Notification implements Serializable {
             return this;
         }
 
-        public NotificationBuilder setTimePredicate(@NonNull SerializablePredicate<Long> p) {
-            this.timePredicate = p;
+        public NotificationBuilder setTimePredicate(
+                @NonNull SerializablePredicate<Long> timePredicate) {
+            this.timePredicate = timePredicate;
             return this;
         }
 
         // have no idea how to separate this line
-        public NotificationBuilder setPlacePredicate(@NonNull SerializablePredicate<Location> p) {
-            this.placePredicate = p;
+        public NotificationBuilder setPlacePredicate(
+                @NonNull SerializablePredicate<Location> placePredicate) {
+            this.placePredicate = placePredicate;
             return this;
         }
 

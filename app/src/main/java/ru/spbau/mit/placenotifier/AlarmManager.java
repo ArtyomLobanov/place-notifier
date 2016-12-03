@@ -34,7 +34,7 @@ public class AlarmManager {
         try {
             address = g.getFromLocationName("Moscow", 1).get(0);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException("Cant find location", e);
         }
         Beacon b = new AddressBeacon(address, "Moscow");
         TimeIntervalPredicate p = new TimeIntervalPredicate(System.currentTimeMillis(),
@@ -54,9 +54,6 @@ public class AlarmManager {
         }
         return res;
     }
-//    public Cursor getAlarms() {
-//        return null;
-//    }
 
     public void erase(Notification alarm) {
         Log.i("Database:", "Alarm " + alarm.getName() +" erased");

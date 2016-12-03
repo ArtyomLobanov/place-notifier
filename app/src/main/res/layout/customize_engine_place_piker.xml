@@ -4,14 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/customize_engine_place_piker_title"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginStart="10dp" />
 
     <com.google.android.gms.maps.MapView
         xmlns:map="http://schemas.android.com/apk/res-auto"

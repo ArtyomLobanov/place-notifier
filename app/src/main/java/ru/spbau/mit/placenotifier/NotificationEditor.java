@@ -15,6 +15,7 @@ import ru.spbau.mit.placenotifier.customizers.ActivityProducer;
 import ru.spbau.mit.placenotifier.customizers.AddressPickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.AlternativeCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.ConstantCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.NumericalValueCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.PlacePickerCustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.TimeIntervalCustomizeEngine;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
@@ -27,6 +28,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     private AlternativeCustomizeEngine<SerializablePredicate<Long>> timeCustomizer;
     private AlternativeCustomizeEngine<Beacon> placeCustomizer;
     private AlternativeCustomizeEngine<Object> otherCustomizer;
+    private NumericalValueCustomizeEngine numCustomizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,10 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
                 new ConstantCustomizeEngine<>("option 2", 2),
                 new ConstantCustomizeEngine<>("option 3", 3));
         otherCustomizer.observe(findViewById(R.id.other_settings_bar));
+        numCustomizer = new NumericalValueCustomizeEngine("Choose number", "m",
+                NumericalValueCustomizeEngine.EXPONENTIAL_TRANSFORMER, 10, 1000, 100000);
+        numCustomizer.observe(findViewById(R.id.num_bar));
+        numCustomizer.setValue(566.0);
         Button okButton = (Button) findViewById(R.id.editor_ok_button);
         okButton.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -82,6 +88,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
             timeCustomizer.restoreState(savedInstanceState.getBundle("time_state"));
             placeCustomizer.restoreState(savedInstanceState.getBundle("place_state"));
             otherCustomizer.restoreState(savedInstanceState.getBundle("others_state"));
+            numCustomizer.restoreState(savedInstanceState.getBundle("num_state"));
             EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
             EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
             nameEditor.onRestoreInstanceState(savedInstanceState.getParcelable("name_editor"));
@@ -95,6 +102,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         outState.putBundle("time_state", timeCustomizer.saveState());
         outState.putBundle("place_state", placeCustomizer.saveState());
         outState.putBundle("others_state", otherCustomizer.saveState());
+        outState.putBundle("num_state", numCustomizer.saveState());
         EditText nameEditor = (EditText) findViewById(R.id.notification_name_editor);
         EditText commentEditor = (EditText) findViewById(R.id.notification_comment_editor);
         outState.putParcelable("name_editor", nameEditor.onSaveInstanceState());
