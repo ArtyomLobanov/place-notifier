@@ -78,20 +78,19 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
             this.notification = notification;
             name.setText(notification.getName());
             description.setText(notification.getComment());
-            powerButton.setChecked(notification.isActive);
+            powerButton.setChecked(notification.isActive());
         }
 
         @Override
         public void onClick(View v) {
             if (v == removeButton) {
                 remove(notification);
-                // TODO: 12.11.2016  remove notification from database
             } else if (v == powerButton) {
-                notification.isActive = powerButton.isChecked();
-                // TODO: 12.11.2016  update information in database
+                boolean isActive = powerButton.isChecked();
+                remove(notification);
+                notification = notification.change().setActive(isActive).build();
+                add(notification);
             } else {
-
-                Beacon b = new Beacon(new LatLng(59.939095, 30.315868));
                 Intent intent = new Intent(context, NotificationEditor.class);
                 intent.putExtra("notification", notification);
                 context.startActivity(intent);
