@@ -1,5 +1,6 @@
 package ru.spbau.mit.placenotifier;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,15 +16,19 @@ import android.widget.ToggleButton;
 import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
-public class NotificationsListAdapter extends ArrayAdapter<Notification> {
+public class NotificationsListAdapter extends ArrayAdapter<Notification>
+        implements ActivityProducer.ResultListener {
 
-    private final Context context;
+    private final ActivityProducer activityProducer;
     private final AlarmManager alarmManager;
+    private final int id;
 
-    public NotificationsListAdapter(Context context) {
-        super(context, R.layout.notifications_list_item);
-        this.context = context;
-        alarmManager = new AlarmManager(context);
+    public NotificationsListAdapter(ActivityProducer activityProducer, int id) {
+        super(activityProducer.getContext(), R.layout.notifications_list_item);
+        this.activityProducer = activityProducer;
+        this.id = id;
+        alarmManager = new AlarmManager(activityProducer.getContext());
+        activityProducer.addResultListener(this);
         addAll(alarmManager.getAlarms());
     }
 
@@ -40,6 +45,19 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
         }
         holder.reset(notification);
         return holder.view;
+    }
+
+    @Override
+    public void onResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            remove(NotificationEditor.getPrototype(data));
+            add(NotificationEditor.getResult(data));
+        }
+    }
+
+    @Override
+    public int getID() {
+        return id;
     }
 
     /**
@@ -90,9 +108,10 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
                 add(notification);
                 alarmManager.updateAlarm(notification);
             } else {
-                Intent intent = new Intent(context, NotificationEditor.class);
-                intent.putExtra("notification", notification);
-                context.startActivity(intent);
+                Intent intent = NotificationEditor.builder()
+                        .setPrototype(notification)
+                        .build(activityProducer.getContext());
+                activityProducer.startActivity(intent, id);
             }
         }
     }

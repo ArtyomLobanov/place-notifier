@@ -7,6 +7,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import ru.spbau.mit.placenotifier.ActivityProducer;
 import ru.spbau.mit.placenotifier.Notification;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.ConstPredicate;

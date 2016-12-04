@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,14 +19,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ActivityProducer {
 
     // todo do something with this
     @SuppressLint("StaticFieldLeak")
     private static ServiceReminder reminder;
 
     private DrawerLayout drawerLayout;
+    private List<ResultListener> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity
         reminder.getThread().start();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        listeners = new ArrayList<>();
 
     }
 
@@ -130,5 +137,25 @@ public class MainActivity extends AppCompatActivity
         } else if (resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
         }
+        for (ResultListener listener : listeners) {
+            if (listener.getID() == requestCode) {
+                listener.onResult(resultCode, data);
+            }
+        }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void startActivity(Intent intent, int targetID) {
+        startActivityForResult(intent, targetID);
+    }
+
+    @Override
+    public void addResultListener(ResultListener listener) {
+        listeners.add(listener);
     }
 }

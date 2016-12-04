@@ -17,7 +17,7 @@ public class NotificationsList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_notifications_list, container, false);
         ListView listView = (ListView) result.findViewById(R.id.notifications_list_container);
-        adapter = new NotificationsListAdapter(getActivity());
+        adapter = new NotificationsListAdapter((ActivityProducer) getActivity(), 0);
         listView.setAdapter(adapter);
         return result;
     }

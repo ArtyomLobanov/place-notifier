@@ -1,4 +1,4 @@
-package ru.spbau.mit.placenotifier.customizers;
+package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;

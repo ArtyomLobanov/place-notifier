@@ -150,4 +150,18 @@ public class Notification implements Serializable {
                     isActive, identifier);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != Notification.class) {
+            return false;
+        }
+        Notification other = (Notification) obj;
+        return identifier.equals(other.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
 }
