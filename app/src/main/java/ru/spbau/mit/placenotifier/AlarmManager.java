@@ -70,7 +70,7 @@ public class AlarmManager {
         try {
             database.beginTransaction();
             ContentValues contentValues = new ContentValues();
-            contentValues.put(ID, 0); //there will be id then alarm have this one
+            contentValues.put(ID, alarm.getIdentifier());
             if (alarm.getName() != null) {
                 contentValues.put(NAME, alarm.getName());
             }
@@ -143,7 +143,7 @@ public class AlarmManager {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table " + DATABASE_NAME + "("
-                    + ID + " integer primary key not null, "
+                    + ID + " text primary key not null, "
                     + NAME + " text, "
                     + TIME + " text, "
                     + LOCATION + " text, "
