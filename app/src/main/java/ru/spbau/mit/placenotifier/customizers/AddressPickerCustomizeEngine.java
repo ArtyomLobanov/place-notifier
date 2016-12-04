@@ -22,6 +22,7 @@ import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 
+@SuppressWarnings("WeakerAccess")
 public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private static final String REQUEST_VALUE_KEY = "request_key";

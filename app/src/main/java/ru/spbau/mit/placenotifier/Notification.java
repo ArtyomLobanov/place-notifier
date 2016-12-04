@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Notification implements Serializable {
     private static final String DEFAULT_DEVICE_ID = "unidentified_device";
 
@@ -26,7 +26,14 @@ public class Notification implements Serializable {
     public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
                         SerializablePredicate<Long> timePredicate,
                         boolean isActive, Context context) {
-        this(name, comment, placePredicate, timePredicate, isActive, createIdentifier(context));
+        this(name, comment, placePredicate, timePredicate, isActive, context, 0);
+    }
+
+    public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
+                        SerializablePredicate<Long> timePredicate,
+                        boolean isActive, Context context, long salt) {
+        this(name, comment, placePredicate, timePredicate, isActive,
+                createIdentifier(context, salt));
     }
 
     public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
@@ -40,15 +47,15 @@ public class Notification implements Serializable {
         this.identifier = identifier;
     }
 
-    @SuppressLint("HardwareIds")
     @NonNull
-    private static String createIdentifier(Context context) {
+    @SuppressLint("HardwareIds")
+    private static String createIdentifier(Context context, long salt) {
         String deviceID = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         if (deviceID == null) {
             Log.e("ID creating: ", "Device id is not available");
             deviceID = DEFAULT_DEVICE_ID;
         }
-        return System.currentTimeMillis() + "|" + deviceID;
+        return salt + "|" + System.currentTimeMillis() + "|" + deviceID;
     }
 
     public static NotificationBuilder builder() {
@@ -104,7 +111,11 @@ public class Notification implements Serializable {
         }
 
         public NotificationBuilder createIdentifier(@NonNull Context context) {
-            identifier = Notification.createIdentifier(context);
+            return createIdentifier(context, 0);
+        }
+
+        public NotificationBuilder createIdentifier(@NonNull Context context, long salt) {
+            identifier = Notification.createIdentifier(context, salt);
             return this;
         }
 

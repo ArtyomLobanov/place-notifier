@@ -63,6 +63,9 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
                         Toast.LENGTH_SHORT).show();
             }
         });
+        button.setFocusableInTouchMode(true);
+        button.requestFocus();
+
     }
 
     private void setupInitialState() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,7 +30,9 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
         this.id = id;
         alarmManager = new AlarmManager(activityProducer.getContext());
         activityProducer.addResultListener(this);
-        addAll(alarmManager.getAlarms());
+        for (Notification notification : alarmManager.getAlarms()) {
+            add(notification);
+        }
     }
 
     @NonNull
@@ -103,10 +106,13 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
                 alarmManager.erase(notification);
             } else if (v == powerButton) {
                 boolean isActive = powerButton.isChecked();
+                Notification changedNotification = notification.change()
+                        .setActive(isActive)
+                        .build();
                 remove(notification);
-                notification = notification.change().setActive(isActive).build();
-                add(notification);
-                alarmManager.updateAlarm(notification);
+                add(changedNotification);
+                notifyDataSetChanged();
+                alarmManager.updateAlarm(changedNotification);
             } else {
                 Intent intent = NotificationEditor.builder()
                         .setPrototype(notification)

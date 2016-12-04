@@ -3,7 +3,6 @@ package ru.spbau.mit.placenotifier;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -38,32 +37,32 @@ public class AlarmManager {
         }
         Beacon b = new AddressBeacon(address, "Moscow");
         TimeIntervalPredicate p = new TimeIntervalPredicate(System.currentTimeMillis(),
-                System.currentTimeMillis() + 60*1000 * 10);
+                System.currentTimeMillis() + 60 * 1000 * 10);
         for (int i = 0; i < 5; i++) {
-            res.add(new Notification("Auto-generated notification number " + i,
+            res.add(new Notification("notification number " + i,
                     "created from address (Moscow)",
-                    new BeaconPredicate(b, 10), p, true, context));
+                    new BeaconPredicate(b, 10), p, true, context, i));
         }
         b = new LatLngBeacon(new LatLng(59.939095, 30.315868));
         p = new TimeIntervalPredicate(System.currentTimeMillis(),
-                System.currentTimeMillis() + 60*1000 * 20);
+                System.currentTimeMillis() + 60 * 1000 * 20);
         for (int i = 0; i < 5; i++) {
-            res.add(new Notification("Auto-generated notification number " + (5 + i),
+            res.add(new Notification("notification number " + (5 + i),
                     "created from latlng (Spb)",
-                    new BeaconPredicate(b, 10), p, true, context));
+                    new BeaconPredicate(b, 10), p, true, context, i + 5));
         }
         return res;
     }
 
     public void erase(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() +" erased");
+        Log.i("Database:", "Alarm " + alarm.getName() + " erased");
     }
 
     public void insert(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() +" inserted");
+        Log.i("Database:", "Alarm " + alarm.getName() + " inserted");
     }
 
     public void updateAlarm(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() +" updated");
+        Log.i("Database:", "Alarm " + alarm.getName() + " updated");
     }
 }
