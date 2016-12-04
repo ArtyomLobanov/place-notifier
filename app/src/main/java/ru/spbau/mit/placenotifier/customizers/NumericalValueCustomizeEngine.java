@@ -24,8 +24,8 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private static final String CACHED_VALUE_KEY = "current_value_key";
     private static final int DEFAULT_DISCRETIZATION_RATE = 10000;
 
-    private final String title_message;
-    private final String measure_unit;
+    private final String titleMessage;
+    private final String measureUnit;
     private final NumericTransformer transformer;
     private final double leftBound;
     private final double rightBound;
@@ -38,12 +38,12 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private int currentPoint;
     private Double cachedValue;
 
-    public NumericalValueCustomizeEngine(String title_message, String measure_unit,
+    public NumericalValueCustomizeEngine(String titleMessage, String measureUnit,
                                          NumericTransformer transformer,
                                          double leftBound, double rightBound,
                                          int discretizationRate) {
-        this.title_message = title_message;
-        this.measure_unit = measure_unit;
+        this.titleMessage = titleMessage;
+        this.measureUnit = measureUnit;
         this.transformer = transformer;
         this.leftBound = leftBound;
         this.rightBound = rightBound;
@@ -51,10 +51,10 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         listener = new SeekBarListener();
     }
 
-    public NumericalValueCustomizeEngine(String title_message, String measure_unit,
+    public NumericalValueCustomizeEngine(String titleMessage, String measureUnit,
                                          NumericTransformer transformer,
                                          double leftBound, double rightBound) {
-        this(title_message, measure_unit, transformer, leftBound, rightBound,
+        this(titleMessage, measureUnit, transformer, leftBound, rightBound,
                 DEFAULT_DISCRETIZATION_RATE);
     }
 
@@ -76,7 +76,7 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         clean();
         TextView titleView =
                 (TextView) view.findViewById(R.id.customize_engine_numerical_value_title);
-        titleView.setText(title_message);
+        titleView.setText(titleMessage);
         monitor = (TextView) view.findViewById(R.id.customize_engine_numerical_value_monitor);
         seekBar = (SeekBar) view.findViewById(R.id.customize_engine_numerical_value_seekBar);
         seekBar.setOnSeekBarChangeListener(listener);
@@ -103,18 +103,22 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         if (value >= getValueAt(discretizationRate)) {
             return discretizationRate;
         }
-        int L = 0; // getValueAt(L) <= value
-        int R = discretizationRate; // getValueAt(R) > value
-        int M;
-        while (R - L > 1) {
-            M = (R + L) / 2;
-            if (getValueAt(M) > value) {
-                R = M;
+        int leftPointer = 0; // getValueAt(leftPointer) <= value
+        int rightPointer = discretizationRate; // getValueAt(rightPointer) > value
+        int middlePointer;
+
+        while (rightPointer - leftPointer > 1) {
+            middlePointer = (rightPointer + leftPointer) / 2;
+            if (getValueAt(middlePointer) > value) {
+                rightPointer = middlePointer;
             } else {
-                L = M;
+                leftPointer = middlePointer;
             }
         }
-        return (getValueAt(R) - value < value - getValueAt(L)) ? R : L;
+
+        double leftDifference = value - getValueAt(leftPointer);
+        double rightDifference = getValueAt(rightPointer) - value;
+        return rightDifference < leftDifference ? rightPointer : leftPointer;
     }
 
     @Override
@@ -161,7 +165,7 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private void updateMonitor() {
         if (monitor != null) {
             double value = cachedValue != null ? cachedValue : getValueAt(currentPoint);
-            monitor.setText(String.format("%.1f %s", value, measure_unit));
+            monitor.setText(String.format("%.1f %s", value, measureUnit));
         }
     }
 

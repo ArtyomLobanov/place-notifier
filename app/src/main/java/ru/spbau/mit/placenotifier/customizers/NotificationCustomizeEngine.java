@@ -66,8 +66,8 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @Override
     public boolean isReady() {
-        return nameEditor.isReady() && commentEditor.isReady() &&
-                placePredicateEditor.isReady() && timePredicateEditor.isReady();
+        return nameEditor.isReady() && commentEditor.isReady()
+                && placePredicateEditor.isReady() && timePredicateEditor.isReady();
     }
 
     @NonNull
@@ -89,17 +89,12 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @Override
     public boolean setValue(@NonNull Notification value) {
-        // backup to restore state in case of failure
-        Bundle state = saveState();
-        boolean success = nameEditor.setValue(value.getName());
-        success &= commentEditor.setValue(value.getComment());
-        success &= placePredicateEditor.setValue(value.getPlacePredicate());
-        success &= timePredicateEditor.setValue(value.getTimePredicate());
-        success &= statusEditor.setValue(value.isActive());
-        if (!success) {
-            restoreState(state);
-        }
-        return success;
+        return Customizers.safeExecution(this, () ->
+                nameEditor.setValue(value.getName())
+                        && commentEditor.setValue(value.getComment())
+                        && placePredicateEditor.setValue(value.getPlacePredicate())
+                        && timePredicateEditor.setValue(value.getTimePredicate())
+                        && statusEditor.setValue(value.isActive()));
     }
 
     @Override

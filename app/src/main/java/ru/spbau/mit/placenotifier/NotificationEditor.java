@@ -130,7 +130,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static class IntentBuilder {
+    public static final class IntentBuilder {
         private Notification prototype;
 
         private IntentBuilder() {

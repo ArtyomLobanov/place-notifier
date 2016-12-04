@@ -95,13 +95,11 @@ public class PlacePredicateCustomizeEngine
             return false;
         }
         BeaconPredicate beaconPredicate = (BeaconPredicate) value;
-        if (!placePicker.setValue(beaconPredicate.getBeacon())) {
-            return false;
-        }
-        // // TODO: 03.12.2016 add method "canSetValue" to customize engine interface
-        radiusPicker.setValue(beaconPredicate.getRadius());
-        modePicker.setValue(beaconPredicate.isInverted());
-        return true;
+
+        return Customizers.safeExecution(this, () ->
+                placePicker.setValue(beaconPredicate.getBeacon())
+                        && radiusPicker.setValue(beaconPredicate.getRadius())
+                        && modePicker.setValue(beaconPredicate.isInverted()));
     }
 
     @Override

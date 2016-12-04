@@ -28,10 +28,12 @@ import java.util.ArrayList;
 public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener, View.OnClickListener {
 
-    public static final String HOT_POINTS_KEY = "hot_points";
-    public static final String INITIAL_POSITION_KEY = "initial_position";
-    public static final String INITIAL_SCALE_KEY = "initial_scale";
-    public static final String RESULT_KEY = "result";
+    private static final float DEFAULT_HOT_POINT_SCALE = 10;
+
+    private static final String HOT_POINTS_KEY = "hot_points";
+    private static final String INITIAL_POSITION_KEY = "initial_position";
+    private static final String INITIAL_SCALE_KEY = "initial_scale";
+    private static final String RESULT_KEY = "result";
 
     private GoogleMap map;
     private Marker marker;
@@ -117,7 +119,8 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
             finish();
         } else { // one of HotPoint buttons pressed
             HotPoint hotPoint = (HotPoint) v.getTag();
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(), 10));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(),
+                    DEFAULT_HOT_POINT_SCALE));
             setSelectedPosition(hotPoint.getPosition());
         }
     }

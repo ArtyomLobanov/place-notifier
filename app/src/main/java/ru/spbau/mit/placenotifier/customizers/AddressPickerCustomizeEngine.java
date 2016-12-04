@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -145,14 +144,14 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private static class Monitor implements Serializable {
 
-        private final static int SUCCESS = 0;
-        private final static int WARNING = 1;
-        private final static int ERROR = 2;
-        private final static int[] COLORS = {Color.GREEN, Color.MAGENTA, Color.RED};
+        private static final int SUCCESS = 0;
+        private static final int WARNING = 1;
+        private static final int ERROR = 2;
+        private static final int[] COLORS = {Color.GREEN, Color.MAGENTA, Color.RED};
 
-        transient TextView display;
-        int status;
-        String text;
+        private transient TextView display;
+        private int status;
+        private String text;
 
         Monitor() {
             reportError("Empty address");
@@ -221,11 +220,11 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
         @Override
         protected List<Address> doInBackground(Void... params) {
-            Geocoder geocoder = new Geocoder(activityProducer.getContext());
             List<Address> addresses;
             try {
-                addresses = geocoder.getFromLocationName(request, 5);
-            } catch (IOException e) {
+                Geocoder geocoder = new Geocoder(activityProducer.getContext());
+                addresses = geocoder.getFromLocationName(request, 2);
+            } catch (Exception e) {
                 return null;
             }
             return addresses;
@@ -236,10 +235,13 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             if (input == null || !AddressPickerCustomizeEngine.this.request.equals(request)) {
                 return; // our information is out of date
             }
-            if (addresses == null || addresses.isEmpty()) {
+            if (addresses == null) {
+                monitor.reportError("Connection error");
+                result = null;
+            } else if (addresses.isEmpty()) {
                 monitor.reportError("Address was not found");
                 result = null;
-            } else if (addresses.size() > 1) {
+            } else if (addresses.size() != 1) {
                 monitor.reportWarning("Address is not unique");
                 result = addresses.get(0);
             } else {

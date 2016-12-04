@@ -104,7 +104,7 @@ public class Notification implements Serializable {
         return identifier.hashCode();
     }
 
-    public static class NotificationBuilder {
+    public static final class NotificationBuilder {
         private String identifier;
         private boolean isActive;
         private String name;
@@ -167,8 +167,8 @@ public class Notification implements Serializable {
         }
 
         public Notification build() {
-            if (identifier == null || name == null || comment == null || placePredicate == null ||
-                    timePredicate == null) {
+            if (identifier == null || name == null || comment == null || placePredicate == null
+                    || timePredicate == null) {
                 throw new RuntimeException("Not all fields are filled in");
             }
             return new Notification(name, comment, placePredicate, timePredicate,

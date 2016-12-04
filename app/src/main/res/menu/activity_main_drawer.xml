@@ -27,19 +27,4 @@
 
         </menu>
     </item>
-
-    <item android:title="testing">
-        <menu>
-            <item
-                android:id="@+id/test_editor"
-                android:title="test editor"
-                android:icon="@android:drawable/ic_menu_manage" />
-
-            <item
-                android:id="@+id/test_place_picker"
-                android:title="test place picker"
-                android:icon="@android:drawable/ic_menu_manage" />
-
-        </menu>
-    </item>
 </menu>

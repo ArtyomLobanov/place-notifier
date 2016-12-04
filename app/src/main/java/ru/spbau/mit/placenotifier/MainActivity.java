@@ -14,9 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,14 +82,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
                 break;
-            case R.id.test_editor:
-                testEditor();
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.test_place_picker:
-                testPlacePicker();
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
@@ -104,37 +93,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // just for test
-    @SuppressWarnings("MagicNumber")
-    public void testEditor() {
-        Intent intent = new Intent(this, NotificationEditor.class);
-        startActivityForResult(intent, 13);
-    }
-
-    // just for test
-    @SuppressWarnings("MagicNumber")
-    public void testPlacePicker() {
-
-        Intent i = PlacePicker.builder()
-                .addHotPoint(new HotPoint("Spb", new LatLng(59.939095, 30.315868)))
-                .addHotPoint(new HotPoint("Msc", new LatLng(55.755814, 37.617635)))
-                .addHotPoint(new HotPoint("Nizhny Novgorod", new LatLng(56.326887, 44.005986)))
-                .addHotPoint(new HotPoint("Khabarovsk", new LatLng(48.472584, 135.057732)))
-                .build(this);
-        startActivityForResult(i, 14);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // just for test
-        //noinspection MagicNumber
-        if (requestCode == 14 && resultCode == RESULT_OK) {
-            LatLng position = PlacePicker.getSelectedPoint(data);
-            Toast.makeText(this, "you choose point:" + position.longitude
-                    + " : " + position.latitude, Toast.LENGTH_LONG).show();
-        } else if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
-        }
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultListener listener : listeners) {
             if (listener.getID() == requestCode) {

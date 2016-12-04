@@ -27,11 +27,29 @@ public class AlarmManager {
         this.context = context;
     }
 
-    @SuppressWarnings("MagicNumber") // testing
     public List<Notification> getAlarms() {
+        return generateForTest(context);
+    }
+
+    public void erase(Notification alarm) {
+        Log.i("Database:", "Alarm " + alarm.getName() + " erased");
+    }
+
+    @SuppressWarnings("unused")
+    public void insert(Notification alarm) {
+        Log.i("Database:", "Alarm " + alarm.getName() + " inserted");
+    }
+
+    public void updateAlarm(Notification alarm) {
+        Log.i("Database:", "Alarm " + alarm.getName() + " updated");
+    }
+
+
+    @SuppressWarnings("MagicNumber") // testing
+    private static List<Notification> generateForTest(Context context) {
         List<Notification> res = new ArrayList<>();
         Geocoder g = new Geocoder(context);
-        Address address = null;
+        Address address;
         try {
             address = g.getFromLocationName("Moscow", 1).get(0);
         } catch (IOException e) {
@@ -54,17 +72,5 @@ public class AlarmManager {
                     new BeaconPredicate(b, 10), p, true, context, i + 5));
         }
         return res;
-    }
-
-    public void erase(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " erased");
-    }
-
-    public void insert(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " inserted");
-    }
-
-    public void updateAlarm(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " updated");
     }
 }
