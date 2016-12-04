@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/customize_engine_notification_general_settings"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:background="@color/colorPrimary"
+            android:textAlignment="center" />
+
+        <include
+            android:id="@+id/customize_engine_notification_name_input"
+            layout="@layout/customize_engine_string"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <include
+            android:id="@+id/customize_engine_notification_comment_input"
+            layout="@layout/customize_engine_string"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <include
+            android:id="@+id/customize_engine_notification_status"
+            layout="@layout/customize_engine_alternative"
+            android:layout_width="match_parent"
+            android:layout_height="60dp" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/customize_engine_notification_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:background="@color/colorPrimary"
+            android:textAlignment="center" />
+
+        <include
+            android:id="@+id/customize_engine_notification_time_setting"
+            layout="@layout/customize_engine_alternative"
+            android:layout_width="match_parent"
+            android:layout_height="120dp" />
+
+    </LinearLayout>
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/customize_engine_notification_place_settings"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:background="@color/colorPrimary"
+            android:textAlignment="center" />
+
+        <include
+            android:id="@+id/customize_engine_notification_place_setting"
+            layout="@layout/customize_engine_place_predicate"
+            android:layout_width="match_parent"
+            android:layout_height="320dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

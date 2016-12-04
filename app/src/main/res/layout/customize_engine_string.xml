@@ -20,7 +20,7 @@
         android:inputType="none"
         android:layout_margin="10dp"
         android:ems="10"
-        android:background="@drawable/border"
-        android:id="@+id/customize_engine_string_input" />
+        android:id="@+id/customize_engine_string_input"
+        style="@android:style/Widget.Material.EditText" />
 
 </LinearLayout>

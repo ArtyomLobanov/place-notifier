@@ -47,4 +47,7 @@
     <string name="action_reply">Reply</string>
     <string name="customize_engine_time_interval_from">from</string>
     <string name="customize_engine_time_interval_to">to</string>
+    <string name="customize_engine_notification_general_settings">General settings</string>
+    <string name="customize_engine_notification_time_settings">Time settings</string>
+    <string name="customize_engine_notification_place_settings">Place settings</string>
 </resources>

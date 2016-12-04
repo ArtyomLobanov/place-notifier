@@ -47,11 +47,13 @@ public class PlacePredicateCustomizeEngine
         this(placePicker,
                 new NumericalValueCustomizeEngine("Define the sensitivity", "m",
                         NumericalValueCustomizeEngine.EXPONENTIAL_TRANSFORMER,
-                        DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND),
-                Customizers.<Boolean>forOptions("Where does it work?")
-                    .addOption("When you are there", false)
-                    .addOption("When you are out of there", true)
-                    .build());
+                        DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
+    }
+
+    public PlacePredicateCustomizeEngine(ActivityProducer producer, int id) {
+        this(new AlternativeCustomizeEngine<>("Choose place somehow",
+                new PlacePickerCustomizeEngine("Choose point on map", producer, id),
+                new AddressPickerCustomizeEngine(producer, "Find place by address")));
     }
 
     @Override

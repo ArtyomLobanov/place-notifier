@@ -40,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
-        <!--android:layout_weight="0"-->
 
         <Button
             android:id="@+id/OK_button"
@@ -49,7 +48,6 @@
             android:layout_weight="1"
             android:text="@string/ok_button_text"
             android:visibility="visible"/>
-            <!--android:background="@drawable/left_button" />-->
 
         <Space
             android:layout_width="0dp"
@@ -63,7 +61,6 @@
             android:layout_weight="1"
             android:text="@string/cancel_button_text"
             android:visibility="visible"/>
-            <!--android:background="@drawable/right_button" />-->
     </LinearLayout>
 </LinearLayout>
 
