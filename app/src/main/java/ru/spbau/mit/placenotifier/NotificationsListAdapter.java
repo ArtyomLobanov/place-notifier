@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
@@ -29,9 +32,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
         this.id = id;
         alarmManager = new AlarmManager(activityProducer.getContext());
         activityProducer.addResultListener(this);
-        for (Notification notification : alarmManager.getAlarms()) {
-            add(notification);
-        }
+        new NotificationLoader().execute();
     }
 
     @NonNull
@@ -117,6 +118,28 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
                         .setPrototype(notification)
                         .build(activityProducer.getContext());
                 activityProducer.startActivity(intent, id);
+            }
+        }
+    }
+
+    private class NotificationLoader extends AsyncTask<Void, Void, List<Notification>> {
+
+        @Override
+        protected List<Notification> doInBackground(Void... params) {
+            try {
+                return alarmManager.getAlarms();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Notification> notifications) {
+            if (notifications == null) {
+                Toast.makeText(activityProducer.getContext(), "Loading of Notifications failed",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                addAll(notifications);
             }
         }
     }
