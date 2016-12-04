@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import ru.spbau.mit.placenotifier.R;
 
+@SuppressWarnings("WeakerAccess")
 public class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
 
     private final String messageText;

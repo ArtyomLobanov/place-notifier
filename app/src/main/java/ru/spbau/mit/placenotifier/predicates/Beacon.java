@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class Beacon implements Serializable {
 
     public float distanceTo(double latitude, double longitude) {

@@ -37,7 +37,8 @@ public class ServiceReminder {
     }
 
     public void sendNotification(Activity main, int id) {
-        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
+        NotificationCompat.Builder builder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                 .setSmallIcon(R.drawable.alarm)
                 .setContentTitle("Alarm")
                 .setContentText("do something somewhere")

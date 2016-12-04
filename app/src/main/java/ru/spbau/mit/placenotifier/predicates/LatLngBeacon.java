@@ -13,7 +13,7 @@ public class LatLngBeacon extends Beacon {
 
     public LatLngBeacon(@NonNull LatLng location) {
         latitude = location.latitude;
-        longitude =  location.longitude;
+        longitude = location.longitude;
         cache = location;
     }
 

@@ -20,6 +20,7 @@ import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
+@SuppressWarnings("WeakerAccess")
 public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
         ActivityProducer.ResultListener, GoogleMap.OnMapClickListener {
 

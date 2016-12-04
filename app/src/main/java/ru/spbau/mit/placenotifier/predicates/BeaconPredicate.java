@@ -1,9 +1,6 @@
 package ru.spbau.mit.placenotifier.predicates;
 
-import android.location.Address;
 import android.location.Location;
-
-import com.google.android.gms.maps.model.LatLng;
 
 public class BeaconPredicate implements SerializablePredicate<Location> {
 

@@ -1,7 +1,6 @@
 package ru.spbau.mit.placenotifier.customizers;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import ru.spbau.mit.placenotifier.R;
 
+@SuppressWarnings("WeakerAccess")
 public class StringCustomizeEngine implements CustomizeEngine<String> {
 
     public static final int MULTILINE = 1 << 1;

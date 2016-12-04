@@ -17,6 +17,7 @@ import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
+@SuppressWarnings("WeakerAccess")
 public class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredicate<Long>> {
 
     private static final String FROM_TIME_VALUE_KEY = "from_time_value_key";

@@ -1,6 +1,5 @@
 package ru.spbau.mit.placenotifier;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -25,10 +24,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ActivityProducer {
 
-    // todo do something with this
-    @SuppressLint("StaticFieldLeak")
-    private static ServiceReminder reminder;
-
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
 
@@ -44,7 +39,7 @@ public class MainActivity extends AppCompatActivity
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        reminder = new ServiceReminder(this, this);
+        ServiceReminder reminder = new ServiceReminder(this, this);
         reminder.getThread().start();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -110,12 +105,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     // just for test
+    @SuppressWarnings("MagicNumber")
     public void testEditor() {
         Intent intent = new Intent(this, NotificationEditor.class);
         startActivityForResult(intent, 13);
     }
 
     // just for test
+    @SuppressWarnings("MagicNumber")
     public void testPlacePicker() {
 
         Intent i = PlacePicker.builder()
@@ -130,6 +127,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // just for test
+        //noinspection MagicNumber
         if (requestCode == 14 && resultCode == RESULT_OK) {
             LatLng position = PlacePicker.getSelectedPoint(data);
             Toast.makeText(this, "you choose point:" + position.longitude
@@ -137,6 +135,7 @@ public class MainActivity extends AppCompatActivity
         } else if (resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
         }
+        //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultListener listener : listeners) {
             if (listener.getID() == requestCode) {
                 listener.onResult(resultCode, data);

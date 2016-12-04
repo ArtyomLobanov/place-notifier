@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import ru.spbau.mit.placenotifier.R;
 
+@SuppressWarnings("WeakerAccess")
 public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
 
     @SuppressWarnings("unused")
@@ -159,7 +160,7 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
 
     private void updateMonitor() {
         if (monitor != null) {
-            double value = cachedValue != null? cachedValue : getValueAt(currentPoint);
+            double value = cachedValue != null ? cachedValue : getValueAt(currentPoint);
             monitor.setText(String.format("%.1f %s", value, measure_unit));
         }
     }
@@ -187,9 +188,11 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         }
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
 
         @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
     }
 }

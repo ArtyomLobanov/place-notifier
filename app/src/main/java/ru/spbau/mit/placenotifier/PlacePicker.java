@@ -125,7 +125,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     /**
      * Special class to create Intent for starting PlacePiker easier
      */
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public static final class IntentBuilder {
 
         private final ArrayList<HotPoint> hotPoints;

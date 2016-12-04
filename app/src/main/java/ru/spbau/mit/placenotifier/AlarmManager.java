@@ -17,6 +17,7 @@ import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
+@SuppressWarnings("WeakerAccess")
 public class AlarmManager {
 
     // just to simulate behavior
@@ -26,6 +27,7 @@ public class AlarmManager {
         this.context = context;
     }
 
+    @SuppressWarnings("MagicNumber") // testing
     public List<Notification> getAlarms() {
         List<Notification> res = new ArrayList<>();
         Geocoder g = new Geocoder(context);

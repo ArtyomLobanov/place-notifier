@@ -13,6 +13,7 @@ import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
+@SuppressWarnings("WeakerAccess")
 public class PlacePredicateCustomizeEngine
         implements CustomizeEngine<SerializablePredicate<Location>> {
 

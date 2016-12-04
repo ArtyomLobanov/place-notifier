@@ -5,7 +5,7 @@ public class ConstPredicate<T> implements SerializablePredicate<T> {
     private final boolean result;
 
     public ConstPredicate(boolean value) {
-        this.result = value;
+        result = value;
     }
 
     @Override
@@ -13,7 +13,18 @@ public class ConstPredicate<T> implements SerializablePredicate<T> {
         return result;
     }
 
-    public boolean isResult() {
-        return result;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ConstPredicate<?> that = (ConstPredicate<?>) o;
+        return result == that.result;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (result ? 1 : 0);
     }
 }

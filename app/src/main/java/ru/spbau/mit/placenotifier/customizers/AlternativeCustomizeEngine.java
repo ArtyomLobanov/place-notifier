@@ -20,6 +20,8 @@ import ru.spbau.mit.placenotifier.R;
 /**
  * Use ViewPager to allow user to choose CustomizeEngine which he/she wants
  */
+
+@SuppressWarnings("WeakerAccess")
 public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     private static final String CHILDREN_STATES_ARRAY_KEY = "children_states_array_key";
@@ -54,12 +56,8 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         cacheCurrentPageNumber();
         TextView titleView = (TextView) view.findViewById(R.id.customize_alternative_title);
         viewPager = (ViewPager) view.findViewById(R.id.customize_alternative_view_pager);
-
-        if (titleView == null) {
-            throw new IllegalArgumentException("Wrong view layout: customize_bar_title not found");
-        }
-        if (viewPager == null) {
-            throw new IllegalArgumentException("Wrong view layout: customize_bar_view_pager not found");
+        if (titleView == null || viewPager == null) {
+            throw new IllegalArgumentException(ON_BAD_VIEW_LAYOUT);
         }
         titleView.setText(title);
         viewPager.setAdapter(new BarAdapter());
@@ -129,7 +127,7 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         state.putInt(ACTIVE_PAGE_NUMBER_KEY, viewPager.getCurrentItem());
         return state;
     }
-    
+
     private void cacheCurrentPageNumber() {
         if (viewPager != null) {
             currentPageCache = viewPager.getCurrentItem();

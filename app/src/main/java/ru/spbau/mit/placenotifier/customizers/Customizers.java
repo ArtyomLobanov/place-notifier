@@ -5,7 +5,12 @@ import java.util.ArrayList;
 @SuppressWarnings("WeakerAccess")
 public final class Customizers {
 
-    private Customizers(){}
+    private Customizers() {
+    }
+
+    public static <T> OptionsBuilder<T> forOptions(String title) {
+        return new OptionsBuilder<>(title);
+    }
 
     public static class OptionsBuilder<T> {
         private final String title;
@@ -24,9 +29,5 @@ public final class Customizers {
         public CustomizeEngine<T> build() {
             return new AlternativeCustomizeEngine<>(title, options);
         }
-    }
-
-    public static <T> OptionsBuilder<T> forOptions(String title) {
-        return new OptionsBuilder<>(title);
     }
 }

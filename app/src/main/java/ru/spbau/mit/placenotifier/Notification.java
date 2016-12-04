@@ -90,6 +90,20 @@ public class Notification implements Serializable {
         return new NotificationBuilder(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != Notification.class) {
+            return false;
+        }
+        Notification other = (Notification) obj;
+        return identifier.equals(other.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
+
     public static class NotificationBuilder {
         private String identifier;
         private boolean isActive;
@@ -160,19 +174,5 @@ public class Notification implements Serializable {
             return new Notification(name, comment, placePredicate, timePredicate,
                     isActive, identifier);
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass() != Notification.class) {
-            return false;
-        }
-        Notification other = (Notification) obj;
-        return identifier.equals(other.getIdentifier());
-    }
-
-    @Override
-    public int hashCode() {
-        return identifier.hashCode();
     }
 }

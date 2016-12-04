@@ -3,7 +3,6 @@ package ru.spbau.mit.placenotifier.customizers;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 @SuppressWarnings("WeakerAccess")
@@ -18,8 +17,9 @@ public interface CustomizeEngine<T> {
                     + "saved state not suitable for this customize engine";
 
     String ON_NOT_READY_STATE_EXCEPTION_MESSAGE =
-            "Wrong view state for that operation: "
-                    + "not all view's field are filled in";
+            "Wrong view state for that operation: not all view's field are filled in";
+
+    String ON_BAD_VIEW_LAYOUT = "Wrong view layout: not all required elements are found";
 
     /**
      * Define type of view, which can be observed by this CustomizeEngine.
