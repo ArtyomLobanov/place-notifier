@@ -1,6 +1,5 @@
 package ru.spbau.mit.placenotifier;
 
-import android.app.*;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,13 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
 public class AlarmManager {
@@ -37,18 +38,25 @@ public class AlarmManager {
         dbHelper = new DBHelper(context);
     }
 
-    public List<Notification> getAlarms() {
+    public List<Notification> getAlarms() throws IOException, ClassNotFoundException{
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         List <Notification> res = new ArrayList<Notification>();
         Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
         int n = cur.getCount();
         cur.moveToFirst();
         for (int i = 0; i < n; i++) {
+            ByteArrayInputStream stream = new ByteArrayInputStream(cur.getString(3).getBytes());
+            ObjectInputStream objectInputStream = new ObjectInputStream(stream);
+            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)objectInputStream.readObject();
+            stream = new ByteArrayInputStream(cur.getString(2).getBytes());
+            objectInputStream = new ObjectInputStream(stream);
+            SerializablePredicate<Long> time = (SerializablePredicate<Long>)objectInputStream.readObject();
             res.add(new Notification(cur.getString(1), cur.getString(5),
-                    null, null, cur.getInt(4) > 0, cur.getString(0)));
+                    loc, time, cur.getInt(4) > 0, cur.getString(0)));
             //still need serialization
             cur.moveToNext();
         }
+        cur.close();
         return res;
     }
 
@@ -57,7 +65,7 @@ public class AlarmManager {
         database.delete(DATABASE_NAME, ID + "=?", new String[]{alarm.getIdentifier()});
     }
 
-    public void insert(Notification alarm) {
+    public void insert(Notification alarm) throws IOException {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             database.beginTransaction();
@@ -66,13 +74,19 @@ public class AlarmManager {
             if (alarm.getName() != null) {
                 contentValues.put(NAME, alarm.getName());
             }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            oos.writeObject(alarm.getPlacePredicate());
+            String location = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getPlacePredicate() != null) {
-                contentValues.put(LOCATION, alarm.getPlacePredicate().toString());
-                //still need serialization
+                contentValues.put(LOCATION, location);
             }
+            stream = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(stream);
+            oos.writeObject(alarm.getTimePredicate());
+            String time = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getTimePredicate() != null) {
-                contentValues.put(TIME, alarm.getTimePredicate().toString());
-                //still need serialization
+                contentValues.put(TIME, time);
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
@@ -85,7 +99,7 @@ public class AlarmManager {
         }
     }
 
-    public void updateAlarm(Notification alarm) {
+    public void updateAlarm(Notification alarm) throws IOException {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             database.beginTransaction();
@@ -94,13 +108,19 @@ public class AlarmManager {
             if (alarm.getName() != null) {
                 contentValues.put(NAME, alarm.getName());
             }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            oos.writeObject(alarm.getPlacePredicate());
+            String location = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getPlacePredicate() != null) {
-                contentValues.put(LOCATION, alarm.getPlacePredicate().toString());
-                //still need serialization
+                contentValues.put(LOCATION, location);
             }
+            stream = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(stream);
+            oos.writeObject(alarm.getTimePredicate());
+            String time = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getTimePredicate() != null) {
-                contentValues.put(TIME, alarm.getTimePredicate().toString());
-                //still need serialization
+                contentValues.put(TIME, time);
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
