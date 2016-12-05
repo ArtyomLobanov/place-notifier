@@ -7,11 +7,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("WeakerAccess")
 public class ServiceReminder {
 
     private static final long VERY_LONG_TIME = 30000;
@@ -24,19 +23,25 @@ public class ServiceReminder {
         thread = new ReminderThread(m);
     }
 
-    public void startChecking(Activity main) throws InterruptedException {
+    public void startChecking(Activity main) {
         /*
         ServisReminder will send a request to database, get alarms to notify with
         its identifiers and send notifications to user. But for demo it will just
         sending notification with identifier 1.
          */
-        while (true) {
-            Thread.sleep(VERY_LONG_TIME);
-            sendNotification(main, 1);
+        while (!Thread.interrupted()) {
+            try {
+                Thread.sleep(VERY_LONG_TIME);
+                sendNotification(main, 1);
+            } catch (InterruptedException e) {
+                if (Thread.interrupted()) {
+                    break;
+                }
+            }
         }
     }
 
-    public void sendNotification(Activity main, int id) {
+    public void sendNotification(Activity main, @SuppressWarnings("UnusedParameters") int id) {
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                 .setSmallIcon(R.drawable.alarm)
@@ -72,11 +77,7 @@ public class ServiceReminder {
 
         @Override
         public void run() {
-            try {
-                startChecking(main);
-            } catch (InterruptedException e) {
-                Log.wtf("Reminder service:", e.getMessage());
-            }
+            startChecking(main);
         }
     }
 

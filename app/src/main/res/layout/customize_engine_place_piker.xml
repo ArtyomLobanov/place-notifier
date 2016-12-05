@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/customize_engine_place_piker_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/customize_engine_place_piker_title"
+        android:layout_marginStart="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:layout_marginStart="10dp" />
+        android:textSize="16sp" />
 
-    <com.google.android.gms.maps.MapView
-        xmlns:map="http://schemas.android.com/apk/res-auto"
+    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/customize_engine_place_piker_map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/customize_engine_place_piker_map"
+        android:layout_margin="10dp"
         android:layout_weight="1"
-        map:liteMode="true"
-        android:layout_margin="10dp" />
+        map:liteMode="true" />
 
 </LinearLayout>

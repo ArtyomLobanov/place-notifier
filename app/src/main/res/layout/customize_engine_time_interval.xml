@@ -1,91 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:layout_margin="10dp"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/customize_engine_time_interval_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/customize_engine_time_interval_title"
+        android:layout_marginStart="10dp"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:layout_marginStart="10dp" />
+        android:textSize="16sp" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/white_space"
-        android:showDividers="middle"
         android:dividerPadding="0dp"
-        android:padding="5dp">
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:showDividers="middle">
 
         <TextView
-            android:text="@string/customize_engine_time_interval_from"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
+            android:text="@string/customize_engine_time_interval_from"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/customize_engine_time_interval_from_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:layout_weight="2"
-            android:id="@+id/customize_engine_time_interval_from_time"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textAlignment="center"
             android:background="@drawable/hot_point_button"
-            android:layout_marginEnd="5dp" />
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/customize_engine_time_interval_from_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:id="@+id/customize_engine_time_interval_from_date"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
+            android:background="@drawable/hot_point_button"
             android:textAlignment="center"
-            android:background="@drawable/hot_point_button" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@android:color/background_light"
         android:dividerPadding="10dp"
+        android:orientation="horizontal"
         android:padding="5dp">
 
         <TextView
-            android:text="@string/customize_engine_time_interval_to"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
+            android:text="@string/customize_engine_time_interval_to"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/customize_engine_time_interval_to_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:layout_weight="2"
-            android:id="@+id/customize_engine_time_interval_to_time"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textAlignment="center"
             android:background="@drawable/hot_point_button"
-            android:layout_marginEnd="5dp" />
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/customize_engine_time_interval_to_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:id="@+id/customize_engine_time_interval_to_date"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
+            android:background="@drawable/hot_point_button"
             android:textAlignment="center"
-            android:background="@drawable/hot_point_button" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

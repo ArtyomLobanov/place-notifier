@@ -9,8 +9,7 @@
     android:orientation="vertical"
     tools:context="ru.spbau.mit.placenotifier.PlacePicker">
 
-    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         class="com.google.android.gms.maps.SupportMapFragment"
@@ -22,18 +21,18 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        tools:scrollIndicators="top"
-        android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp">
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_weight="0"
+        tools:scrollIndicators="top">
 
         <LinearLayout
             android:id="@+id/hot_points_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
     <LinearLayout
@@ -47,7 +46,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/ok_button_text"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <Space
             android:layout_width="0dp"
@@ -60,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/cancel_button_text"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </LinearLayout>
 </LinearLayout>
 

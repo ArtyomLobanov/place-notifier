@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -141,7 +140,6 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     @Override
     public boolean setValue(@NonNull SerializablePredicate<Long> value) {
         if (value.getClass() != TimeIntervalPredicate.class) {
-            Log.wtf("time wtf:", "kwrebkud");
             return false;
         }
         TimeIntervalPredicate timeIntervalPredicate = (TimeIntervalPredicate) value;
@@ -158,7 +156,6 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     public void restoreState(@NonNull Bundle state) {
         from = (Calendar) state.getSerializable(FROM_TIME_VALUE_KEY);
         to = (Calendar) state.getSerializable(TO_TIME_VALUE_KEY);
-        Log.wtf("loaded : ", (from != null) + " " + (to != null));
         updateViews();
     }
 
@@ -168,7 +165,6 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
         Bundle state = new Bundle();
         state.putSerializable(FROM_TIME_VALUE_KEY, from);
         state.putSerializable(TO_TIME_VALUE_KEY, to);
-        Log.wtf("saved : ", (from != null) + " " + (to != null));
         return state;
     }
 }

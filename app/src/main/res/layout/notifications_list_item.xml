@@ -1,67 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:background="@drawable/notification_view_background"
+    android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:background="@drawable/notification_view_background"
     android:clipChildren="true"
-    android:clipToPadding="true">
+    android:clipToPadding="true"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:clipChildren="false"
         android:clipToPadding="false"
-        android:clipChildren="false">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/notifications_name_view"
-            android:layout_marginStart="10dp"
-            android:textSize="16sp"
-            android:textColorHint="@android:color/background_dark"
-            android:textColor="@android:color/background_dark"
-            android:maxLines="1"/>
-
-        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:maxLines="1"
+            android:textColor="@android:color/background_dark"
+            android:textColorHint="@android:color/background_dark"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/notifications_description_view"
-            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
             android:maxLines="2"
             android:textColor="@android:color/black" />
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/imageView2"
         android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:id="@+id/imageView2"
-        android:layout_weight="0"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
+        android:layout_weight="0"
         android:background="@android:drawable/status_bar_item_background" />
 
     <ToggleButton
         android:id="@+id/power_button"
-        android:layout_weight="0"
-        android:layout_gravity="center_vertical"
-        android:checked="false"
-        android:background="@drawable/toggle_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:background="@drawable/toggle_button"
+        android:checked="false"
         android:textOff=""
-        android:textOn=""/>
+        android:textOn="" />
 
     <Button
         android:id="@+id/remove_button"
-        android:layout_weight="0"
-        android:layout_gravity="center_vertical"
-        android:background="@android:drawable/ic_menu_delete"
         android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:background="@android:drawable/ic_menu_delete" />
 </LinearLayout>

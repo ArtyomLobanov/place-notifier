@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:text="@string/customize_engine_notification_general_settings"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:background="@color/colorPrimary"
-            android:textAlignment="center" />
+            android:text="@string/customize_engine_notification_general_settings"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <include
             android:id="@+id/customize_engine_notification_name_input"
@@ -38,20 +39,20 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="30dp"/>
+        android:layout_height="30dp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:text="@string/customize_engine_notification_time_settings"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:background="@color/colorPrimary"
-            android:textAlignment="center" />
+            android:text="@string/customize_engine_notification_time_settings"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <include
             android:id="@+id/customize_engine_notification_time_setting"
@@ -67,17 +68,17 @@
         android:layout_height="30dp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:text="@string/customize_engine_notification_place_settings"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:background="@color/colorPrimary"
-            android:textAlignment="center" />
+            android:text="@string/customize_engine_notification_place_settings"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <include
             android:id="@+id/customize_engine_notification_place_setting"

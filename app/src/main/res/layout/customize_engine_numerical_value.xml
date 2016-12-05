@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/customize_engine_numerical_value_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:id="@+id/customize_engine_numerical_value_title"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/customize_engine_numerical_value_monitor"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/customize_engine_numerical_value_monitor"
             android:layout_weight="1"
             android:gravity="end" />
 
     </LinearLayout>
 
     <SeekBar
+        android:id="@+id/customize_engine_numerical_value_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/customize_engine_numerical_value_seekBar"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp" />
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp" />
 </LinearLayout>
