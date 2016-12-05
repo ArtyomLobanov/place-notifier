@@ -89,12 +89,14 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @Override
     public boolean setValue(@NonNull Notification value) {
-        return Customizers.safeExecution(this, () ->
-                nameEditor.setValue(value.getName())
-                        && commentEditor.setValue(value.getComment())
-                        && placePredicateEditor.setValue(value.getPlacePredicate())
-                        && timePredicateEditor.setValue(value.getTimePredicate())
-                        && statusEditor.setValue(value.isActive()));
+        return Customizers.safeExecution(this, () -> {
+            notificationIdentifier = value.getIdentifier();
+            return nameEditor.setValue(value.getName())
+                    && commentEditor.setValue(value.getComment())
+                    && placePredicateEditor.setValue(value.getPlacePredicate())
+                    && timePredicateEditor.setValue(value.getTimePredicate())
+                    && statusEditor.setValue(value.isActive());
+        });
     }
 
     @Override

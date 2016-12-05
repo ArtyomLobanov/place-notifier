@@ -32,16 +32,16 @@ public class AlarmManager {
     }
 
     public void erase(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " erased");
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
     }
 
     @SuppressWarnings("unused")
     public void insert(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " inserted");
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
     }
 
     public void updateAlarm(Notification alarm) {
-        Log.i("Database:", "Alarm " + alarm.getName() + " updated");
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
     }
 
 

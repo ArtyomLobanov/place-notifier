@@ -55,6 +55,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
         if (resultCode == Activity.RESULT_OK) {
             remove(NotificationEditor.getPrototype(data));
             add(NotificationEditor.getResult(data));
+            alarmManager.updateAlarm(NotificationEditor.getResult(data));
         }
     }
 
@@ -111,7 +112,6 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
                         .build();
                 remove(notification);
                 add(changedNotification);
-                notifyDataSetChanged();
                 alarmManager.updateAlarm(changedNotification);
             } else {
                 Intent intent = NotificationEditor.builder()
@@ -136,7 +136,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
         @Override
         protected void onPostExecute(List<Notification> notifications) {
             if (notifications == null) {
-                Toast.makeText(activityProducer.getContext(), "Loading of Notifications failed",
+                Toast.makeText(activityProducer.getContext(), "Loading of notifications failed",
                         Toast.LENGTH_LONG).show();
             } else {
                 addAll(notifications);
