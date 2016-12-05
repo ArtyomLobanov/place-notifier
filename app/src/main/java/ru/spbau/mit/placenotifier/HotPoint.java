@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -25,7 +26,7 @@ public class HotPoint implements Parcelable {
     private final String name;
     private final LatLng position;
 
-    public HotPoint(String name, LatLng position) {
+    public HotPoint(@NonNull String name, @NonNull LatLng position) {
         this.name = name;
         this.position = position;
     }
@@ -35,15 +36,17 @@ public class HotPoint implements Parcelable {
         position = in.readParcelable(LatLng.class.getClassLoader());
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
-    // some magic to do it Parcelable
-
+    @NonNull
     public LatLng getPosition() {
         return position;
     }
+
+    // some magic to do it Parcelable
 
     @Override
     public int describeContents() {

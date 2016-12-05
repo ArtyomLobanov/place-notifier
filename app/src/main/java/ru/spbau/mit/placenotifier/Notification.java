@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -23,22 +24,25 @@ public class Notification implements Serializable {
     private final SerializablePredicate<Location> placePredicate;
     private final SerializablePredicate<Long> timePredicate;
 
-    public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
-                        SerializablePredicate<Long> timePredicate,
-                        boolean isActive, Context context) {
+    public Notification(@NonNull String name, @NonNull String comment,
+                        @NonNull SerializablePredicate<Location> placePredicate,
+                        @NonNull SerializablePredicate<Long> timePredicate,
+                        boolean isActive, @NonNull Context context) {
         this(name, comment, placePredicate, timePredicate, isActive, context, 0);
     }
 
-    public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
-                        SerializablePredicate<Long> timePredicate,
-                        boolean isActive, Context context, long salt) {
+    public Notification(@NonNull String name, @NonNull String comment,
+                        @NonNull SerializablePredicate<Location> placePredicate,
+                        @NonNull SerializablePredicate<Long> timePredicate,
+                        boolean isActive, @NonNull Context context, long salt) {
         this(name, comment, placePredicate, timePredicate, isActive,
                 createIdentifier(context, salt));
     }
 
-    public Notification(String name, String comment, SerializablePredicate<Location> placePredicate,
-                        SerializablePredicate<Long> timePredicate,
-                        boolean isActive, String identifier) {
+    public Notification(@NonNull String name, @NonNull String comment,
+                        @NonNull SerializablePredicate<Location> placePredicate,
+                        @NonNull SerializablePredicate<Long> timePredicate,
+                        boolean isActive, @NonNull String identifier) {
         this.name = name;
         this.comment = comment;
         this.placePredicate = placePredicate;
@@ -49,7 +53,7 @@ public class Notification implements Serializable {
 
     @NonNull
     @SuppressLint("HardwareIds")
-    private static String createIdentifier(Context context, long salt) {
+    private static String createIdentifier(@NonNull Context context, long salt) {
         String deviceID = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         if (deviceID == null) {
             Log.e("ID creating: ", "Device id is not available");
@@ -58,6 +62,7 @@ public class Notification implements Serializable {
         return salt + "|" + System.currentTimeMillis() + "|" + deviceID;
     }
 
+    @NonNull
     public static NotificationBuilder builder() {
         return new NotificationBuilder();
     }
@@ -66,33 +71,39 @@ public class Notification implements Serializable {
         return isActive;
     }
 
+    @NonNull
     public SerializablePredicate<Long> getTimePredicate() {
         return timePredicate;
     }
 
+    @NonNull
     public SerializablePredicate<Location> getPlacePredicate() {
         return placePredicate;
     }
 
+    @NonNull
     public String getComment() {
         return comment;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
+    @NonNull
     public String getIdentifier() {
         return identifier;
     }
 
+    @NonNull
     public NotificationBuilder change() {
         return new NotificationBuilder(this);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass() != Notification.class) {
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || obj.getClass() != Notification.class) {
             return false;
         }
         Notification other = (Notification) obj;
@@ -166,6 +177,7 @@ public class Notification implements Serializable {
             return this;
         }
 
+        @NonNull
         public Notification build() {
             if (identifier == null || name == null || comment == null || placePredicate == null
                     || timePredicate == null) {

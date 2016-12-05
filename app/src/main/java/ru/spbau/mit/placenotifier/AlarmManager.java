@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -23,27 +24,9 @@ public class AlarmManager {
     // just to simulate behavior
     private final Context context;
 
-    public AlarmManager(Context context) {
+    public AlarmManager(@NonNull Context context) {
         this.context = context;
     }
-
-    public List<Notification> getAlarms() {
-        return generateForTest(context);
-    }
-
-    public void erase(Notification alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
-    }
-
-    @SuppressWarnings("unused")
-    public void insert(Notification alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
-    }
-
-    public void updateAlarm(Notification alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
-    }
-
 
     @SuppressWarnings("MagicNumber") // testing
     private static List<Notification> generateForTest(Context context) {
@@ -72,5 +55,23 @@ public class AlarmManager {
                     new BeaconPredicate(b, 10), p, true, context, i + 5));
         }
         return res;
+    }
+
+    @NonNull
+    public List<Notification> getAlarms() {
+        return generateForTest(context);
+    }
+
+    public void erase(@NonNull Notification alarm) {
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
+    }
+
+    @SuppressWarnings("unused")
+    public void insert(@NonNull Notification alarm) {
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
+    }
+
+    public void updateAlarm(@NonNull Notification alarm) {
+        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
     }
 }

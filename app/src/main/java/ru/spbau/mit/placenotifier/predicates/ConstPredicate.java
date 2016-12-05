@@ -1,5 +1,8 @@
 package ru.spbau.mit.placenotifier.predicates;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public class ConstPredicate<T> implements SerializablePredicate<T> {
 
     private final boolean result;
@@ -9,12 +12,12 @@ public class ConstPredicate<T> implements SerializablePredicate<T> {
     }
 
     @Override
-    public boolean apply(T o) {
+    public boolean apply(@NonNull T o) {
         return result;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

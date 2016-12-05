@@ -24,6 +24,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     private ArrayList<ResultListener> listeners;
     private CustomizeEngine<Notification> customizeEngine;
 
+    @NonNull
     public static IntentBuilder builder() {
         return new IntentBuilder();
     }
@@ -39,7 +40,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listeners = new ArrayList<>();
 
@@ -74,6 +75,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         }
     }
 
+    @Nullable
     private Intent prepareResultIntent() {
         if (!customizeEngine.isReady()) {
             return null;
@@ -88,7 +90,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState == null) {
             return;
@@ -100,28 +102,29 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(CUSTOMIZE_ENGINE_STATE_KEY, customizeEngine.saveState());
     }
 
     @Override
+    @NonNull
     public Context getContext() {
         return this;
     }
 
     @Override
-    public void startActivity(Intent intent, int requestCode) {
+    public void startActivity(@NonNull Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
 
     @Override
-    public void addResultListener(ResultListener listener) {
+    public void addResultListener(@NonNull ResultListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         for (ResultListener listener : listeners) {
             if (listener.getID() == requestCode) {
                 listener.onResult(resultCode, data);
@@ -136,12 +139,12 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         private IntentBuilder() {
         }
 
-        public IntentBuilder setPrototype(Notification notification) {
+        public IntentBuilder setPrototype(@NonNull Notification notification) {
             prototype = notification;
             return this;
         }
 
-        Intent build(Context context) {
+        Intent build(@NonNull Context context) {
             Intent intent = new Intent(context, NotificationEditor.class);
             if (prototype != null) {
                 intent.putExtra(PROTOTYPE_KEY, prototype);

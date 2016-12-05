@@ -33,7 +33,8 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     private Calendar from;
     private Calendar to;
 
-    public TimeIntervalCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
+    public TimeIntervalCustomizeEngine(@NonNull ActivityProducer activityProducer,
+                                       @NonNull String titleMessage) {
         this.activityProducer = activityProducer;
         this.titleMessage = titleMessage;
     }
@@ -100,7 +101,8 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
 
-    private void setupListeners(TextView time, TextView date, Calendar calendar) {
+    private void setupListeners(@NonNull TextView time, @NonNull TextView date,
+                                @NonNull Calendar calendar) {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
             calendar.set(Calendar.HOUR, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);

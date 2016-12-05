@@ -34,12 +34,13 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     private int currentPageCache;
 
     @SafeVarargs
-    public AlternativeCustomizeEngine(String title, CustomizeEngine<T>... customizers) {
+    public AlternativeCustomizeEngine(@NonNull String title, CustomizeEngine<T>... customizers) {
         this.customizers = Arrays.asList(customizers);
         this.title = title;
     }
 
-    public AlternativeCustomizeEngine(String title, Collection<CustomizeEngine<T>> customizers) {
+    public AlternativeCustomizeEngine(@NonNull String title,
+                                      @NonNull Collection<CustomizeEngine<T>> customizers) {
         List<CustomizeEngine<T>> copy = new ArrayList<>();
         copy.addAll(customizers);
         this.customizers = Collections.unmodifiableList(copy);

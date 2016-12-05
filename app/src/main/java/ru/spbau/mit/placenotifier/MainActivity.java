@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultListener listener : listeners) {
             if (listener.getID() == requestCode) {
@@ -104,17 +105,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    @NonNull
     public Context getContext() {
         return this;
     }
 
     @Override
-    public void startActivity(Intent intent, int targetID) {
+    public void startActivity(@NonNull Intent intent, int targetID) {
         startActivityForResult(intent, targetID);
     }
 
     @Override
-    public void addResultListener(ResultListener listener) {
+    public void addResultListener(@NonNull ResultListener listener) {
         listeners.add(listener);
     }
 }

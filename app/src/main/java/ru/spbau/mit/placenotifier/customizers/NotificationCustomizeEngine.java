@@ -31,7 +31,7 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     private String notificationIdentifier;
 
-    public NotificationCustomizeEngine(ActivityProducer producer, int id) {
+    public NotificationCustomizeEngine(@NonNull ActivityProducer producer, int id) {
         context = producer.getContext();
         nameEditor = new StringCustomizeEngine("Name of notification",
                 StringCustomizeEngine.NOT_EMPTY);

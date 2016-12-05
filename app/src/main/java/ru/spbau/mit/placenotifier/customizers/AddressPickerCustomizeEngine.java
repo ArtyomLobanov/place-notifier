@@ -214,11 +214,12 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
         private final String request;
 
-        AddressSearcher(String request) {
+        AddressSearcher(@NonNull String request) {
             this.request = request;
         }
 
         @Override
+        @Nullable
         protected List<Address> doInBackground(Void... params) {
             List<Address> addresses;
             try {
@@ -231,7 +232,7 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         }
 
         @Override
-        protected void onPostExecute(List<Address> addresses) {
+        protected void onPostExecute(@Nullable List<Address> addresses) {
             if (input == null || !AddressPickerCustomizeEngine.this.request.equals(request)) {
                 return; // our information is out of date
             }

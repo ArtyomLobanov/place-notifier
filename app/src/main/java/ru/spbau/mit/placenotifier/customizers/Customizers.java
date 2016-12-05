@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier.customizers;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,8 @@ public final class Customizers {
      * @param title Will be shown on top of observed view
      * @return initialized builder
      */
-    public static <T> OptionsBuilder<T> forOptions(String title) {
+    @NonNull
+    public static <T> OptionsBuilder<T> forOptions(@NonNull String title) {
         return new OptionsBuilder<>(title);
     }
 
@@ -28,16 +30,17 @@ public final class Customizers {
         private final String title;
         private final ArrayList<CustomizeEngine<T>> options;
 
-        private OptionsBuilder(String title) {
+        private OptionsBuilder(@NonNull String title) {
             this.title = title;
             options = new ArrayList<>();
         }
 
-        public OptionsBuilder<T> addOption(String massage, T value) {
+        public OptionsBuilder<T> addOption(@NonNull String massage, @NonNull T value) {
             options.add(new ConstantCustomizeEngine<>(massage, value));
             return this;
         }
 
+        @NonNull
         public CustomizeEngine<T> build() {
             return new AlternativeCustomizeEngine<>(title, options);
         }
@@ -52,7 +55,8 @@ public final class Customizers {
      * @param task Some instructions which change engine
      * @return true if engine was changed correctly
      */
-    public static boolean safeExecution(CustomizeEngine<?> engine, UnsafeTask task) {
+    public static boolean safeExecution(@NonNull CustomizeEngine<?> engine,
+                                        @NonNull UnsafeTask task) {
         Bundle state = engine.saveState();
         boolean success = task.executeTask();
         if (!success) {

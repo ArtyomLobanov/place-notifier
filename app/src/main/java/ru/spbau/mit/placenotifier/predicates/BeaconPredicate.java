@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier.predicates;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
 
 public class BeaconPredicate implements SerializablePredicate<Location> {
 
@@ -8,18 +9,18 @@ public class BeaconPredicate implements SerializablePredicate<Location> {
     private final double radius;
     private final boolean isInverted;
 
-    public BeaconPredicate(Beacon beacon, double radius) {
+    public BeaconPredicate(@NonNull Beacon beacon, double radius) {
         this(beacon, radius, false);
     }
 
-    public BeaconPredicate(Beacon beacon, double radius, boolean isInverted) {
+    public BeaconPredicate(@NonNull Beacon beacon, double radius, boolean isInverted) {
         this.beacon = beacon;
         this.radius = radius;
         this.isInverted = isInverted;
     }
 
     @Override
-    public boolean apply(Location place) {
+    public boolean apply(@NonNull Location place) {
         return isInverted ^ (beacon.distanceTo(place) < radius);
     }
 

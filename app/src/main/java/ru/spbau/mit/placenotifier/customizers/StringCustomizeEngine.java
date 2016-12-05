@@ -24,7 +24,7 @@ public class StringCustomizeEngine implements CustomizeEngine<String> {
     private EditText input;
     private String result;
 
-    public StringCustomizeEngine(String titleMessage, int flags) {
+    public StringCustomizeEngine(@NonNull String titleMessage, int flags) {
         this.flags = flags;
         this.titleMessage = titleMessage;
         listener = new InputListener();

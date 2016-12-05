@@ -26,7 +26,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
     private final AlarmManager alarmManager;
     private final int id;
 
-    public NotificationsListAdapter(ActivityProducer activityProducer, int id) {
+    public NotificationsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
         super(activityProducer.getContext(), R.layout.notifications_list_item);
         this.activityProducer = activityProducer;
         this.id = id;
@@ -51,8 +51,8 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
     }
 
     @Override
-    public void onResult(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+    public void onResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             remove(NotificationEditor.getPrototype(data));
             add(NotificationEditor.getResult(data));
             alarmManager.updateAlarm(NotificationEditor.getResult(data));
@@ -134,7 +134,7 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification>
         }
 
         @Override
-        protected void onPostExecute(List<Notification> notifications) {
+        protected void onPostExecute(@Nullable List<Notification> notifications) {
             if (notifications == null) {
                 Toast.makeText(activityProducer.getContext(), "Loading of notifications failed",
                         Toast.LENGTH_LONG).show();

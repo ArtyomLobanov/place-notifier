@@ -13,7 +13,7 @@ public class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
     private final String messageText;
     private final T result;
 
-    public ConstantCustomizeEngine(String messageText, T result) {
+    public ConstantCustomizeEngine(@NonNull String messageText, @NonNull T result) {
         this.messageText = messageText;
         this.result = result;
     }

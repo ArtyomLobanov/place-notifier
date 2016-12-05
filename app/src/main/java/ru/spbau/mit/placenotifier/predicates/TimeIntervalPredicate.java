@@ -1,5 +1,7 @@
 package ru.spbau.mit.placenotifier.predicates;
 
+import android.support.annotation.NonNull;
+
 public class TimeIntervalPredicate implements SerializablePredicate<Long> {
 
     private final long from;
@@ -11,7 +13,7 @@ public class TimeIntervalPredicate implements SerializablePredicate<Long> {
     }
 
     @Override
-    public boolean apply(Long aLong) {
+    public boolean apply(@NonNull Long aLong) {
         return from <= aLong && aLong <= to;
     }
 

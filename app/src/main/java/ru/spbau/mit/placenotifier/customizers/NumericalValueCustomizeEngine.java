@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import ru.spbau.mit.placenotifier.R;
 
 @SuppressWarnings("WeakerAccess")
@@ -38,8 +40,8 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private int currentPoint;
     private Double cachedValue;
 
-    public NumericalValueCustomizeEngine(String titleMessage, String measureUnit,
-                                         NumericTransformer transformer,
+    public NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
+                                         @NonNull NumericTransformer transformer,
                                          double leftBound, double rightBound,
                                          int discretizationRate) {
         this.titleMessage = titleMessage;
@@ -51,8 +53,8 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         listener = new SeekBarListener();
     }
 
-    public NumericalValueCustomizeEngine(String titleMessage, String measureUnit,
-                                         NumericTransformer transformer,
+    public NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
+                                         @NonNull NumericTransformer transformer,
                                          double leftBound, double rightBound) {
         this(titleMessage, measureUnit, transformer, leftBound, rightBound,
                 DEFAULT_DISCRETIZATION_RATE);
@@ -165,7 +167,7 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private void updateMonitor() {
         if (monitor != null) {
             double value = cachedValue != null ? cachedValue : getValueAt(currentPoint);
-            monitor.setText(String.format("%.1f %s", value, measureUnit));
+            monitor.setText(String.format(Locale.getDefault(), "%.1f %s", value, measureUnit));
         }
     }
 

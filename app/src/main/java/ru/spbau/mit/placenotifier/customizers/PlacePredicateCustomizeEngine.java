@@ -28,30 +28,30 @@ public class PlacePredicateCustomizeEngine
     private final CustomizeEngine<Double> radiusPicker;
     private final CustomizeEngine<Boolean> modePicker;
 
-    public PlacePredicateCustomizeEngine(CustomizeEngine<Beacon> placePicker,
-                                         CustomizeEngine<Double> radiusPicker,
-                                         CustomizeEngine<Boolean> modePicker) {
+    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
+                                         @NonNull CustomizeEngine<Double> radiusPicker,
+                                         @NonNull CustomizeEngine<Boolean> modePicker) {
         this.placePicker = placePicker;
         this.radiusPicker = radiusPicker;
         this.modePicker = modePicker;
     }
 
-    public PlacePredicateCustomizeEngine(CustomizeEngine<Beacon> placePicker,
-                                         CustomizeEngine<Double> radiusPicker) {
+    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
+                                         @NonNull CustomizeEngine<Double> radiusPicker) {
         this(placePicker, radiusPicker, Customizers.<Boolean>forOptions("Where does it work?")
                 .addOption("When you are there", false)
                 .addOption("When you are out of there", true)
                 .build());
     }
 
-    public PlacePredicateCustomizeEngine(CustomizeEngine<Beacon> placePicker) {
+    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker) {
         this(placePicker,
                 new NumericalValueCustomizeEngine("Define the sensitivity", "m",
                         NumericalValueCustomizeEngine.EXPONENTIAL_TRANSFORMER,
                         DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
     }
 
-    public PlacePredicateCustomizeEngine(ActivityProducer producer, int id) {
+    public PlacePredicateCustomizeEngine(@NonNull ActivityProducer producer, int id) {
         this(new AlternativeCustomizeEngine<>("Choose place somehow",
                 new PlacePickerCustomizeEngine("Choose point on map", producer, id),
                 new AddressPickerCustomizeEngine(producer, "Find place by address")));
@@ -62,7 +62,8 @@ public class PlacePredicateCustomizeEngine
         return R.layout.customize_engine_place_predicate;
     }
 
-    private void findAndInit(View parent, @IdRes int containerID, CustomizeEngine<?> engine) {
+    private void findAndInit(@NonNull View parent, @IdRes int containerID,
+                             @NonNull CustomizeEngine<?> engine) {
         ViewGroup container = (ViewGroup) parent.findViewById(containerID);
         container.removeAllViews();
         View view = View.inflate(container.getContext(), engine.expectedViewLayout(), null);

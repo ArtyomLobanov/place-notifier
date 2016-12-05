@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -18,12 +19,12 @@ public class ServiceReminder {
     private ReminderThread thread;
     private Context mContext;
 
-    ServiceReminder(Context c, Activity m) {
+    ServiceReminder(@NonNull Context c, @NonNull Activity m) {
         mContext = c;
         thread = new ReminderThread(m);
     }
 
-    public void startChecking(Activity main) {
+    public void startChecking(@NonNull Activity main) {
         /*
         ServisReminder will send a request to database, get alarms to notify with
         its identifiers and send notifications to user. But for demo it will just
@@ -41,7 +42,7 @@ public class ServiceReminder {
         }
     }
 
-    public void sendNotification(Activity main, @SuppressWarnings("UnusedParameters") int id) {
+    public void sendNotification(@NonNull Activity main, @SuppressWarnings("UnusedParameters") int id) {
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                 .setSmallIcon(R.drawable.alarm)
@@ -64,6 +65,7 @@ public class ServiceReminder {
         mNotifyMgr.notify(1, not);
     }
 
+    @NonNull
     public ReminderThread getThread() {
         return thread;
     }
