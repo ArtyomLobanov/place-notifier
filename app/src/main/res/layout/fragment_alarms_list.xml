@@ -16,13 +16,13 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="@string/notifications_list_header_text"
+            android:text="@string/alarms_list_header_text"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </LinearLayout>
 
     <ListView
-        android:id="@+id/notifications_list_container"
+        android:id="@+id/alarms_list_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="5dp"

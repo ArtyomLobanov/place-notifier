@@ -8,19 +8,19 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import ru.spbau.mit.placenotifier.ActivityProducer;
-import ru.spbau.mit.placenotifier.Notification;
+import ru.spbau.mit.placenotifier.Alarm;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.ConstPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
-public class NotificationCustomizeEngine implements CustomizeEngine<Notification> {
+public class AlarmCustomizeEngine implements CustomizeEngine<Alarm> {
 
     private static final String NAME_EDITOR_STATE_KEY = "name_editor";
     private static final String COMMENT_EDITOR_STATE_KEY = "comment_editor";
     private static final String PLACE_PREDICATE_EDITOR_STATE_KEY = "place_predicate_editor";
     private static final String TIME_PREDICATE_EDITOR_STATE_KEY = "time_predicate_editor";
     private static final String STATUS_EDITOR_STATE_KEY = "status_editor";
-    private static final String NOTIFICATION_IDENTIFIER_KEY = "notification_id";
+    private static final String ALARM_IDENTIFIER_KEY = "alarm_id";
 
     private final CustomizeEngine<String> nameEditor;
     private final CustomizeEngine<String> commentEditor;
@@ -29,11 +29,11 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
     private final CustomizeEngine<Boolean> statusEditor;
     private final Context context;
 
-    private String notificationIdentifier;
+    private String alarmIdentifier;
 
-    public NotificationCustomizeEngine(@NonNull ActivityProducer producer, int id) {
+    public AlarmCustomizeEngine(@NonNull ActivityProducer producer, int id) {
         context = producer.getContext();
-        nameEditor = new StringCustomizeEngine("Name of notification",
+        nameEditor = new StringCustomizeEngine("Name of alarm",
                 StringCustomizeEngine.NOT_EMPTY);
         commentEditor = new StringCustomizeEngine("Comments",
                 StringCustomizeEngine.MULTILINE);
@@ -47,7 +47,7 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @Override
     public int expectedViewLayout() {
-        return R.layout.customize_engine_notification;
+        return R.layout.customize_engine_alarm;
     }
 
     private void findAndInit(View parent, @IdRes int containerID, CustomizeEngine<?> engine) {
@@ -57,11 +57,11 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @Override
     public void observe(@NonNull View view) {
-        findAndInit(view, R.id.customize_engine_notification_name_input, nameEditor);
-        findAndInit(view, R.id.customize_engine_notification_comment_input, commentEditor);
-        findAndInit(view, R.id.customize_engine_notification_place_setting, placePredicateEditor);
-        findAndInit(view, R.id.customize_engine_notification_time_setting, timePredicateEditor);
-        findAndInit(view, R.id.customize_engine_notification_status, statusEditor);
+        findAndInit(view, R.id.customize_engine_alarm_name_input, nameEditor);
+        findAndInit(view, R.id.customize_engine_alarm_comment_input, commentEditor);
+        findAndInit(view, R.id.customize_engine_alarm_place_setting, placePredicateEditor);
+        findAndInit(view, R.id.customize_engine_alarm_time_setting, timePredicateEditor);
+        findAndInit(view, R.id.customize_engine_alarm_status, statusEditor);
     }
 
     @Override
@@ -72,15 +72,15 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
 
     @NonNull
     @Override
-    public Notification getValue() {
-        Notification.NotificationBuilder builder = Notification.builder()
+    public Alarm getValue() {
+        Alarm.AlarmBuilder builder = Alarm.builder()
                 .setName(nameEditor.getValue())
                 .setComment(commentEditor.getValue())
                 .setPlacePredicate(placePredicateEditor.getValue())
                 .setTimePredicate(timePredicateEditor.getValue())
                 .setActive(statusEditor.getValue());
-        if (notificationIdentifier != null) {
-            builder.setIdentifier(notificationIdentifier);
+        if (alarmIdentifier != null) {
+            builder.setIdentifier(alarmIdentifier);
         } else {
             builder.createIdentifier(context);
         }
@@ -88,9 +88,9 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
     }
 
     @Override
-    public boolean setValue(@NonNull Notification value) {
+    public boolean setValue(@NonNull Alarm value) {
         return Customizers.safeExecution(this, () -> {
-            notificationIdentifier = value.getIdentifier();
+            alarmIdentifier = value.getIdentifier();
             return nameEditor.setValue(value.getName())
                     && commentEditor.setValue(value.getComment())
                     && placePredicateEditor.setValue(value.getPlacePredicate())
@@ -116,7 +116,7 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
         placePredicateEditor.restoreState(placePredicateEditorState);
         timePredicateEditor.restoreState(timePredicateEditorState);
         statusEditor.restoreState(statusEditorState);
-        notificationIdentifier = state.getString(NOTIFICATION_IDENTIFIER_KEY);
+        alarmIdentifier = state.getString(ALARM_IDENTIFIER_KEY);
     }
 
     @NonNull
@@ -128,8 +128,8 @@ public class NotificationCustomizeEngine implements CustomizeEngine<Notification
         state.putBundle(PLACE_PREDICATE_EDITOR_STATE_KEY, placePredicateEditor.saveState());
         state.putBundle(TIME_PREDICATE_EDITOR_STATE_KEY, timePredicateEditor.saveState());
         state.putBundle(STATUS_EDITOR_STATE_KEY, statusEditor.saveState());
-        if (notificationIdentifier != null) {
-            state.putString(NOTIFICATION_IDENTIFIER_KEY, notificationIdentifier);
+        if (alarmIdentifier != null) {
+            state.putString(ALARM_IDENTIFIER_KEY, alarmIdentifier);
         }
         return state;
     }

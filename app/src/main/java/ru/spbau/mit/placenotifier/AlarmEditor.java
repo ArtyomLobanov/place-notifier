@@ -13,16 +13,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
-import ru.spbau.mit.placenotifier.customizers.NotificationCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.AlarmCustomizeEngine;
 
-public class NotificationEditor extends AppCompatActivity implements ActivityProducer {
+public class AlarmEditor extends AppCompatActivity implements ActivityProducer {
 
     private static final String RESULT_KEY = "result_key";
     private static final String PROTOTYPE_KEY = "prototype_key";
     private static final String CUSTOMIZE_ENGINE_STATE_KEY = "engine_state_key";
 
     private ArrayList<ResultListener> listeners;
-    private CustomizeEngine<Notification> customizeEngine;
+    private CustomizeEngine<Alarm> customizeEngine;
 
     @NonNull
     public static IntentBuilder builder() {
@@ -30,13 +30,13 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     @NonNull
-    public static Notification getResult(@NonNull Intent date) {
-        return (Notification) date.getSerializableExtra(RESULT_KEY);
+    public static Alarm getResult(@NonNull Intent date) {
+        return (Alarm) date.getSerializableExtra(RESULT_KEY);
     }
 
     @Nullable
-    public static Notification getPrototype(@NonNull Intent date) {
-        return (Notification) date.getSerializableExtra(PROTOTYPE_KEY);
+    public static Alarm getPrototype(@NonNull Intent date) {
+        return (Alarm) date.getSerializableExtra(PROTOTYPE_KEY);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         super.onCreate(savedInstanceState);
         listeners = new ArrayList<>();
 
-        setContentView(R.layout.activity_notification_editor);
+        setContentView(R.layout.activity_alarm_editor);
 
-        customizeEngine = new NotificationCustomizeEngine(this, 0);
+        customizeEngine = new AlarmCustomizeEngine(this, 0);
         customizeEngine.observe(findViewById(R.id.container));
 
         if (savedInstanceState == null) {
@@ -59,7 +59,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
                 setResult(Activity.RESULT_OK, prepareResultIntent());
                 finish();
             } else {
-                Toast.makeText(NotificationEditor.this, "Fill all fields, please",
+                Toast.makeText(AlarmEditor.this, "Fill all fields, please",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -69,7 +69,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     private void setupInitialState() {
-        Notification prototype = (Notification) getIntent().getSerializableExtra(PROTOTYPE_KEY);
+        Alarm prototype = (Alarm) getIntent().getSerializableExtra(PROTOTYPE_KEY);
         if (prototype != null) {
             customizeEngine.setValue(prototype);
         }
@@ -82,7 +82,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         }
         Intent result = new Intent();
         result.putExtra(RESULT_KEY, customizeEngine.getValue());
-        Notification prototype = getPrototype(getIntent());
+        Alarm prototype = getPrototype(getIntent());
         if (prototype != null) {
             result.putExtra(PROTOTYPE_KEY, prototype);
         }
@@ -134,18 +134,18 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
     }
 
     static final class IntentBuilder {
-        private Notification prototype;
+        private Alarm prototype;
 
         private IntentBuilder() {
         }
 
-        IntentBuilder setPrototype(@NonNull Notification notification) {
-            prototype = notification;
+        IntentBuilder setPrototype(@NonNull Alarm alarm) {
+            prototype = alarm;
             return this;
         }
 
         Intent build(@NonNull Context context) {
-            Intent intent = new Intent(context, NotificationEditor.class);
+            Intent intent = new Intent(context, AlarmEditor.class);
             if (prototype != null) {
                 intent.putExtra(PROTOTYPE_KEY, prototype);
             }

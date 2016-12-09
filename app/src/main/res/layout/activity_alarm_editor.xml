@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="ru.spbau.mit.placenotifier.NotificationEditor">
+    tools:context="ru.spbau.mit.placenotifier.AlarmEditor">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/container"
-            layout="@layout/customize_engine_notification"
+            layout="@layout/customize_engine_alarm"
             android:layout_width="match_parent"
             android:layout_height="60dp" />
 

@@ -28,8 +28,8 @@ class AlarmManager {
     }
 
     @SuppressWarnings("MagicNumber") // testing
-    private static List<Notification> generateForTest(Context context) {
-        List<Notification> res = new ArrayList<>();
+    private static List<Alarm> generateForTest(Context context) {
+        List<Alarm> res = new ArrayList<>();
         Geocoder g = new Geocoder(context);
         Address address;
         try {
@@ -41,7 +41,7 @@ class AlarmManager {
         TimeIntervalPredicate p = new TimeIntervalPredicate(System.currentTimeMillis(),
                 System.currentTimeMillis() + 60 * 1000 * 10);
         for (int i = 0; i < 5; i++) {
-            res.add(new Notification("notification number " + i,
+            res.add(new Alarm("alarm number " + i,
                     "created from address (Moscow)",
                     new BeaconPredicate(b, 10), p, true, context, i));
         }
@@ -49,7 +49,7 @@ class AlarmManager {
         p = new TimeIntervalPredicate(System.currentTimeMillis(),
                 System.currentTimeMillis() + 60 * 1000 * 20);
         for (int i = 0; i < 5; i++) {
-            res.add(new Notification("notification number " + (5 + i),
+            res.add(new Alarm("alarm number " + (5 + i),
                     "created from latlng (Spb)",
                     new BeaconPredicate(b, 10), p, true, context, i + 5));
         }
@@ -57,20 +57,20 @@ class AlarmManager {
     }
 
     @NonNull
-    List<Notification> getAlarms() {
+    List<Alarm> getAlarms() {
         return generateForTest(context);
     }
 
-    void erase(@NonNull Notification alarm) {
+    void erase(@NonNull Alarm alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
     }
 
     @SuppressWarnings("unused")
-    void insert(@NonNull Notification alarm) {
+    void insert(@NonNull Alarm alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
     }
 
-    void updateAlarm(@NonNull Notification alarm) {
+    void updateAlarm(@NonNull Alarm alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
     }
 }

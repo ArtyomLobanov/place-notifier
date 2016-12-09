@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment;
         switch (item.getItemId()) {
-            case R.id.active_notifications_menu:
-                fragment = new NotificationsList();
+            case R.id.active_alarms_menu:
+                fragment = new AlarmsList();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();

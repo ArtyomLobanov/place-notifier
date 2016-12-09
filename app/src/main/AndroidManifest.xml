@@ -41,7 +41,7 @@
             android:label="@string/title_activity_place_picker"/>
 
         <activity
-            android:name=".NotificationEditor"
+            android:name=".AlarmEditor"
             android:theme="@style/AppTheme"
             android:label="@string/title_activity_notification_editor"/>
 

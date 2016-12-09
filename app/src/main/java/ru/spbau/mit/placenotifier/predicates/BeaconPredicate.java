@@ -21,7 +21,7 @@ public class BeaconPredicate implements SerializablePredicate<Location> {
 
     @Override
     public boolean apply(@NonNull Location place) {
-        return isInverted ^ (beacon.distanceTo(place) < radius);
+        return isInverted != (beacon.distanceTo(place) < radius);
     }
 
     public Beacon getBeacon() {

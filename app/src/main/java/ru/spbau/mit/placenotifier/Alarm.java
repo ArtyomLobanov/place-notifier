@@ -13,7 +13,7 @@ import java.io.Serializable;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 @SuppressWarnings("unused")
-public class Notification implements Serializable {
+public class Alarm implements Serializable {
     private static final String DEFAULT_DEVICE_ID = "unidentified_device";
 
     private final String identifier;
@@ -24,26 +24,26 @@ public class Notification implements Serializable {
     private final SerializablePredicate<Location> placePredicate;
     private final SerializablePredicate<Long> timePredicate;
 
-    Notification(@NonNull String name, @NonNull String comment,
-                        @NonNull SerializablePredicate<Location> placePredicate,
-                        @NonNull SerializablePredicate<Long> timePredicate,
-                        boolean isActive, @NonNull Context context) {
+    Alarm(@NonNull String name, @NonNull String comment,
+          @NonNull SerializablePredicate<Location> placePredicate,
+          @NonNull SerializablePredicate<Long> timePredicate,
+          boolean isActive, @NonNull Context context) {
         this(name, comment, placePredicate, timePredicate, isActive, context, 0);
     }
 
-    Notification(@NonNull String name, @NonNull String comment,
-                        @NonNull SerializablePredicate<Location> placePredicate,
-                        @NonNull SerializablePredicate<Long> timePredicate,
-                        boolean isActive, @NonNull Context context, long salt) {
+    Alarm(@NonNull String name, @NonNull String comment,
+          @NonNull SerializablePredicate<Location> placePredicate,
+          @NonNull SerializablePredicate<Long> timePredicate,
+          boolean isActive, @NonNull Context context, long salt) {
         this(name, comment, placePredicate, timePredicate, isActive,
                 createIdentifier(context, salt));
     }
 
     @SuppressWarnings("WeakerAccess")
-    Notification(@NonNull String name, @NonNull String comment,
-                 @NonNull SerializablePredicate<Location> placePredicate,
-                 @NonNull SerializablePredicate<Long> timePredicate,
-                 boolean isActive, @NonNull String identifier) {
+    Alarm(@NonNull String name, @NonNull String comment,
+          @NonNull SerializablePredicate<Location> placePredicate,
+          @NonNull SerializablePredicate<Long> timePredicate,
+          boolean isActive, @NonNull String identifier) {
         this.name = name;
         this.comment = comment;
         this.placePredicate = placePredicate;
@@ -64,8 +64,8 @@ public class Notification implements Serializable {
     }
 
     @NonNull
-    public static NotificationBuilder builder() {
-        return new NotificationBuilder();
+    public static AlarmBuilder builder() {
+        return new AlarmBuilder();
     }
 
     public boolean isActive() {
@@ -99,16 +99,16 @@ public class Notification implements Serializable {
 
     @SuppressWarnings("WeakerAccess")
     @NonNull
-    public NotificationBuilder change() {
-        return new NotificationBuilder(this);
+    public AlarmBuilder change() {
+        return new AlarmBuilder(this);
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null || obj.getClass() != Notification.class) {
+        if (obj == null || obj.getClass() != Alarm.class) {
             return false;
         }
-        Notification other = (Notification) obj;
+        Alarm other = (Alarm) obj;
         return identifier.equals(other.getIdentifier());
     }
 
@@ -118,7 +118,7 @@ public class Notification implements Serializable {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static final class NotificationBuilder {
+    public static final class AlarmBuilder {
         private String identifier;
         private boolean isActive;
         private String name;
@@ -126,10 +126,10 @@ public class Notification implements Serializable {
         private SerializablePredicate<Location> placePredicate;
         private SerializablePredicate<Long> timePredicate;
 
-        private NotificationBuilder() {
+        private AlarmBuilder() {
         }
 
-        private NotificationBuilder(@NonNull Notification prototype) {
+        private AlarmBuilder(@NonNull Alarm prototype) {
             identifier = prototype.identifier;
             isActive = prototype.isActive;
             name = prototype.name;
@@ -138,55 +138,55 @@ public class Notification implements Serializable {
             timePredicate = prototype.timePredicate;
         }
 
-        public NotificationBuilder createIdentifier(@NonNull Context context) {
+        public AlarmBuilder createIdentifier(@NonNull Context context) {
             return createIdentifier(context, 0);
         }
 
-        public NotificationBuilder createIdentifier(@NonNull Context context, long salt) {
-            identifier = Notification.createIdentifier(context, salt);
+        public AlarmBuilder createIdentifier(@NonNull Context context, long salt) {
+            identifier = Alarm.createIdentifier(context, salt);
             return this;
         }
 
-        public NotificationBuilder setIdentifier(@NonNull String identifier) {
+        public AlarmBuilder setIdentifier(@NonNull String identifier) {
             this.identifier = identifier;
             return this;
         }
 
-        public NotificationBuilder setTimePredicate(
+        public AlarmBuilder setTimePredicate(
                 @NonNull SerializablePredicate<Long> timePredicate) {
             this.timePredicate = timePredicate;
             return this;
         }
 
         // have no idea how to separate this line
-        public NotificationBuilder setPlacePredicate(
+        public AlarmBuilder setPlacePredicate(
                 @NonNull SerializablePredicate<Location> placePredicate) {
             this.placePredicate = placePredicate;
             return this;
         }
 
-        public NotificationBuilder setComment(@NonNull String comment) {
+        public AlarmBuilder setComment(@NonNull String comment) {
             this.comment = comment;
             return this;
         }
 
-        public NotificationBuilder setName(@NonNull String name) {
+        public AlarmBuilder setName(@NonNull String name) {
             this.name = name;
             return this;
         }
 
-        public NotificationBuilder setActive(boolean active) {
+        public AlarmBuilder setActive(boolean active) {
             isActive = active;
             return this;
         }
 
         @NonNull
-        public Notification build() {
+        public Alarm build() {
             if (identifier == null || name == null || comment == null || placePredicate == null
                     || timePredicate == null) {
                 throw new RuntimeException("Not all fields are filled in");
             }
-            return new Notification(name, comment, placePredicate, timePredicate,
+            return new Alarm(name, comment, placePredicate, timePredicate,
                     isActive, identifier);
         }
     }

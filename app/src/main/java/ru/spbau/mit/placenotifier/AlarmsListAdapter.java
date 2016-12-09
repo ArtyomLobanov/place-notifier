@@ -18,43 +18,43 @@ import android.widget.ToggleButton;
 import java.util.List;
 import java.util.Objects;
 
-class NotificationsListAdapter extends ArrayAdapter<Notification>
+class AlarmsListAdapter extends ArrayAdapter<Alarm>
         implements ActivityProducer.ResultListener {
 
     private final ActivityProducer activityProducer;
     private final AlarmManager alarmManager;
     private final int id;
 
-    NotificationsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
-        super(activityProducer.getContext(), R.layout.notifications_list_item);
+    AlarmsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
+        super(activityProducer.getContext(), R.layout.alarms_list_item);
         this.activityProducer = activityProducer;
         this.id = id;
         alarmManager = new AlarmManager(activityProducer.getContext());
         activityProducer.addResultListener(this);
-        new NotificationLoader().execute();
+        new AlarmsLoader().execute();
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Notification notification = getItem(position);
-        Objects.requireNonNull(notification, "Item not found at position: " + position);
-        NotificationsListItemHolder holder;
+        Alarm alarm = getItem(position);
+        Objects.requireNonNull(alarm, "Item not found at position: " + position);
+        AlarmsListItemHolder holder;
         if (convertView == null) {
-            holder = new NotificationsListItemHolder(getContext());
+            holder = new AlarmsListItemHolder(getContext());
         } else {
-            holder = (NotificationsListItemHolder) convertView.getTag();
+            holder = (AlarmsListItemHolder) convertView.getTag();
         }
-        holder.reset(notification);
+        holder.reset(alarm);
         return holder.view;
     }
 
     @Override
     public void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            remove(NotificationEditor.getPrototype(data));
-            add(NotificationEditor.getResult(data));
-            alarmManager.updateAlarm(NotificationEditor.getResult(data));
+            remove(AlarmEditor.getPrototype(data));
+            add(AlarmEditor.getResult(data));
+            alarmManager.updateAlarm(AlarmEditor.getResult(data));
         }
     }
 
@@ -64,23 +64,23 @@ class NotificationsListAdapter extends ArrayAdapter<Notification>
     }
 
     /**
-     * Save links to internal view and to described notification
+     * Save links to internal view and to described alarm
      * Used as tag for item-views
      */
-    private final class NotificationsListItemHolder implements OnClickListener {
+    private final class AlarmsListItemHolder implements OnClickListener {
 
         private final View view;
         private final TextView name;
         private final TextView description;
         private final ToggleButton powerButton;
         private final Button removeButton;
-        private Notification notification;
+        private Alarm alarm;
 
-        private NotificationsListItemHolder(@NonNull Context context) {
-            view = View.inflate(context, R.layout.notifications_list_item, null);
+        private AlarmsListItemHolder(@NonNull Context context) {
+            view = View.inflate(context, R.layout.alarms_list_item, null);
             view.setTag(this);
-            name = (TextView) view.findViewById(R.id.notifications_name_view);
-            description = (TextView) view.findViewById(R.id.notifications_description_view);
+            name = (TextView) view.findViewById(R.id.alarms_name_view);
+            description = (TextView) view.findViewById(R.id.alarms_description_view);
             powerButton = (ToggleButton) view.findViewById(R.id.power_button);
             removeButton = (Button) view.findViewById(R.id.remove_button);
 
@@ -90,41 +90,41 @@ class NotificationsListAdapter extends ArrayAdapter<Notification>
         }
 
         /**
-         * Update internal views to match notification
+         * Update internal views to match alarm
          */
-        void reset(@NonNull Notification notification) {
-            this.notification = notification;
-            name.setText(notification.getName());
-            description.setText(notification.getComment());
-            powerButton.setChecked(notification.isActive());
+        void reset(@NonNull Alarm alarm) {
+            this.alarm = alarm;
+            name.setText(alarm.getName());
+            description.setText(alarm.getComment());
+            powerButton.setChecked(alarm.isActive());
         }
 
         @Override
         public void onClick(View v) {
             if (v == removeButton) {
-                remove(notification);
-                alarmManager.erase(notification);
+                remove(alarm);
+                alarmManager.erase(alarm);
             } else if (v == powerButton) {
                 boolean isActive = powerButton.isChecked();
-                Notification changedNotification = notification.change()
+                Alarm changedAlarm = alarm.change()
                         .setActive(isActive)
                         .build();
-                remove(notification);
-                add(changedNotification);
-                alarmManager.updateAlarm(changedNotification);
+                remove(alarm);
+                add(changedAlarm);
+                alarmManager.updateAlarm(changedAlarm);
             } else {
-                Intent intent = NotificationEditor.builder()
-                        .setPrototype(notification)
+                Intent intent = AlarmEditor.builder()
+                        .setPrototype(alarm)
                         .build(activityProducer.getContext());
                 activityProducer.startActivity(intent, id);
             }
         }
     }
 
-    private class NotificationLoader extends AsyncTask<Void, Void, List<Notification>> {
+    private class AlarmsLoader extends AsyncTask<Void, Void, List<Alarm>> {
 
         @Override
-        protected List<Notification> doInBackground(Void... params) {
+        protected List<Alarm> doInBackground(Void... params) {
             try {
                 return alarmManager.getAlarms();
             } catch (Exception e) {
@@ -133,12 +133,12 @@ class NotificationsListAdapter extends ArrayAdapter<Notification>
         }
 
         @Override
-        protected void onPostExecute(@Nullable List<Notification> notifications) {
-            if (notifications == null) {
-                Toast.makeText(activityProducer.getContext(), "Loading of notifications failed",
+        protected void onPostExecute(@Nullable List<Alarm> alarms) {
+            if (alarms == null) {
+                Toast.makeText(activityProducer.getContext(), "Loading of alarms failed",
                         Toast.LENGTH_LONG).show();
             } else {
-                addAll(notifications);
+                addAll(alarms);
             }
         }
     }

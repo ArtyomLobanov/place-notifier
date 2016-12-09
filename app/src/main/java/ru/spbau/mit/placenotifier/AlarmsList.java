@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class NotificationsList extends Fragment {
+public class AlarmsList extends Fragment {
 
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
-        View result = inflater.inflate(R.layout.fragment_notifications_list, container, false);
-        ListView listView = (ListView) result.findViewById(R.id.notifications_list_container);
-        ListAdapter adapter = new NotificationsListAdapter((ActivityProducer) getActivity(), 0);
+        View result = inflater.inflate(R.layout.fragment_alarms_list, container, false);
+        ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
+        ListAdapter adapter = new AlarmsListAdapter((ActivityProducer) getActivity(), 0);
         listView.setAdapter(adapter);
         return result;
     }
