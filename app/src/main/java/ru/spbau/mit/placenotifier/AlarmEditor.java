@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 import ru.spbau.mit.placenotifier.customizers.AlarmCustomizeEngine;
+import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 
-public class AlarmEditor extends AppCompatActivity implements ActivityProducer {
+public class AlarmEditor extends AppCompatActivity implements ResultRepeater {
 
     private static final String RESULT_KEY = "result_key";
     private static final String PROTOTYPE_KEY = "prototype_key";
@@ -108,14 +108,8 @@ public class AlarmEditor extends AppCompatActivity implements ActivityProducer {
     }
 
     @Override
-    @NonNull
-    public Context getContext() {
+    public Activity getParentActivity() {
         return this;
-    }
-
-    @Override
-    public void startActivity(@NonNull Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -127,9 +121,7 @@ public class AlarmEditor extends AppCompatActivity implements ActivityProducer {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi  (not supported at current API level)
         for (ResultListener listener : listeners) {
-            if (listener.getID() == requestCode) {
-                listener.onResult(resultCode, data);
-            }
+            listener.onResult(requestCode, resultCode, data);
         }
     }
 

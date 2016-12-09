@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import ru.spbau.mit.placenotifier.ActivityProducer;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
@@ -21,7 +21,7 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
     private static final String FROM_TIME_VALUE_KEY = "from_time_value_key";
     private static final String TO_TIME_VALUE_KEY = "to_time_value_key";
 
-    private final ActivityProducer activityProducer;
+    private final ResultRepeater resultRepeater;
     private final String titleMessage;
 
     private TextView fromTime;
@@ -32,9 +32,9 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
     private Calendar from;
     private Calendar to;
 
-    TimeIntervalCustomizeEngine(@NonNull ActivityProducer activityProducer,
+    TimeIntervalCustomizeEngine(@NonNull ResultRepeater resultRepeater,
                                 @NonNull String titleMessage) {
-        this.activityProducer = activityProducer;
+        this.resultRepeater = resultRepeater;
         this.titleMessage = titleMessage;
     }
 
@@ -87,15 +87,15 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
         if (fromTime == null || toTime == null) {
             return;
         }
-        fromTime.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        fromTime.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 from.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
-        fromDate.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        fromDate.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 from.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
 
-        toTime.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        toTime.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 to.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
-        toDate.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        toDate.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 to.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
@@ -107,7 +107,7 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
             calendar.set(Calendar.MINUTE, minute);
             updateViews();
         };
-        time.setOnClickListener((v) -> new TimePickerDialog(activityProducer.getContext(),
+        time.setOnClickListener((v) -> new TimePickerDialog(resultRepeater.getParentActivity(),
                 timeSetListener,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), true)
@@ -119,7 +119,7 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateViews();
         };
-        date.setOnClickListener((v) -> new DatePickerDialog(activityProducer.getContext(),
+        date.setOnClickListener((v) -> new DatePickerDialog(resultRepeater.getParentActivity(),
                 dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),

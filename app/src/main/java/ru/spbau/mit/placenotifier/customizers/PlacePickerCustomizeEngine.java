@@ -15,30 +15,30 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import ru.spbau.mit.placenotifier.ActivityProducer;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.PlacePicker;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
 class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
-        ActivityProducer.ResultListener, GoogleMap.OnMapClickListener {
+        ResultRepeater.ResultListener, GoogleMap.OnMapClickListener {
 
     private static final String SELECTED_LOCATION_KEY = "selected_location_state";
     private static final float DEFAULT_MAP_SCALE = 15;
 
     private final int id;
-    private final ActivityProducer activityProducer;
+    private final ResultRepeater resultRepeater;
     private final String title;
     private GoogleMap map;
     private LatLng result;
 
     PlacePickerCustomizeEngine(@NonNull String title,
-                               @NonNull ActivityProducer activityProducer, int id) {
-        this.activityProducer = activityProducer;
+                               @NonNull ResultRepeater resultRepeater, int id) {
+        this.resultRepeater = resultRepeater;
         this.id = id;
         this.title = title;
-        activityProducer.addResultListener(this);
+        resultRepeater.addResultListener(this);
     }
 
     @Override
@@ -124,8 +124,8 @@ class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyC
     }
 
     @Override
-    public void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode != Activity.RESULT_OK || data == null) {
+    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == id && resultCode != Activity.RESULT_OK || data == null) {
             return;
         }
         result = PlacePicker.getSelectedPoint(data);
@@ -134,13 +134,8 @@ class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyC
     }
 
     @Override
-    public int getID() {
-        return id;
-    }
-
-    @Override
     public void onMapClick(@NonNull LatLng latLng) {
-        Intent request = PlacePicker.builder().build(activityProducer.getContext());
-        activityProducer.startActivity(request, id);
+        Intent request = PlacePicker.builder().build(resultRepeater.getParentActivity());
+        resultRepeater.getParentActivity().startActivityForResult(request, id);
     }
 }

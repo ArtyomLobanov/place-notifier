@@ -19,18 +19,18 @@ import java.util.List;
 import java.util.Objects;
 
 class AlarmsListAdapter extends ArrayAdapter<Alarm>
-        implements ActivityProducer.ResultListener {
+        implements ResultRepeater.ResultListener {
 
-    private final ActivityProducer activityProducer;
+    private final ResultRepeater resultRepeater;
     private final AlarmManager alarmManager;
     private final int id;
 
-    AlarmsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
-        super(activityProducer.getContext(), R.layout.alarms_list_item);
-        this.activityProducer = activityProducer;
+    AlarmsListAdapter(@NonNull ResultRepeater resultRepeater, int id) {
+        super(resultRepeater.getParentActivity(), R.layout.alarms_list_item);
+        this.resultRepeater = resultRepeater;
         this.id = id;
-        alarmManager = new AlarmManager(activityProducer.getContext());
-        activityProducer.addResultListener(this);
+        alarmManager = new AlarmManager(resultRepeater.getParentActivity());
+        resultRepeater.addResultListener(this);
         new AlarmsLoader().execute();
     }
 
@@ -50,17 +50,12 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
     }
 
     @Override
-    public void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
+    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == id && resultCode == Activity.RESULT_OK && data != null) {
             remove(AlarmEditor.getPrototype(data));
             add(AlarmEditor.getResult(data));
             alarmManager.updateAlarm(AlarmEditor.getResult(data));
         }
-    }
-
-    @Override
-    public int getID() {
-        return id;
     }
 
     /**
@@ -115,8 +110,8 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
             } else {
                 Intent intent = AlarmEditor.builder()
                         .setPrototype(alarm)
-                        .build(activityProducer.getContext());
-                activityProducer.startActivity(intent, id);
+                        .build(resultRepeater.getParentActivity());
+                resultRepeater.getParentActivity().startActivityForResult(intent, id);
             }
         }
     }
@@ -135,7 +130,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
         @Override
         protected void onPostExecute(@Nullable List<Alarm> alarms) {
             if (alarms == null) {
-                Toast.makeText(activityProducer.getContext(), "Loading of alarms failed",
+                Toast.makeText(resultRepeater.getParentActivity(), "Loading of alarms failed",
                         Toast.LENGTH_LONG).show();
             } else {
                 addAll(alarms);

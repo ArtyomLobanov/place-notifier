@@ -16,7 +16,7 @@ public class AlarmsList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View result = inflater.inflate(R.layout.fragment_alarms_list, container, false);
         ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
-        ListAdapter adapter = new AlarmsListAdapter((ActivityProducer) getActivity(), 0);
+        ListAdapter adapter = new AlarmsListAdapter((ResultRepeater) getActivity(), 0);
         listView.setAdapter(adapter);
         return result;
     }

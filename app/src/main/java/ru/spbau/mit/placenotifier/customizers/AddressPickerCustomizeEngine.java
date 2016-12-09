@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.List;
 
-import ru.spbau.mit.placenotifier.ActivityProducer;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
@@ -28,7 +28,7 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     private static final String RESULT_KEY = "result_key";
 
 
-    private final ActivityProducer activityProducer;
+    private final ResultRepeater resultRepeater;
     private final InputListener inputListener;
     private final String titleMessage;
     private EditText input;
@@ -37,8 +37,8 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     private Address result;
     private String request;
 
-    AddressPickerCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
-        this.activityProducer = activityProducer;
+    AddressPickerCustomizeEngine(ResultRepeater resultRepeater, String titleMessage) {
+        this.resultRepeater = resultRepeater;
         inputListener = new InputListener();
         this.titleMessage = titleMessage;
         monitor = new Monitor();
@@ -222,7 +222,7 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         protected List<Address> doInBackground(Void... params) {
             List<Address> addresses;
             try {
-                Geocoder geocoder = new Geocoder(activityProducer.getContext());
+                Geocoder geocoder = new Geocoder(resultRepeater.getParentActivity());
                 addresses = geocoder.getFromLocationName(request, 2);
             } catch (Exception e) {
                 return null;

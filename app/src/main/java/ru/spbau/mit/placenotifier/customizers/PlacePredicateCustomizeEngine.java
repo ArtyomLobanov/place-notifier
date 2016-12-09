@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.spbau.mit.placenotifier.ActivityProducer;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
@@ -53,7 +53,7 @@ class PlacePredicateCustomizeEngine
                         DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
     }
 
-    PlacePredicateCustomizeEngine(@NonNull ActivityProducer producer, int id) {
+    PlacePredicateCustomizeEngine(@NonNull ResultRepeater producer, int id) {
         this(new AlternativeCustomizeEngine<>("Choose place somehow",
                 new PlacePickerCustomizeEngine("Choose point on map", producer, id),
                 new AddressPickerCustomizeEngine(producer, "Find place by address")));

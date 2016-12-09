@@ -1,8 +1,8 @@
 package ru.spbau.mit.placenotifier;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ActivityProducer {
+        implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
@@ -98,21 +98,13 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultListener listener : listeners) {
-            if (listener.getID() == requestCode) {
-                listener.onResult(resultCode, data);
-            }
+            listener.onResult(requestCode, resultCode, data);
         }
     }
 
     @Override
-    @NonNull
-    public Context getContext() {
+    public Activity getParentActivity() {
         return this;
-    }
-
-    @Override
-    public void startActivity(@NonNull Intent intent, int targetID) {
-        startActivityForResult(intent, targetID);
     }
 
     @Override

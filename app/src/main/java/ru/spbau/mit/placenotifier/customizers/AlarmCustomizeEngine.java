@@ -7,7 +7,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import ru.spbau.mit.placenotifier.ActivityProducer;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.Alarm;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.ConstPredicate;
@@ -31,8 +31,8 @@ public class AlarmCustomizeEngine implements CustomizeEngine<Alarm> {
 
     private String alarmIdentifier;
 
-    public AlarmCustomizeEngine(@NonNull ActivityProducer producer, int id) {
-        context = producer.getContext();
+    public AlarmCustomizeEngine(@NonNull ResultRepeater producer, int id) {
+        context = producer.getParentActivity();
         nameEditor = new StringCustomizeEngine("Name of alarm",
                 StringCustomizeEngine.NOT_EMPTY);
         commentEditor = new StringCustomizeEngine("Comments",
