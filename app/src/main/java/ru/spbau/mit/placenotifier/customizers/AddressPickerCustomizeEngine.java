@@ -21,8 +21,7 @@ import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 
-@SuppressWarnings("WeakerAccess")
-public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
+class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private static final String REQUEST_VALUE_KEY = "request_key";
     private static final String MONITOR_STATE_KEY = "monitor_state_key";
@@ -38,7 +37,7 @@ public class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     private Address result;
     private String request;
 
-    public AddressPickerCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
+    AddressPickerCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
         this.activityProducer = activityProducer;
         inputListener = new InputListener();
         this.titleMessage = titleMessage;

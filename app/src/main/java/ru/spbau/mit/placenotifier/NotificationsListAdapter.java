@@ -18,15 +18,14 @@ import android.widget.ToggleButton;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("WeakerAccess")
-public class NotificationsListAdapter extends ArrayAdapter<Notification>
+class NotificationsListAdapter extends ArrayAdapter<Notification>
         implements ActivityProducer.ResultListener {
 
     private final ActivityProducer activityProducer;
     private final AlarmManager alarmManager;
     private final int id;
 
-    public NotificationsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
+    NotificationsListAdapter(@NonNull ActivityProducer activityProducer, int id) {
         super(activityProducer.getContext(), R.layout.notifications_list_item);
         this.activityProducer = activityProducer;
         this.id = id;

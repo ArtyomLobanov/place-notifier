@@ -10,14 +10,14 @@ import java.util.Locale;
 
 import ru.spbau.mit.placenotifier.R;
 
-@SuppressWarnings("WeakerAccess")
-public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
+class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
 
     @SuppressWarnings("unused")
     public static final NumericTransformer LINEAR_TRANSFORMER =
             (leftBound, rightBound, point, pointsCount) ->
                     leftBound + (rightBound - leftBound) / pointsCount * point;
 
+    @SuppressWarnings("WeakerAccess")
     public static final NumericTransformer EXPONENTIAL_TRANSFORMER =
             (leftBound, rightBound, point, pointsCount) ->
                     leftBound * Math.pow(rightBound / leftBound, (double) point / pointsCount);
@@ -40,10 +40,11 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
     private int currentPoint;
     private Double cachedValue;
 
-    public NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
-                                         @NonNull NumericTransformer transformer,
-                                         double leftBound, double rightBound,
-                                         int discretizationRate) {
+    @SuppressWarnings("WeakerAccess")
+    NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
+                                  @NonNull NumericTransformer transformer,
+                                  double leftBound, double rightBound,
+                                  int discretizationRate) {
         this.titleMessage = titleMessage;
         this.measureUnit = measureUnit;
         this.transformer = transformer;
@@ -53,9 +54,9 @@ public class NumericalValueCustomizeEngine implements CustomizeEngine<Double> {
         listener = new SeekBarListener();
     }
 
-    public NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
-                                         @NonNull NumericTransformer transformer,
-                                         double leftBound, double rightBound) {
+    NumericalValueCustomizeEngine(@NonNull String titleMessage, @NonNull String measureUnit,
+                                  @NonNull NumericTransformer transformer,
+                                  double leftBound, double rightBound) {
         this(titleMessage, measureUnit, transformer, leftBound, rightBound,
                 DEFAULT_DISCRETIZATION_RATE);
     }

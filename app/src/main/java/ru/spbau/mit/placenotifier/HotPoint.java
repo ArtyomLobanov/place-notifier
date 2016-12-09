@@ -9,8 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 /**
  * Should be used to contains user's favourite locations
  */
-@SuppressWarnings("WeakerAccess")
-public class HotPoint implements Parcelable {
+class HotPoint implements Parcelable {
 
     public static final Creator<HotPoint> CREATOR = new Creator<HotPoint>() {
         @Override
@@ -31,18 +30,19 @@ public class HotPoint implements Parcelable {
         this.position = position;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected HotPoint(Parcel in) {
         name = in.readString();
         position = in.readParcelable(LatLng.class.getClassLoader());
     }
 
     @NonNull
-    public String getName() {
+    String getName() {
         return name;
     }
 
     @NonNull
-    public LatLng getPosition() {
+    LatLng getPosition() {
         return position;
     }
 

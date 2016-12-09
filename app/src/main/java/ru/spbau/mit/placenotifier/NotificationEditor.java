@@ -125,6 +125,7 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //noinspection Convert2streamapi  (not supported at current API level)
         for (ResultListener listener : listeners) {
             if (listener.getID() == requestCode) {
                 listener.onResult(resultCode, data);
@@ -132,14 +133,13 @@ public class NotificationEditor extends AppCompatActivity implements ActivityPro
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public static final class IntentBuilder {
+    static final class IntentBuilder {
         private Notification prototype;
 
         private IntentBuilder() {
         }
 
-        public IntentBuilder setPrototype(@NonNull Notification notification) {
+        IntentBuilder setPrototype(@NonNull Notification notification) {
             prototype = notification;
             return this;
         }

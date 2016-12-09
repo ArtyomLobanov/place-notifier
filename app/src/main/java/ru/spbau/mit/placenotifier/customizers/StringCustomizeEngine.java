@@ -11,11 +11,10 @@ import android.widget.TextView;
 
 import ru.spbau.mit.placenotifier.R;
 
-@SuppressWarnings("WeakerAccess")
-public class StringCustomizeEngine implements CustomizeEngine<String> {
+class StringCustomizeEngine implements CustomizeEngine<String> {
 
-    public static final int MULTILINE = 1 << 1;
-    public static final int NOT_EMPTY = 1 << 2;
+    static final int MULTILINE = 1 << 1;
+    static final int NOT_EMPTY = 1 << 2;
     private static final String RESULT_KEY = "result_key";
     private final int flags;
     private final TextWatcher listener;
@@ -24,7 +23,7 @@ public class StringCustomizeEngine implements CustomizeEngine<String> {
     private EditText input;
     private String result;
 
-    public StringCustomizeEngine(@NonNull String titleMessage, int flags) {
+    StringCustomizeEngine(@NonNull String titleMessage, int flags) {
         this.flags = flags;
         this.titleMessage = titleMessage;
         listener = new InputListener();

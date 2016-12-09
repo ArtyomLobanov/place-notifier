@@ -7,13 +7,12 @@ import android.widget.TextView;
 
 import ru.spbau.mit.placenotifier.R;
 
-@SuppressWarnings("WeakerAccess")
-public class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
+class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
 
     private final String messageText;
     private final T result;
 
-    public ConstantCustomizeEngine(@NonNull String messageText, @NonNull T result) {
+    ConstantCustomizeEngine(@NonNull String messageText, @NonNull T result) {
         this.messageText = messageText;
         this.result = result;
     }

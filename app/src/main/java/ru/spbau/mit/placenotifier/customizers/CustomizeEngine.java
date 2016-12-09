@@ -5,7 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-@SuppressWarnings("WeakerAccess")
 public interface CustomizeEngine<T> {
 
     String ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE =

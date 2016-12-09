@@ -18,13 +18,12 @@ import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
-@SuppressWarnings("WeakerAccess")
-public class AlarmManager {
+class AlarmManager {
 
     // just to simulate behavior
     private final Context context;
 
-    public AlarmManager(@NonNull Context context) {
+    AlarmManager(@NonNull Context context) {
         this.context = context;
     }
 
@@ -58,20 +57,20 @@ public class AlarmManager {
     }
 
     @NonNull
-    public List<Notification> getAlarms() {
+    List<Notification> getAlarms() {
         return generateForTest(context);
     }
 
-    public void erase(@NonNull Notification alarm) {
+    void erase(@NonNull Notification alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
     }
 
     @SuppressWarnings("unused")
-    public void insert(@NonNull Notification alarm) {
+    void insert(@NonNull Notification alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
     }
 
-    public void updateAlarm(@NonNull Notification alarm) {
+    void updateAlarm(@NonNull Notification alarm) {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
     }
 }

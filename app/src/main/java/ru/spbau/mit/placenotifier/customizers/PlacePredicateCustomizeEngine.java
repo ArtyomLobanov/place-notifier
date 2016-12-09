@@ -13,8 +13,7 @@ import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
-@SuppressWarnings("WeakerAccess")
-public class PlacePredicateCustomizeEngine
+class PlacePredicateCustomizeEngine
         implements CustomizeEngine<SerializablePredicate<Location>> {
 
     private static final String PLACE_PICKER_STATE_KEY = "place_picker_state";
@@ -28,30 +27,33 @@ public class PlacePredicateCustomizeEngine
     private final CustomizeEngine<Double> radiusPicker;
     private final CustomizeEngine<Boolean> modePicker;
 
-    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
-                                         @NonNull CustomizeEngine<Double> radiusPicker,
-                                         @NonNull CustomizeEngine<Boolean> modePicker) {
+    @SuppressWarnings("WeakerAccess")
+    PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
+                                  @NonNull CustomizeEngine<Double> radiusPicker,
+                                  @NonNull CustomizeEngine<Boolean> modePicker) {
         this.placePicker = placePicker;
         this.radiusPicker = radiusPicker;
         this.modePicker = modePicker;
     }
 
-    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
-                                         @NonNull CustomizeEngine<Double> radiusPicker) {
+    @SuppressWarnings("WeakerAccess")
+    PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker,
+                                  @NonNull CustomizeEngine<Double> radiusPicker) {
         this(placePicker, radiusPicker, Customizers.<Boolean>forOptions("Where does it work?")
                 .addOption("When you are there", false)
                 .addOption("When you are out of there", true)
                 .build());
     }
 
-    public PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker) {
+    @SuppressWarnings("WeakerAccess")
+    PlacePredicateCustomizeEngine(@NonNull CustomizeEngine<Beacon> placePicker) {
         this(placePicker,
                 new NumericalValueCustomizeEngine("Define the sensitivity", "m",
                         NumericalValueCustomizeEngine.EXPONENTIAL_TRANSFORMER,
                         DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
     }
 
-    public PlacePredicateCustomizeEngine(@NonNull ActivityProducer producer, int id) {
+    PlacePredicateCustomizeEngine(@NonNull ActivityProducer producer, int id) {
         this(new AlternativeCustomizeEngine<>("Choose place somehow",
                 new PlacePickerCustomizeEngine("Choose point on map", producer, id),
                 new AddressPickerCustomizeEngine(producer, "Find place by address")));

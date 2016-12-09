@@ -21,8 +21,7 @@ import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
-@SuppressWarnings("WeakerAccess")
-public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
+class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyCallback,
         ActivityProducer.ResultListener, GoogleMap.OnMapClickListener {
 
     private static final String SELECTED_LOCATION_KEY = "selected_location_state";
@@ -34,8 +33,8 @@ public class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMa
     private GoogleMap map;
     private LatLng result;
 
-    public PlacePickerCustomizeEngine(@NonNull String title,
-                                      @NonNull ActivityProducer activityProducer, int id) {
+    PlacePickerCustomizeEngine(@NonNull String title,
+                               @NonNull ActivityProducer activityProducer, int id) {
         this.activityProducer = activityProducer;
         this.id = id;
         this.title = title;

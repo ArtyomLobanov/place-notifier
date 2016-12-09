@@ -21,8 +21,7 @@ import ru.spbau.mit.placenotifier.R;
  * Use ViewPager to allow user to choose CustomizeEngine which he/she wants
  */
 
-@SuppressWarnings("WeakerAccess")
-public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
+class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     private static final String CHILDREN_STATES_ARRAY_KEY = "children_states_array_key";
     private static final String ACTIVE_PAGE_NUMBER_KEY = "active_page_number_key";
@@ -34,13 +33,13 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     private int currentPageCache;
 
     @SafeVarargs
-    public AlternativeCustomizeEngine(@NonNull String title, CustomizeEngine<T>... customizers) {
+    AlternativeCustomizeEngine(@NonNull String title, CustomizeEngine<T>... customizers) {
         this.customizers = Arrays.asList(customizers);
         this.title = title;
     }
 
-    public AlternativeCustomizeEngine(@NonNull String title,
-                                      @NonNull Collection<CustomizeEngine<T>> customizers) {
+    AlternativeCustomizeEngine(@NonNull String title,
+                               @NonNull Collection<CustomizeEngine<T>> customizers) {
         List<CustomizeEngine<T>> copy = new ArrayList<>();
         copy.addAll(customizers);
         this.customizers = Collections.unmodifiableList(copy);

@@ -5,8 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("WeakerAccess")
-public final class Customizers {
+final class Customizers {
 
     private Customizers() {
     }
@@ -18,7 +17,7 @@ public final class Customizers {
      * @return initialized builder
      */
     @NonNull
-    public static <T> OptionsBuilder<T> forOptions(@NonNull String title) {
+    static <T> OptionsBuilder<T> forOptions(@NonNull String title) {
         return new OptionsBuilder<>(title);
     }
 
@@ -26,7 +25,10 @@ public final class Customizers {
     * Allow to create CustomizeEngine which let user
     * choose something from a range of options
     */
-    public static final class OptionsBuilder<T> {
+    // It's not possible to make this class private, because
+    // it's methods should me called from other places in that package
+    @SuppressWarnings("WeakerAccess")
+    static final class OptionsBuilder<T> {
         private final String title;
         private final ArrayList<CustomizeEngine<T>> options;
 
@@ -35,7 +37,7 @@ public final class Customizers {
             options = new ArrayList<>();
         }
 
-        public OptionsBuilder<T> addOption(@NonNull String massage, @NonNull T value) {
+        OptionsBuilder<T> addOption(@NonNull String massage, @NonNull T value) {
             options.add(new ConstantCustomizeEngine<>(massage, value));
             return this;
         }
@@ -55,8 +57,8 @@ public final class Customizers {
      * @param task Some instructions which change engine
      * @return true if engine was changed correctly
      */
-    public static boolean safeExecution(@NonNull CustomizeEngine<?> engine,
-                                        @NonNull UnsafeTask task) {
+    static boolean safeExecution(@NonNull CustomizeEngine<?> engine,
+                                 @NonNull UnsafeTask task) {
         Bundle state = engine.saveState();
         boolean success = task.executeTask();
         if (!success) {
@@ -65,7 +67,7 @@ public final class Customizers {
         return success;
     }
 
-    public interface UnsafeTask {
+    interface UnsafeTask {
 
         /**
          * Some instructions, which can fail.

@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class Notification implements Serializable {
     private static final String DEFAULT_DEVICE_ID = "unidentified_device";
 
@@ -24,14 +24,14 @@ public class Notification implements Serializable {
     private final SerializablePredicate<Location> placePredicate;
     private final SerializablePredicate<Long> timePredicate;
 
-    public Notification(@NonNull String name, @NonNull String comment,
+    Notification(@NonNull String name, @NonNull String comment,
                         @NonNull SerializablePredicate<Location> placePredicate,
                         @NonNull SerializablePredicate<Long> timePredicate,
                         boolean isActive, @NonNull Context context) {
         this(name, comment, placePredicate, timePredicate, isActive, context, 0);
     }
 
-    public Notification(@NonNull String name, @NonNull String comment,
+    Notification(@NonNull String name, @NonNull String comment,
                         @NonNull SerializablePredicate<Location> placePredicate,
                         @NonNull SerializablePredicate<Long> timePredicate,
                         boolean isActive, @NonNull Context context, long salt) {
@@ -39,10 +39,11 @@ public class Notification implements Serializable {
                 createIdentifier(context, salt));
     }
 
-    public Notification(@NonNull String name, @NonNull String comment,
-                        @NonNull SerializablePredicate<Location> placePredicate,
-                        @NonNull SerializablePredicate<Long> timePredicate,
-                        boolean isActive, @NonNull String identifier) {
+    @SuppressWarnings("WeakerAccess")
+    Notification(@NonNull String name, @NonNull String comment,
+                 @NonNull SerializablePredicate<Location> placePredicate,
+                 @NonNull SerializablePredicate<Long> timePredicate,
+                 boolean isActive, @NonNull String identifier) {
         this.name = name;
         this.comment = comment;
         this.placePredicate = placePredicate;
@@ -96,6 +97,7 @@ public class Notification implements Serializable {
         return identifier;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public NotificationBuilder change() {
         return new NotificationBuilder(this);
@@ -115,6 +117,7 @@ public class Notification implements Serializable {
         return identifier.hashCode();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static final class NotificationBuilder {
         private String identifier;
         private boolean isActive;
