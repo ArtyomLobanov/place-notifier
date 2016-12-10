@@ -83,4 +83,8 @@ task checkstyleTest (type: Checkstyle){
 task checkstyle(dependsOn:['checkstyleMain']){
     description 'Runs Checkstyle inspection against Android sourcesets.'
     group = 'Code Quality'
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master

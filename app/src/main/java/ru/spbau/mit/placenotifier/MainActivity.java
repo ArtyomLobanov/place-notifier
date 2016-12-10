@@ -3,7 +3,10 @@ package ru.spbau.mit.placenotifier;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
+<<<<<<< HEAD
 import android.content.Intent;
+=======
+>>>>>>> origin/master
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,19 +17,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+<<<<<<< HEAD
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+=======
+>>>>>>> origin/master
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+<<<<<<< HEAD
     // todo do something with this
     @SuppressLint("StaticFieldLeak")
     private static ServiceReminder reminder;
 
     private DrawerLayout drawerLayout;
 
+=======
+>>>>>>> origin/master
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,10 +45,16 @@ public class MainActivity extends AppCompatActivity
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+<<<<<<< HEAD
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         reminder = new ServiceReminder(this);
+=======
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+>>>>>>> origin/master
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -68,8 +83,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+<<<<<<< HEAD
         Fragment fragment;
         switch (item.getItemId()) {
+=======
+        int id = item.getItemId();
+        Fragment fragment;
+        switch (id) {
+>>>>>>> origin/master
             case R.id.active_notifications_menu:
                 fragment = new NotificationsList();
                 break;
@@ -82,6 +103,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
                 break;
+<<<<<<< HEAD
             case R.id.test_editor:
                 testEditor();
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -92,6 +114,10 @@ public class MainActivity extends AppCompatActivity
                 return true;
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
+=======
+            default:
+                throw new IllegalArgumentException("Unexpected menu id");
+>>>>>>> origin/master
         }
 
         FragmentManager m = getFragmentManager();
