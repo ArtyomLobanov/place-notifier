@@ -50,10 +50,10 @@ public class AlarmManager {
         for (int i = 0; i < n; i++) {
             ByteArrayInputStream stream = new ByteArrayInputStream(cur.getBlob(3));
             ObjectInputStream objectInputStream = new ObjectInputStream(stream);
-            BeaconPredicate loc = (BeaconPredicate)objectInputStream.readObject();
+            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)objectInputStream.readObject();
             stream = new ByteArrayInputStream(cur.getBlob(2));
             objectInputStream = new ObjectInputStream(stream);
-            TimeIntervalPredicate time = (TimeIntervalPredicate)objectInputStream.readObject();
+            SerializablePredicate<Long> time = (SerializablePredicate<Long>)objectInputStream.readObject();
             res.add(new Notification(cur.getString(1), cur.getString(5),
                     loc, time, cur.getInt(4) > 0, cur.getString(0)));
             cur.moveToNext();
