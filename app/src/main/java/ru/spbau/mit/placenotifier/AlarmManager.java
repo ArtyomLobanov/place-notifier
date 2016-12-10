@@ -12,16 +12,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
+import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
 
 public class AlarmManager {
     private DBHelper dbHelper;
 
-    private static final String DATABASE_NAME = "MY_ALARMS";
+    private static final String DATABASE_NAME = "MY_ALARMS2";
 
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
@@ -45,15 +48,14 @@ public class AlarmManager {
         int n = cur.getCount();
         cur.moveToFirst();
         for (int i = 0; i < n; i++) {
-            ByteArrayInputStream stream = new ByteArrayInputStream(cur.getString(3).getBytes());
+            ByteArrayInputStream stream = new ByteArrayInputStream(cur.getBlob(3));
             ObjectInputStream objectInputStream = new ObjectInputStream(stream);
-            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)objectInputStream.readObject();
-            stream = new ByteArrayInputStream(cur.getString(2).getBytes());
+            BeaconPredicate loc = (BeaconPredicate)objectInputStream.readObject();
+            stream = new ByteArrayInputStream(cur.getBlob(2));
             objectInputStream = new ObjectInputStream(stream);
-            SerializablePredicate<Long> time = (SerializablePredicate<Long>)objectInputStream.readObject();
+            TimeIntervalPredicate time = (TimeIntervalPredicate)objectInputStream.readObject();
             res.add(new Notification(cur.getString(1), cur.getString(5),
                     loc, time, cur.getInt(4) > 0, cur.getString(0)));
-            //still need serialization
             cur.moveToNext();
         }
         cur.close();
@@ -77,16 +79,14 @@ public class AlarmManager {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(stream);
             oos.writeObject(alarm.getPlacePredicate());
-            String location = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getPlacePredicate() != null) {
-                contentValues.put(LOCATION, location);
+                contentValues.put(LOCATION, stream.toByteArray());
             }
             stream = new ByteArrayOutputStream();
             oos = new ObjectOutputStream(stream);
             oos.writeObject(alarm.getTimePredicate());
-            String time = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getTimePredicate() != null) {
-                contentValues.put(TIME, time);
+                contentValues.put(TIME, stream.toByteArray());
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
@@ -111,16 +111,14 @@ public class AlarmManager {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(stream);
             oos.writeObject(alarm.getPlacePredicate());
-            String location = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getPlacePredicate() != null) {
-                contentValues.put(LOCATION, location);
+                contentValues.put(LOCATION, stream.toByteArray());
             }
             stream = new ByteArrayOutputStream();
             oos = new ObjectOutputStream(stream);
             oos.writeObject(alarm.getTimePredicate());
-            String time = new String(stream.toByteArray(),"UTF-8");
             if (alarm.getTimePredicate() != null) {
-                contentValues.put(TIME, time);
+                contentValues.put(TIME, stream.toByteArray());
             }
             if (alarm.getComment() != null) {
                 contentValues.put(COMMENT, alarm.getComment());
@@ -145,8 +143,8 @@ public class AlarmManager {
             db.execSQL("create table " + DATABASE_NAME + "("
                     + ID + " text primary key not null, "
                     + NAME + " text, "
-                    + TIME + " text, "
-                    + LOCATION + " text, "
+                    + TIME + " blob, "
+                    + LOCATION + " blob, "
                     + ACTIVE + " integer not null, "
                     + COMMENT + " text" + ");");
         }
