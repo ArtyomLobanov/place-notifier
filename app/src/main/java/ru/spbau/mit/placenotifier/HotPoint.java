@@ -2,14 +2,14 @@ package ru.spbau.mit.placenotifier;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Should be used to contains user's favourite locations
  */
-@SuppressWarnings("WeakerAccess")
-public class HotPoint implements Parcelable {
+class HotPoint implements Parcelable {
 
     public static final Creator<HotPoint> CREATOR = new Creator<HotPoint>() {
         @Override
@@ -25,25 +25,28 @@ public class HotPoint implements Parcelable {
     private final String name;
     private final LatLng position;
 
-    public HotPoint(String name, LatLng position) {
+    public HotPoint(@NonNull String name, @NonNull LatLng position) {
         this.name = name;
         this.position = position;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected HotPoint(Parcel in) {
         name = in.readString();
         position = in.readParcelable(LatLng.class.getClassLoader());
     }
 
-    public String getName() {
+    @NonNull
+    String getName() {
         return name;
     }
 
-    // some magic to do it Parcelable
-
-    public LatLng getPosition() {
+    @NonNull
+    LatLng getPosition() {
         return position;
     }
+
+    // some magic to do it Parcelable
 
     @Override
     public int describeContents() {

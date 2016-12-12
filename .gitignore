@@ -3,12 +3,12 @@
 local.properties
 .idea
 .DS_Store
-/build
-/captures
+build
+captures
 .externalNativeBuild
-/*/out
-/*/build
-/*/production
+*/out
+*/build
+*/production
 *.iws
 *.ipr
 *~

@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -28,10 +29,12 @@ import java.util.ArrayList;
 public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener, View.OnClickListener {
 
-    public static final String HOT_POINTS_KEY = "hot_points";
-    public static final String INITIAL_POSITION_KEY = "initial_position";
-    public static final String INITIAL_SCALE_KEY = "initial_scale";
-    public static final String RESULT_KEY = "result";
+    private static final float DEFAULT_HOT_POINT_SCALE = 10;
+
+    private static final String HOT_POINTS_KEY = "hot_points";
+    private static final String INITIAL_POSITION_KEY = "initial_position";
+    private static final String INITIAL_SCALE_KEY = "initial_scale";
+    private static final String RESULT_KEY = "result";
 
     private GoogleMap map;
     private Marker marker;
@@ -49,7 +52,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_picker);
 
@@ -101,7 +104,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     }
 
     @Override
-    public void onMapClick(LatLng latLng) {
+    public void onMapClick(@NonNull LatLng latLng) {
         setSelectedPosition(latLng);
     }
 
@@ -117,7 +120,8 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
             finish();
         } else { // one of HotPoint buttons pressed
             HotPoint hotPoint = (HotPoint) v.getTag();
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(), 10));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(),
+                    DEFAULT_HOT_POINT_SCALE));
             setSelectedPosition(hotPoint.getPosition());
         }
     }
@@ -125,7 +129,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     /**
      * Special class to create Intent for starting PlacePiker easier
      */
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public static final class IntentBuilder {
 
         private final ArrayList<HotPoint> hotPoints;

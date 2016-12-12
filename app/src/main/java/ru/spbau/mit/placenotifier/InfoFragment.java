@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 public class InfoFragment extends Fragment {
     @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         return inflater.inflate(R.layout.fragment_info, container, false);
     }
 }

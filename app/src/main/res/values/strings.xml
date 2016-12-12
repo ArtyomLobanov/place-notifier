@@ -23,7 +23,7 @@
     <string name="general_menu_group">general</string>
     <string name="others_menu_group">other</string>
 
-    <string name="notifications_list_header_text">Sorted by</string>
+    <string name="alarms_list_header_text">Sorted by</string>
     <string name="customizer_place_isn_t_important">Place isn\'t important</string>
     <string name="customizer_time_isn_t_important">Time isn\'t important</string>
     <string name="title_activity_notification_editor">Notification settings</string>
@@ -47,4 +47,7 @@
     <string name="action_reply">Reply</string>
     <string name="customize_engine_time_interval_from">from</string>
     <string name="customize_engine_time_interval_to">to</string>
+    <string name="customize_engine_alarm_general_settings">General settings</string>
+    <string name="customize_engine_alarm_time_settings">Time settings</string>
+    <string name="customize_engine_notification_place_settings">Place settings</string>
 </resources>

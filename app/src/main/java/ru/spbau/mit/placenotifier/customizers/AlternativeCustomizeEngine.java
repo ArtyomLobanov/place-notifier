@@ -3,15 +3,16 @@ package ru.spbau.mit.placenotifier.customizers;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.R;
@@ -19,7 +20,8 @@ import ru.spbau.mit.placenotifier.R;
 /**
  * Use ViewPager to allow user to choose CustomizeEngine which he/she wants
  */
-public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
+
+class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
 
     private static final String CHILDREN_STATES_ARRAY_KEY = "children_states_array_key";
     private static final String ACTIVE_PAGE_NUMBER_KEY = "active_page_number_key";
@@ -27,40 +29,40 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     private final List<CustomizeEngine<T>> customizers;
     private final String title;
 
-    private ViewPager viewPager = null;
-    private Bundle[] savedStates;
+    private ViewPager viewPager;
+    private int currentPageCache;
 
     @SafeVarargs
-    public AlternativeCustomizeEngine(String title, CustomizeEngine<T>... customizers) {
+    AlternativeCustomizeEngine(@NonNull String title, CustomizeEngine<T>... customizers) {
         this.customizers = Arrays.asList(customizers);
         this.title = title;
-        savedStates = new Bundle[customizers.length];
+    }
+
+    AlternativeCustomizeEngine(@NonNull String title,
+                               @NonNull Collection<CustomizeEngine<T>> customizers) {
+        List<CustomizeEngine<T>> copy = new ArrayList<>();
+        copy.addAll(customizers);
+        this.customizers = Collections.unmodifiableList(copy);
+        this.title = title;
     }
 
     @Override
     public int expectedViewLayout() {
-        return R.layout.customize_bar;
+        return R.layout.customize_engine_alternative;
     }
 
     @Override
-    public void observe(@Nullable View view) {
-        Arrays.fill(savedStates, null);
-        if (view == null) {
-            viewPager = null;
-            return;
+    public void observe(@NonNull View view) {
+        cacheCurrentPageNumber();
+        TextView titleView = (TextView) view.findViewById(R.id.customize_alternative_title);
+        viewPager = (ViewPager) view.findViewById(R.id.customize_alternative_view_pager);
+        if (titleView == null || viewPager == null) {
+            throw new IllegalArgumentException(ON_BAD_VIEW_LAYOUT);
         }
-        TextView titleView = (TextView) view.findViewById(R.id.customize_bar_title);
-        viewPager = (ViewPager) view.findViewById(R.id.customize_bar_view_pager);
-
-        if (titleView == null) {
-            throw new IllegalArgumentException("Wrong view layout: customize_bar_title not found");
-        }
-        if (viewPager == null) {
-            throw new IllegalArgumentException("Wrong view layout: customize_bar_view_pager not found");
-        }
-
         titleView.setText(title);
         viewPager.setAdapter(new BarAdapter());
+        unloadCachedPageNumber();
+
     }
 
     @Override
@@ -75,11 +77,8 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     @NonNull
     @Override
     public T getValue() {
-        if (viewPager == null) {
-            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
-        }
-        int activePage = viewPager.getCurrentItem();
-        return customizers.get(activePage).getValue();
+        cacheCurrentPageNumber();
+        return customizers.get(currentPageCache).getValue();
     }
 
     /**
@@ -87,17 +86,12 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
      * Sets found CustomizeEngine as current
      */
     @Override
-    public boolean setValue(@Nullable T value) {
-        if (viewPager == null) {
-            return false;
-        }
+    public boolean setValue(@NonNull T value) {
         for (CustomizeEngine<T> customizer : customizers) {
-            // // TODO: 28.11.2016 bug: views may not be created, so customizers may be no ready
             if (customizer.setValue(value)) {
                 // don't want to use plain for-cycle here
-                int index = customizers.indexOf(customizer);
-                viewPager.setCurrentItem(index);
-                savedStates[index] = null;
+                currentPageCache = customizers.indexOf(customizer);
+                unloadCachedPageNumber();
                 return true;
             }
         }
@@ -105,27 +99,23 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     }
 
     @Override
-    public void restoreState(Bundle state) {
-        if (viewPager == null) {
-            throw new WrongStateException(CustomizeEngine.ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
-        }
-        if (state == null) {
-            return;
-        }
+    public void restoreState(@NonNull Bundle state) {
         Parcelable[] childrenState = state.getParcelableArray(CHILDREN_STATES_ARRAY_KEY);
-        Integer activePageNumber = state.getInt(ACTIVE_PAGE_NUMBER_KEY, -1);
-        if (childrenState == null || childrenState.length != savedStates.length
-                || !(0 <= activePageNumber && activePageNumber < childrenState.length)) {
+        currentPageCache = state.getInt(ACTIVE_PAGE_NUMBER_KEY, -1);
+        if (childrenState == null || childrenState.length != customizers.size()
+                || !(0 <= currentPageCache && currentPageCache < childrenState.length)) {
             throw new WrongStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
         }
-        for (int i = 0; i < savedStates.length; i++) {
-            savedStates[i] = (Bundle) childrenState[i];
+        for (int i = 0; i < childrenState.length; i++) {
+            customizers.get(i).restoreState((Bundle) childrenState[i]);
         }
-        viewPager.setCurrentItem(activePageNumber);
-        viewPager.getAdapter().notifyDataSetChanged();
+        unloadCachedPageNumber();
+        if (viewPager != null) {
+            viewPager.getAdapter().notifyDataSetChanged();
+        }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Bundle saveState() {
         Bundle state = new Bundle();
@@ -138,12 +128,16 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         return state;
     }
 
-    private void validateItem(int position) {
-        if (savedStates[position] == null) {
-            return;
+    private void cacheCurrentPageNumber() {
+        if (viewPager != null) {
+            currentPageCache = viewPager.getCurrentItem();
         }
-        customizers.get(position).restoreState(savedStates[position]);
-        savedStates[position] = null;
+    }
+
+    private void unloadCachedPageNumber() {
+        if (viewPager != null) {
+            viewPager.setCurrentItem(currentPageCache);
+        }
     }
 
     private class BarAdapter extends PagerAdapter {
@@ -153,7 +147,6 @@ public class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
             View view = View.inflate(collection.getContext(),
                     customizers.get(position).expectedViewLayout(), null);
             customizers.get(position).observe(view);
-            validateItem(position);
             collection.addView(view);
             return view;
         }

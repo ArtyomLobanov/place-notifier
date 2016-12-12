@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -12,16 +11,17 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
-public class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredicate<Long>> {
+class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredicate<Long>> {
 
     private static final String FROM_TIME_VALUE_KEY = "from_time_value_key";
-    private static final String TO_TIME_VALUE_KEY = "ro_time_value_key";
+    private static final String TO_TIME_VALUE_KEY = "to_time_value_key";
 
-    private final ActivityProducer activityProducer;
+    private final ResultRepeater resultRepeater;
     private final String titleMessage;
 
     private TextView fromTime;
@@ -32,8 +32,9 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     private Calendar from;
     private Calendar to;
 
-    public TimeIntervalCustomizeEngine(ActivityProducer activityProducer, String titleMessage) {
-        this.activityProducer = activityProducer;
+    TimeIntervalCustomizeEngine(@NonNull ResultRepeater resultRepeater,
+                                @NonNull String titleMessage) {
+        this.resultRepeater = resultRepeater;
         this.titleMessage = titleMessage;
     }
 
@@ -49,8 +50,6 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
             toTime.setOnClickListener(null);
             toDate.setOnClickListener(null);
         }
-        from = null;
-        to = null;
         fromTime = null;
         fromDate = null;
         toTime = null;
@@ -58,19 +57,18 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     @Override
-    public void observe(@Nullable View view) {
+    public void observe(@NonNull View view) {
         clean();
-        if (view == null) {
-            return;
-        }
-        ((TextView) view.findViewById(R.id.customize_engine_time_interval_title))
-                .setText(titleMessage); ;
+        TextView title = (TextView) view.findViewById(R.id.customize_engine_time_interval_title);
+        title.setText(titleMessage);
 
         fromTime = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_time);
         fromDate = (TextView) view.findViewById(R.id.customize_engine_time_interval_from_date);
         toTime = (TextView) view.findViewById(R.id.customize_engine_time_interval_to_time);
         toDate = (TextView) view.findViewById(R.id.customize_engine_time_interval_to_date);
-        setupInitialValues();
+        if (from == null || to == null) {
+            setupInitialValues();
+        }
         updateViews();
         setupListeners(fromTime, fromDate, from);
         setupListeners(toTime, toDate, to);
@@ -86,26 +84,30 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     private void updateViews() {
-        fromTime.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        if (fromTime == null || toTime == null) {
+            return;
+        }
+        fromTime.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 from.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
-        fromDate.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        fromDate.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 from.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
 
-        toTime.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        toTime.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 to.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
-        toDate.setText(DateUtils.formatDateTime(activityProducer.getContext(),
+        toDate.setText(DateUtils.formatDateTime(resultRepeater.getParentActivity(),
                 to.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
 
-    private void setupListeners(TextView time, TextView date, Calendar calendar) {
+    private void setupListeners(@NonNull TextView time, @NonNull TextView date,
+                                @NonNull Calendar calendar) {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
             calendar.set(Calendar.HOUR, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             updateViews();
         };
-        time.setOnClickListener((v) -> new TimePickerDialog(activityProducer.getContext(),
+        time.setOnClickListener((v) -> new TimePickerDialog(resultRepeater.getParentActivity(),
                 timeSetListener,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), true)
@@ -117,7 +119,7 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateViews();
         };
-        date.setOnClickListener((v) -> new DatePickerDialog(activityProducer.getContext(),
+        date.setOnClickListener((v) -> new DatePickerDialog(resultRepeater.getParentActivity(),
                 dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -137,32 +139,33 @@ public class TimeIntervalCustomizeEngine implements CustomizeEngine<Serializable
     }
 
     @Override
-    public boolean setValue(@Nullable SerializablePredicate<Long> value) {
-        return false;
+    public boolean setValue(@NonNull SerializablePredicate<Long> value) {
+        if (value.getClass() != TimeIntervalPredicate.class) {
+            return false;
+        }
+        TimeIntervalPredicate timeIntervalPredicate = (TimeIntervalPredicate) value;
+        if (from == null || to == null) {
+            setupInitialValues();
+        }
+        from.setTimeInMillis(timeIntervalPredicate.getFrom());
+        to.setTimeInMillis(timeIntervalPredicate.getTo());
+        updateViews();
+        return true;
     }
 
     @Override
-    public void restoreState(@Nullable Bundle state) {
-        if (fromTime == null) {
-            throw new WrongStateException(ON_NULL_OBSERVED_VIEW_EXCEPTION_MESSAGE);
-        }
-        if (state == null) {
-            return;
-        }
-        from.setTimeInMillis(state.getLong(FROM_TIME_VALUE_KEY));
-        to.setTimeInMillis(state.getLong(TO_TIME_VALUE_KEY));
+    public void restoreState(@NonNull Bundle state) {
+        from = (Calendar) state.getSerializable(FROM_TIME_VALUE_KEY);
+        to = (Calendar) state.getSerializable(TO_TIME_VALUE_KEY);
         updateViews();
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Bundle saveState() {
-        if (fromTime == null || toTime == null) {
-            return null;
-        }
         Bundle state = new Bundle();
-        state.putLong(FROM_TIME_VALUE_KEY, from.getTimeInMillis());
-        state.putLong(TO_TIME_VALUE_KEY, to.getTimeInMillis());
+        state.putSerializable(FROM_TIME_VALUE_KEY, from);
+        state.putSerializable(TO_TIME_VALUE_KEY, to);
         return state;
     }
 }
