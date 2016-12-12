@@ -3,7 +3,7 @@
     <item android:title="@string/general_menu_group">
         <menu>
             <item
-                android:id="@+id/active_notifications_menu"
+                android:id="@+id/active_alarms_menu"
                 android:title="@string/active_notifications_list"
                 android:icon="@android:drawable/ic_menu_more" />
             <item
@@ -12,6 +12,7 @@
                 android:icon="@android:drawable/ic_menu_rotate" />
         </menu>
     </item>
+
     <item android:title="@string/others_menu_group">
         <menu>
             <item
@@ -23,6 +24,7 @@
                 android:id="@+id/info_menu"
                 android:title="@string/info_menu"
                 android:icon="@android:drawable/ic_dialog_info" />
+
         </menu>
     </item>
 </menu>

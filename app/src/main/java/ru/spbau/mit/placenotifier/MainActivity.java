@@ -1,9 +1,12 @@
 package ru.spbau.mit.placenotifier;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,8 +16,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
+
+    private DrawerLayout drawerLayout;
+    private List<ResultListener> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +32,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        listeners = new ArrayList<>();
 
     }
 
@@ -56,11 +67,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
         Fragment fragment;
-        switch (id) {
-            case R.id.active_notifications_menu:
-                fragment = new NotificationsList();
+        switch (item.getItemId()) {
+            case R.id.active_alarms_menu:
+                fragment = new AlarmsList();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
@@ -72,16 +82,31 @@ public class MainActivity extends AppCompatActivity
                 fragment = new SettingsFragment();
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected menu id");
+                throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
 
         FragmentManager m = getFragmentManager();
         m.beginTransaction().replace(R.id.container, fragment).commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //noinspection Convert2streamapi   (API level isn't enought)
+        for (ResultListener listener : listeners) {
+            listener.onResult(requestCode, resultCode, data);
+        }
+    }
 
+    @Override
+    public Activity getParentActivity() {
+        return this;
+    }
+
+    @Override
+    public void addResultListener(@NonNull ResultListener listener) {
+        listeners.add(listener);
+    }
 }
