@@ -22,7 +22,7 @@ public class ServiceReminder {
     private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
-    private static final long MILLISEC_IN_MINUTE = 60000;
+    private static final long MILLISEC_IN_MINUTE = 6000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
@@ -48,25 +48,28 @@ public class ServiceReminder {
     }
 
     public void sendNotification(Activity main, List <ru.spbau.mit.placenotifier.Notification> result) {
-        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
-                .setSmallIcon(R.drawable.alarm)
-                .setContentTitle("Alarm")
-                .setContentText("do something somewhere")
-                .setTicker("alarm!!!");
-        Notification not = builder.build();
-        not.defaults = Notification.DEFAULT_ALL;
-        Intent resultIntent = new Intent(main, main.getClass());
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        main,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        builder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotifyMgr =
-                (NotificationManager) main.getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(1, not);
+        /*need some check if there is a time and there is a place*/
+        for (ru.spbau.mit.placenotifier.Notification notif : result) {
+            NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
+                    .setSmallIcon(R.drawable.alarm)
+                    .setContentTitle(notif.getName())
+                    .setContentText(notif.getComment());
+            Notification not = builder.build();
+            not.defaults = Notification.DEFAULT_ALL;
+            Intent resultIntent = new Intent(main, main.getClass());
+            PendingIntent resultPendingIntent =
+                    PendingIntent.getActivity(
+                            main,
+                            notif.getIdentifier().hashCode(),
+                            resultIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            builder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) main.getSystemService(NOTIFICATION_SERVICE);
+            mNotifyMgr.notify(1, not);
+        }
+
     }
 
 

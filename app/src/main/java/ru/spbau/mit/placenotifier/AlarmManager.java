@@ -24,7 +24,7 @@ import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 public class AlarmManager {
     private DBHelper dbHelper;
 
-    private static final String DATABASE_NAME = "MY_ALARMS2";
+    private static final String DATABASE_NAME = "MY_ALARMS3";
 
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
