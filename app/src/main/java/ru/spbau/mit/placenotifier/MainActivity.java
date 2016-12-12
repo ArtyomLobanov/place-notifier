@@ -15,11 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.annotation.*;
+
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressLint("StaticFieldLeak")
     private static ServiceReminder reminder;
     private DrawerLayout drawerLayout;
-    private List<ResultListener> listeners;
+    private List<ResultRepeater.ResultListener> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment;
         switch (id) {
-            case R.id.active_notifications_menu:
-                fragment = new NotificationsList();
+            case R.id.active_alarms_menu:
+                fragment = new AlarmsList();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
@@ -88,14 +88,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
                 break;
-            case R.id.test_editor:
-                testEditor();
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.test_place_picker:
-                testPlacePicker();
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
@@ -110,18 +102,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
-        for (ResultListener listener : listeners) {
+        for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
         }
     }
 
-    @Override
     public Activity getParentActivity() {
         return this;
     }
 
-    @Override
-    public void addResultListener(@NonNull ResultListener listener) {
+    public void addResultListener(@NonNull ResultRepeater.ResultListener listener) {
         listeners.add(listener);
     }
 }

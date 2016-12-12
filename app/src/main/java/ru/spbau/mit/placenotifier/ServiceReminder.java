@@ -22,7 +22,7 @@ public class ServiceReminder {
     private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
-    private static final long MILLISEC_IN_MINUTE = 6000;
+    private static final long MILLISEC_IN_MINUTE = 60000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
@@ -34,7 +34,7 @@ public class ServiceReminder {
                     @Override
                     public void run() {
                         try {
-                            List<ru.spbau.mit.placenotifier.Notification> result = manager.getAlarms();
+                            List<Alarm> result = manager.getAlarms();
                             sendNotification(main, result);
                         }
                         catch (Exception e) {
@@ -47,9 +47,11 @@ public class ServiceReminder {
         reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
     }
 
-    public void sendNotification(Activity main, List <ru.spbau.mit.placenotifier.Notification> result) {
+    public void sendNotification(Activity main, List <Alarm> result) {
+        if (result == null)
+            return;
         /*need some check if there is a time and there is a place*/
-        for (ru.spbau.mit.placenotifier.Notification notif : result) {
+        for (Alarm notif : result) {
             NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                     .setSmallIcon(R.drawable.alarm)
                     .setContentTitle(notif.getName())
