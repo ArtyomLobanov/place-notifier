@@ -8,38 +8,30 @@ import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
 import android.os.Handler;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-@SuppressWarnings("ALL")
-public class ServiceReminder {
+class ServiceReminder {
 
-    private Timer reminder;
-    private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
     private static final long MILLISEC_IN_MINUTE = 60000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
-        reminder = new Timer();
+        Timer reminder = new Timer();
         handler = new Handler();
-        task = new TimerTask() {
+        TimerTask task = new TimerTask() {
             public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            List<Alarm> result = manager.getAlarms();
-                            sendNotification(main, result);
-                        }
-                        catch (Exception e) {
-                            //some processing
-                        }
+                handler.post(() -> {
+                    try {
+                        List<Alarm> result = manager.getAlarms();
+                        sendNotification(main, result);
+                    } catch (Exception e) {
+                        //some processing
                     }
                 });
             }
@@ -47,7 +39,7 @@ public class ServiceReminder {
         reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
     }
 
-    public void sendNotification(Activity main, List <Alarm> result) {
+    private void sendNotification(Activity main, List<Alarm> result) {
         if (result == null)
             return;
         /*need some check if there is a time and there is a place*/

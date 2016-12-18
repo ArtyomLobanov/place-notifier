@@ -10,7 +10,6 @@ import android.location.Location;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.List;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
-public class AlarmManager {
+class AlarmManager {
     private DBHelper dbHelper;
 
     private static final String DATABASE_NAME = "MY_ALARMS3";
@@ -35,101 +34,92 @@ public class AlarmManager {
 
     private static final int VERSION = 1;
 
-    public AlarmManager(Context context) {
+    AlarmManager(Context context) {
         dbHelper = new DBHelper(context);
     }
 
-    public List<Alarm> getAlarms() {
-
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        List<Alarm> res = new ArrayList<Alarm>();
+    private Object getDeserialized(Cursor cur, int row) {
+        ByteArrayInputStream stream;
+        ObjectInputStream objectInputStream;
         try {
-            Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
-            int n = cur.getCount();
-            cur.moveToFirst();
-            for (int i = 0; i < n; i++) {
-                ByteArrayInputStream stream = new ByteArrayInputStream(cur.getBlob(3));
-                ObjectInputStream objectInputStream = new ObjectInputStream(stream);
-                SerializablePredicate<Location> loc = (SerializablePredicate<Location>) objectInputStream.readObject();
-                stream = new ByteArrayInputStream(cur.getBlob(2));
-                objectInputStream = new ObjectInputStream(stream);
-                SerializablePredicate<Long> time = (SerializablePredicate<Long>) objectInputStream.readObject();
-                res.add(new Alarm(cur.getString(1), cur.getString(5),
-                        loc, time, cur.getInt(4) > 0, cur.getString(0)));
-                cur.moveToNext();
-            }
-            cur.close();
+            stream = new ByteArrayInputStream(cur.getBlob(row));
+            objectInputStream = new ObjectInputStream(stream);
+            return objectInputStream.readObject();
         }
         catch (Exception e) {
-            /*some processing*/
-        }
-        finally {
-            return res;
+            throw new RuntimeException(e);
         }
     }
 
-    public void erase(Alarm alarm) {
+    private byte[] getSerialised(SerializablePredicate<?> predicate) {
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            oos.writeObject(predicate);
+            return stream.toByteArray();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    List<Alarm> getAlarms() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        List<Alarm> res = new ArrayList<>();
+        Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
+        int n = cur.getCount();
+        cur.moveToFirst();
+        for (int i = 0; i < n; i++) {
+            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)getDeserialized(cur, 3);
+            SerializablePredicate<Long> time = (SerializablePredicate<Long>) getDeserialized(cur, 2);
+            res.add(new Alarm(cur.getString(1), cur.getString(5),
+                    loc, time, cur.getInt(4) > 0, cur.getString(0)));
+            cur.moveToNext();
+        }
+        cur.close();
+        return res;
+    }
+
+    private ContentValues prepareAlarmForWriting(Alarm alarm) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ID, alarm.getIdentifier());
+        contentValues.put(NAME, alarm.getName());
+        contentValues.put(LOCATION, getSerialised(alarm.getPlacePredicate()));
+        contentValues.put(TIME, getSerialised(alarm.getTimePredicate()));
+        contentValues.put(COMMENT, alarm.getComment());
+        contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
+        return contentValues;
+    }
+
+    void erase(Alarm alarm) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         database.delete(DATABASE_NAME, ID + "=?", new String[]{alarm.getIdentifier()});
     }
 
-    public void insert(Alarm alarm) throws IOException {
+    void insert(Alarm alarm) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             database.beginTransaction();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ID, alarm.getIdentifier());
-
-            contentValues.put(NAME, alarm.getName());
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(stream);
-            oos.writeObject(alarm.getPlacePredicate());
-            contentValues.put(LOCATION, stream.toByteArray());
-
-            stream = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(stream);
-            oos.writeObject(alarm.getTimePredicate());
-            contentValues.put(TIME, stream.toByteArray());
-
-            contentValues.put(COMMENT, alarm.getComment());
-
-            contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
-            database.insertOrThrow(DATABASE_NAME, null, contentValues);
+            database.insertOrThrow(DATABASE_NAME, null, prepareAlarmForWriting(alarm));
             database.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             database.endTransaction();
         }
     }
 
-    public void updateAlarm(Alarm alarm)  {
+    void updateAlarm(Alarm alarm)  {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             database.beginTransaction();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ID, alarm.getIdentifier());
-
-            contentValues.put(NAME, alarm.getName());
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(stream);
-            oos.writeObject(alarm.getPlacePredicate());
-            contentValues.put(LOCATION, stream.toByteArray());
-
-            stream = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(stream);
-            oos.writeObject(alarm.getTimePredicate());
-            contentValues.put(TIME, stream.toByteArray());
-
-            contentValues.put(COMMENT, alarm.getComment());
-
-            contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
             database.update(DATABASE_NAME,
-                    contentValues, ID + "=?", new String[]{alarm.getIdentifier()});
+                    prepareAlarmForWriting(alarm), ID + "=?", new String[]{alarm.getIdentifier()});
             database.setTransactionSuccessful();
         }
         catch (Exception e) {
-            /*some processing*/
+            throw new RuntimeException(e);
         } finally {
             database.endTransaction();
         }
@@ -137,7 +127,7 @@ public class AlarmManager {
 
 
     private static class DBHelper extends SQLiteOpenHelper {
-        public DBHelper(Context context) {
+        DBHelper(Context context) {
             super(context, DATABASE_NAME, null, VERSION);
         }
 

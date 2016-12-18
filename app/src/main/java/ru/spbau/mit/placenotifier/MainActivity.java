@@ -24,9 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
-    // todo do something with this
-    @SuppressLint("StaticFieldLeak")
-    private static ServiceReminder reminder;
+    private ServiceReminder reminder;
     private DrawerLayout drawerLayout;
     private List<ResultRepeater.ResultListener> listeners;
 
