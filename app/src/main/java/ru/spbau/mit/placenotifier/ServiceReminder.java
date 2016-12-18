@@ -16,22 +16,24 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class ServiceReminder {
 
+    private Timer reminder;
+    private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
     private static final long MILLISEC_IN_MINUTE = 60000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
-        Timer reminder = new Timer();
+        reminder = new Timer();
         handler = new Handler();
-        TimerTask task = new TimerTask() {
+        task = new TimerTask() {
             public void run() {
                 handler.post(() -> {
                     try {
                         List<Alarm> result = manager.getAlarms();
                         sendNotification(main, result);
                     } catch (Exception e) {
-                        //some processing
+                        throw new RuntimeException(e);
                     }
                 });
             }
