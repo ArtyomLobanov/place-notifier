@@ -1,76 +1,156 @@
 package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
-import ru.spbau.mit.placenotifier.predicates.Beacon;
-import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
-import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
-import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
+import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
+
 
 class AlarmManager {
+    private DBHelper dbHelper;
 
-    // just to simulate behavior
-    private final Context context;
+    private static final String DATABASE_NAME = "MY_ALARMS3";
 
-    AlarmManager(@NonNull Context context) {
-        this.context = context;
+    private static final String TIME = "TIME_PREDICATE";
+    private static final String LOCATION = "LOCATION_PREDICATE";
+    private static final String NAME = "ALARM_NAME";
+    private static final String COMMENT = "COMMENT";
+    private static final String ID = "ID";
+    private static final String ACTIVE = "IS_ACTIVE";
+
+    private static final String[] COLUMNS = {ID, NAME, TIME, LOCATION, ACTIVE, COMMENT};
+
+    private static final int VERSION = 1;
+
+    AlarmManager(Context context) {
+        dbHelper = new DBHelper(context);
     }
 
-    @SuppressWarnings("MagicNumber") // testing
-    private static List<Alarm> generateForTest(Context context) {
-        List<Alarm> res = new ArrayList<>();
-        Geocoder g = new Geocoder(context);
-        Address address;
+    private Object getDeserialized(Cursor cur, int row) {
+        ByteArrayInputStream stream;
+        ObjectInputStream objectInputStream;
         try {
-            address = g.getFromLocationName("Moscow", 1).get(0);
-        } catch (IOException e) {
-            throw new RuntimeException("Cant find location", e);
+            stream = new ByteArrayInputStream(cur.getBlob(row));
+            objectInputStream = new ObjectInputStream(stream);
+            return objectInputStream.readObject();
         }
-        Beacon b = new AddressBeacon(address, "Moscow");
-        TimeIntervalPredicate p = new TimeIntervalPredicate(System.currentTimeMillis(),
-                System.currentTimeMillis() + 60 * 1000 * 10);
-        for (int i = 0; i < 5; i++) {
-            res.add(new Alarm("alarm number " + i,
-                    "created from address (Moscow)",
-                    new BeaconPredicate(b, 10), p, true, context, i));
+        catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        b = new LatLngBeacon(new LatLng(59.939095, 30.315868));
-        p = new TimeIntervalPredicate(System.currentTimeMillis(),
-                System.currentTimeMillis() + 60 * 1000 * 20);
-        for (int i = 0; i < 5; i++) {
-            res.add(new Alarm("alarm number " + (5 + i),
-                    "created from latlng (Spb)",
-                    new BeaconPredicate(b, 10), p, true, context, i + 5));
+    }
+
+    private byte[] getSerialised(SerializablePredicate<?> predicate) {
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            oos.writeObject(predicate);
+            return stream.toByteArray();
         }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    List<Alarm> getAlarms() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        List<Alarm> res = new ArrayList<>();
+        Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null);
+        int n = cur.getCount();
+        cur.moveToFirst();
+        for (int i = 0; i < n; i++) {
+            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)getDeserialized(cur, 3);
+            SerializablePredicate<Long> time = (SerializablePredicate<Long>) getDeserialized(cur, 2);
+            res.add(new Alarm(cur.getString(1), cur.getString(5),
+                    loc, time, cur.getInt(4) > 0, cur.getString(0)));
+            cur.moveToNext();
+        }
+        cur.close();
         return res;
     }
 
-    @NonNull
-    List<Alarm> getAlarms() {
-        return generateForTest(context);
+    private ContentValues prepareAlarmForWriting(Alarm alarm) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ID, alarm.getIdentifier());
+        contentValues.put(NAME, alarm.getName());
+        contentValues.put(LOCATION, getSerialised(alarm.getPlacePredicate()));
+        contentValues.put(TIME, getSerialised(alarm.getTimePredicate()));
+        contentValues.put(COMMENT, alarm.getComment());
+        contentValues.put(ACTIVE, alarm.isActive() ? 1 : 0);
+        return contentValues;
     }
 
-    void erase(@NonNull Alarm alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") erased");
+    void erase(Alarm alarm) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        database.delete(DATABASE_NAME, ID + "=?", new String[]{alarm.getIdentifier()});
     }
 
-    @SuppressWarnings("unused")
-    void insert(@NonNull Alarm alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
+    void insert(Alarm alarm) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        try {
+            database.beginTransaction();
+            database.insertOrThrow(DATABASE_NAME, null, prepareAlarmForWriting(alarm));
+            database.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            database.endTransaction();
+        }
     }
 
-    void updateAlarm(@NonNull Alarm alarm) {
-        Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") updated");
+    void updateAlarm(Alarm alarm)  {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        try {
+            database.beginTransaction();
+            database.update(DATABASE_NAME,
+                    prepareAlarmForWriting(alarm), ID + "=?", new String[]{alarm.getIdentifier()});
+            database.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            database.endTransaction();
+        }
     }
+
+
+    private static class DBHelper extends SQLiteOpenHelper {
+        DBHelper(Context context) {
+            super(context, DATABASE_NAME, null, VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("create table " + DATABASE_NAME + "("
+                    + ID + " text primary key not null, "
+                    + NAME + " text not null, "
+                    + TIME + " blob not null, "
+                    + LOCATION + " blob not null, "
+                    + ACTIVE + " integer not null, "
+                    + COMMENT + " text not null" + ");");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        }
+
+        @Override
+        public void onConfigure(SQLiteDatabase db) {
+            super.onConfigure(db);
+            db.setForeignKeyConstraintsEnabled(true);
+        }
+    }
+
 }

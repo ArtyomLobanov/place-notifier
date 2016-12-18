@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.annotation.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
+    private ServiceReminder reminder;
     private DrawerLayout drawerLayout;
-    private List<ResultListener> listeners;
+    private List<ResultRepeater.ResultListener> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        reminder = new ServiceReminder(this);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -67,8 +71,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
         Fragment fragment;
-        switch (item.getItemId()) {
+        switch (id) {
             case R.id.active_alarms_menu:
                 fragment = new AlarmsList();
                 break;
@@ -95,18 +100,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
-        for (ResultListener listener : listeners) {
+        for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
         }
     }
 
-    @Override
     public Activity getParentActivity() {
         return this;
     }
 
-    @Override
-    public void addResultListener(@NonNull ResultListener listener) {
+    public void addResultListener(@NonNull ResultRepeater.ResultListener listener) {
         listeners.add(listener);
     }
 }
