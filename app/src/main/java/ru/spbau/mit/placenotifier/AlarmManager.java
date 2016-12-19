@@ -1,8 +1,7 @@
 package ru.spbau.mit.placenotifier;
 
-import android.content.Context;
-
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -19,20 +18,16 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
 class AlarmManager {
-    private DBHelper dbHelper;
-
     private static final String DATABASE_NAME = "MY_ALARMS3";
-
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
     private static final String NAME = "ALARM_NAME";
     private static final String COMMENT = "COMMENT";
     private static final String ID = "ID";
     private static final String ACTIVE = "IS_ACTIVE";
-
     private static final String[] COLUMNS = {ID, NAME, TIME, LOCATION, ACTIVE, COMMENT};
-
     private static final int VERSION = 1;
+    private DBHelper dbHelper;
 
     AlarmManager(Context context) {
         dbHelper = new DBHelper(context);
@@ -45,8 +40,7 @@ class AlarmManager {
             stream = new ByteArrayInputStream(cur.getBlob(row));
             objectInputStream = new ObjectInputStream(stream);
             return objectInputStream.readObject();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -57,8 +51,7 @@ class AlarmManager {
             ObjectOutputStream oos = new ObjectOutputStream(stream);
             oos.writeObject(predicate);
             return stream.toByteArray();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -70,7 +63,7 @@ class AlarmManager {
         int n = cur.getCount();
         cur.moveToFirst();
         for (int i = 0; i < n; i++) {
-            SerializablePredicate<Location> loc = (SerializablePredicate<Location>)getDeserialized(cur, 3);
+            SerializablePredicate<Location> loc = (SerializablePredicate<Location>) getDeserialized(cur, 3);
             SerializablePredicate<Long> time = (SerializablePredicate<Long>) getDeserialized(cur, 2);
             res.add(new Alarm(cur.getString(1), cur.getString(5),
                     loc, time, cur.getInt(4) > 0, cur.getString(0)));
@@ -102,23 +95,21 @@ class AlarmManager {
             database.beginTransaction();
             database.insertOrThrow(DATABASE_NAME, null, prepareAlarmForWriting(alarm));
             database.setTransactionSuccessful();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             database.endTransaction();
         }
     }
 
-    void updateAlarm(Alarm alarm)  {
+    void updateAlarm(Alarm alarm) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             database.beginTransaction();
             database.update(DATABASE_NAME,
                     prepareAlarmForWriting(alarm), ID + "=?", new String[]{alarm.getIdentifier()});
             database.setTransactionSuccessful();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             database.endTransaction();
@@ -152,5 +143,4 @@ class AlarmManager {
             db.setForeignKeyConstraintsEnabled(true);
         }
     }
-
 }

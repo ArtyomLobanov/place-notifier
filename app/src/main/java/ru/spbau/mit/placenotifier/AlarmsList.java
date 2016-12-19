@@ -45,52 +45,26 @@ public class AlarmsList extends Fragment {
         return result;
     }
 
-    private class SpinnerListener implements AdapterView.OnItemSelectedListener {
-
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            listAdapter.setComparator((AlarmComparator) adapterView.getItemAtPosition(i));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        }
-    }
-
-    private class FilterListener implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            listAdapter.setFilter(new AlarmFilter(editable.toString()));
-        }
-    }
-
     private enum AlarmComparator implements Comparator<Alarm> {
         SORT_BY_NAME("Sort by name") {
             @Override
             public int compare(Alarm a1, Alarm a2) {
                 int cmp = a1.getName().compareTo(a2.getName());
-                return cmp != 0? cmp : a1.getIdentifier().compareTo(a2.getIdentifier());
+                return cmp != 0 ? cmp : a1.getIdentifier().compareTo(a2.getIdentifier());
             }
         },
 
         NEWEST_FIRST("Newest first") {
             @Override
             public int compare(Alarm a1, Alarm a2) {
-                return a1.getIdentifier().compareTo(a2.getIdentifier()) ;
+                return a1.getIdentifier().compareTo(a2.getIdentifier());
             }
         },
 
         OLDEST_FIRST("Oldest first") {
             @Override
             public int compare(Alarm a1, Alarm a2) {
-                return a2.getIdentifier().compareTo(a1.getIdentifier()) ;
+                return a2.getIdentifier().compareTo(a1.getIdentifier());
             }
         },
 
@@ -98,7 +72,7 @@ public class AlarmsList extends Fragment {
             @Override
             public int compare(Alarm a1, Alarm a2) {
                 int cmp = Boolean.compare(a2.isActive(), a1.isActive());
-                return cmp != 0? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
+                return cmp != 0 ? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
             }
         },
 
@@ -106,7 +80,7 @@ public class AlarmsList extends Fragment {
             @Override
             public int compare(Alarm a1, Alarm a2) {
                 int cmp = -Boolean.compare(a2.isActive(), a1.isActive());
-                return cmp != 0? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
+                return cmp != 0 ? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
             }
         };
 
@@ -122,7 +96,35 @@ public class AlarmsList extends Fragment {
         }
     }
 
-    private class AlarmFilter implements SerializablePredicate<Alarm> {
+    private class SpinnerListener implements AdapterView.OnItemSelectedListener {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            listAdapter.setComparator((AlarmComparator) adapterView.getItemAtPosition(i));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    }
+
+    private class FilterListener implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            listAdapter.setFilter(new AlarmFilter(editable.toString()));
+        }
+    }
+
+    private final class AlarmFilter implements SerializablePredicate<Alarm> {
         private final String expectedPrefix;
 
         private AlarmFilter(String expectedPrefix) {
