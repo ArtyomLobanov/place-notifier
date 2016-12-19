@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:id="@+id/updating_progress">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar2"
+        android:gravity = "center_vertical"
+        android:paddingStart="0dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:layout_gravity="center_vertical|center_horizontal" />
+</LinearLayout>

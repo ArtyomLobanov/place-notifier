@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         listeners = new ArrayList<>();
 
     }
@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.active_alarms_menu:
                 fragment = new AlarmsList();
+                break;
+            case R.id.google_drive:
+                fragment = new GoogleDriveFragment();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
