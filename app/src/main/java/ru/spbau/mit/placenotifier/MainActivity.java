@@ -15,8 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.annotation.*;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
-    private ServiceReminder reminder;
+    static final int ALARM_CREATING_REQUEST_CODE = 566;
+
     private DrawerLayout drawerLayout;
     private List<ResultRepeater.ResultListener> listeners;
 
@@ -40,12 +39,12 @@ public class MainActivity extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        reminder = new ServiceReminder(this);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         listeners = new ArrayList<>();
 
+        new ServiceReminder(this);
     }
 
     @Override
@@ -66,6 +65,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_create_alarm) {
+            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
+        }
         return true;
     }
 
@@ -102,6 +105,13 @@ public class MainActivity extends AppCompatActivity
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
+        }
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (data != null && requestCode == ALARM_CREATING_REQUEST_CODE) {
+            AlarmManager alarmManager = new AlarmManager(this);
+            alarmManager.insert(AlarmEditor.getResult(data));
         }
     }
 

@@ -6,26 +6,28 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
+        android:layout_height="40dp"
         android:background="?attr/colorPrimary"
-        android:orientation="horizontal"
-        android:layout_height="40dp">
+        android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/filter_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/filter_input"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:hint="@string/find_by_name" />
+            android:ems="10"
+            android:hint="@string/find_by_name"
+            android:inputType="textPersonName" />
 
         <Spinner
             android:id="@+id/sorting_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:dropDownVerticalOffset="30dp"
-            android:layout_weight="1" />
+            android:spinnerMode="dropdown" />
 
     </LinearLayout>
 

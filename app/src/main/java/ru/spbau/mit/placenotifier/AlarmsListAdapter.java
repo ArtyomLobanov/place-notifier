@@ -26,17 +26,15 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
 
     private final ResultRepeater resultRepeater;
     private final AlarmManager alarmManager;
-    private final int id;
     private Comparator<Alarm> comparator;
     private Predicate<Alarm> filter;
 
     AlarmsListAdapter(@Nullable Comparator<Alarm> comparator, @Nullable Predicate<Alarm> filter,
-                      @NonNull ResultRepeater resultRepeater, int id) {
+                      @NonNull ResultRepeater resultRepeater) {
         super(resultRepeater.getParentActivity(), R.layout.alarms_list_item);
         this.comparator = comparator;
         this.filter = filter;
         this.resultRepeater = resultRepeater;
-        this.id = id;
         alarmManager = new AlarmManager(resultRepeater.getParentActivity());
         resultRepeater.addResultListener(this);
         refresh();
@@ -52,7 +50,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
         refresh();
     }
 
-    void refresh() {
+    private void refresh() {
         new AlarmsLoader().execute();
     }
 
@@ -73,7 +71,8 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
 
     @Override
     public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == id && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == MainActivity.ALARM_CREATING_REQUEST_CODE
+                && resultCode == Activity.RESULT_OK && data != null) {
             remove(AlarmEditor.getPrototype(data));
             Alarm alarm = AlarmEditor.getResult(data);
             if (filter.apply(alarm)) {
@@ -140,7 +139,8 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
                 Intent intent = AlarmEditor.builder()
                         .setPrototype(alarm)
                         .build(resultRepeater.getParentActivity());
-                resultRepeater.getParentActivity().startActivityForResult(intent, id);
+                resultRepeater.getParentActivity()
+                        .startActivityForResult(intent, MainActivity.ALARM_CREATING_REQUEST_CODE);
             }
         }
     }

@@ -40,7 +40,7 @@ public class AlarmsList extends Fragment {
         ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
         AlarmComparator currentComparator = (AlarmComparator) spinner.getSelectedItem();
         listAdapter = new AlarmsListAdapter(currentComparator, new AlarmFilter(""),
-                (ResultRepeater) getActivity(), 0);
+                (ResultRepeater) getActivity());
         listView.setAdapter(listAdapter);
         return result;
     }
