@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,14 +25,26 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
     private final ResultRepeater resultRepeater;
     private final AlarmManager alarmManager;
     private final int id;
+    private Comparator<Alarm> comparator;
 
-    AlarmsListAdapter(@NonNull ResultRepeater resultRepeater, int id) {
+    AlarmsListAdapter(@Nullable Comparator<Alarm> comparator,
+                      @NonNull ResultRepeater resultRepeater, int id) {
         super(resultRepeater.getParentActivity(), R.layout.alarms_list_item);
+        this.comparator = comparator;
         this.resultRepeater = resultRepeater;
         this.id = id;
         alarmManager = new AlarmManager(resultRepeater.getParentActivity());
         resultRepeater.addResultListener(this);
         new AlarmsLoader().execute();
+    }
+
+    AlarmsListAdapter(@NonNull ResultRepeater resultRepeater, int id) {
+        this(null, resultRepeater, id);
+    }
+
+    public void setComparator(Comparator<Alarm> comparator) {
+        this.comparator = comparator;
+        sort(comparator);
     }
 
     @NonNull
@@ -55,6 +68,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
             remove(AlarmEditor.getPrototype(data));
             add(AlarmEditor.getResult(data));
             alarmManager.updateAlarm(AlarmEditor.getResult(data));
+            sort(comparator);
         }
     }
 
@@ -107,6 +121,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
                 remove(alarm);
                 add(changedAlarm);
                 alarmManager.updateAlarm(changedAlarm);
+                sort(comparator);
             } else {
                 Intent intent = AlarmEditor.builder()
                         .setPrototype(alarm)
@@ -134,6 +149,9 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
                         Toast.LENGTH_LONG).show();
             } else {
                 addAll(alarms);
+                if (comparator != null) {
+                    sort(comparator);
+                }
             }
         }
     }
