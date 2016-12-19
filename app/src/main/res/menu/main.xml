@@ -9,7 +9,7 @@
     <item
         android:id="@+id/action_create_alarm"
         app:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/add"
         android:visible="true"
         android:enabled="true"
         android:title="create_alarm" />
