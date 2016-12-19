@@ -6,9 +6,18 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
         android:background="?attr/colorPrimary"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_height="40dp">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/filter_input"
+            android:layout_weight="1"
+            android:hint="@string/find_by_name" />
 
         <Spinner
             android:id="@+id/sorting_spinner"

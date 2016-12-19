@@ -3,23 +3,23 @@ package ru.spbau.mit.placenotifier;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
-import java.lang.reflect.Array;
 import java.util.Comparator;
+
+import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class AlarmsList extends Fragment {
 
-    private AlarmComparator currentComparator;
     private AlarmsListAdapter listAdapter;
 
     @NonNull
@@ -33,10 +33,14 @@ public class AlarmsList extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(new SpinnerListener());
-        currentComparator = (AlarmComparator) spinner.getSelectedItem();
+
+        EditText filterInput = (EditText) result.findViewById(R.id.filter_input);
+        filterInput.addTextChangedListener(new FilterListener());
 
         ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
-        listAdapter = new AlarmsListAdapter(currentComparator, (ResultRepeater) getActivity(), 0);
+        AlarmComparator currentComparator = (AlarmComparator) spinner.getSelectedItem();
+        listAdapter = new AlarmsListAdapter(currentComparator, new AlarmFilter(""),
+                (ResultRepeater) getActivity(), 0);
         listView.setAdapter(listAdapter);
         return result;
     }
@@ -50,6 +54,20 @@ public class AlarmsList extends Fragment {
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    }
+
+    private class FilterListener implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            listAdapter.setFilter(new AlarmFilter(editable.toString()));
         }
     }
 
@@ -85,6 +103,19 @@ public class AlarmsList extends Fragment {
         @Override
         public String toString() {
             return name;
+        }
+    }
+
+    private class AlarmFilter implements SerializablePredicate<Alarm> {
+        private final String expectedPrefix;
+
+        private AlarmFilter(String expectedPrefix) {
+            this.expectedPrefix = expectedPrefix;
+        }
+
+        @Override
+        public boolean apply(Alarm alarm) {
+            return alarm.getName().startsWith(expectedPrefix);
         }
     }
 }

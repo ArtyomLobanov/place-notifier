@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.internal.util.Predicate;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -26,25 +28,32 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
     private final AlarmManager alarmManager;
     private final int id;
     private Comparator<Alarm> comparator;
+    private Predicate<Alarm> filter;
 
-    AlarmsListAdapter(@Nullable Comparator<Alarm> comparator,
+    AlarmsListAdapter(@Nullable Comparator<Alarm> comparator, @Nullable Predicate<Alarm> filter,
                       @NonNull ResultRepeater resultRepeater, int id) {
         super(resultRepeater.getParentActivity(), R.layout.alarms_list_item);
         this.comparator = comparator;
+        this.filter = filter;
         this.resultRepeater = resultRepeater;
         this.id = id;
         alarmManager = new AlarmManager(resultRepeater.getParentActivity());
         resultRepeater.addResultListener(this);
-        new AlarmsLoader().execute();
+        refresh();
     }
 
-    AlarmsListAdapter(@NonNull ResultRepeater resultRepeater, int id) {
-        this(null, resultRepeater, id);
-    }
-
-    public void setComparator(Comparator<Alarm> comparator) {
+    void setComparator(Comparator<Alarm> comparator) {
         this.comparator = comparator;
         sort(comparator);
+    }
+
+    void setFilter(Predicate<Alarm> filter) {
+        this.filter = filter;
+        refresh();
+    }
+
+    void refresh() {
+        new AlarmsLoader().execute();
     }
 
     @NonNull
@@ -66,7 +75,10 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
     public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == id && resultCode == Activity.RESULT_OK && data != null) {
             remove(AlarmEditor.getPrototype(data));
-            add(AlarmEditor.getResult(data));
+            Alarm alarm = AlarmEditor.getResult(data);
+            if (filter.apply(alarm)) {
+                add(alarm);
+            }
             alarmManager.updateAlarm(AlarmEditor.getResult(data));
             sort(comparator);
         }
@@ -119,9 +131,11 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
                         .setActive(isActive)
                         .build();
                 remove(alarm);
-                add(changedAlarm);
+                if (filter.apply(changedAlarm)) {
+                    add(changedAlarm);
+                    sort(comparator);
+                }
                 alarmManager.updateAlarm(changedAlarm);
-                sort(comparator);
             } else {
                 Intent intent = AlarmEditor.builder()
                         .setPrototype(alarm)
@@ -144,11 +158,17 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
 
         @Override
         protected void onPostExecute(@Nullable List<Alarm> alarms) {
+            clear();
             if (alarms == null) {
                 Toast.makeText(resultRepeater.getParentActivity(), "Loading of alarms failed",
                         Toast.LENGTH_LONG).show();
             } else {
-                addAll(alarms);
+                //noinspection Convert2streamapi (No Stream API at ours API level
+                for (Alarm alarm : alarms) {
+                    if (filter == null || filter.apply(alarm)) {
+                        add(alarm);
+                    }
+                }
                 if (comparator != null) {
                     sort(comparator);
                 }
