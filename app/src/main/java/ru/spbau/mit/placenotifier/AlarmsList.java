@@ -76,7 +76,7 @@ public class AlarmsList extends Fragment {
             @Override
             public int compare(Alarm a1, Alarm a2) {
                 int cmp = a1.getName().compareTo(a2.getName());
-                return cmp == 0? a1.getIdentifier().compareTo(a2.getIdentifier()) : cmp;
+                return cmp != 0? cmp : a1.getIdentifier().compareTo(a2.getIdentifier());
             }
         },
 
@@ -91,6 +91,22 @@ public class AlarmsList extends Fragment {
             @Override
             public int compare(Alarm a1, Alarm a2) {
                 return a2.getIdentifier().compareTo(a1.getIdentifier()) ;
+            }
+        },
+
+        ACTIVE_FIRST("Active first") {
+            @Override
+            public int compare(Alarm a1, Alarm a2) {
+                int cmp = Boolean.compare(a2.isActive(), a1.isActive());
+                return cmp != 0? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
+            }
+        },
+
+        ACTIVE_LAST("Active last") {
+            @Override
+            public int compare(Alarm a1, Alarm a2) {
+                int cmp = -Boolean.compare(a2.isActive(), a1.isActive());
+                return cmp != 0? cmp : a2.getIdentifier().compareTo(a1.getIdentifier());
             }
         };
 
