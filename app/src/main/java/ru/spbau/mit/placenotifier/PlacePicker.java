@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -31,6 +33,9 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
 
     private static final float DEFAULT_HOT_POINT_SCALE = 10;
 
+    private static final String CAMERA_POSITION_KEY = "camera_position";
+    private static final String SELECTED_POSITION_KEY = "marker_key";
+
     private static final String HOT_POINTS_KEY = "hot_points";
     private static final String INITIAL_POSITION_KEY = "initial_position";
     private static final String INITIAL_SCALE_KEY = "initial_scale";
@@ -40,6 +45,9 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     private Marker marker;
     private Button buttonOK;
     private Button buttonCancel;
+
+    private CameraPosition savedCameraPosition;
+    private LatLng savedSelectedPoint;
 
     @NonNull
     public static IntentBuilder builder() {
@@ -75,6 +83,39 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         mapFragment.getMapAsync(this);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.wtf("mmap", "save!!!");
+        if (map != null) {
+            outState.putParcelable(CAMERA_POSITION_KEY, map.getCameraPosition());
+            outState.putParcelable(SELECTED_POSITION_KEY, marker.getPosition());
+        } else {
+            outState.putParcelable(CAMERA_POSITION_KEY, savedCameraPosition);
+            outState.putParcelable(SELECTED_POSITION_KEY, savedSelectedPoint);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.wtf("mmap", "restore!!!");
+        if (savedInstanceState == null) {
+            return;
+        }
+        CameraPosition cameraPosition = savedInstanceState.getParcelable(CAMERA_POSITION_KEY);
+        LatLng selectedPoint = savedInstanceState.getParcelable(SELECTED_POSITION_KEY);
+        if (map == null) {
+            savedCameraPosition = cameraPosition;
+            savedSelectedPoint = selectedPoint;
+        } else {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            if (selectedPoint != null) {
+                setSelectedPosition(selectedPoint);
+            }
+        }
+    }
+
     @NonNull
     private Button createButton(@NonNull HotPoint point) {
         Button button = (Button) View.inflate(this, R.layout.hot_point_button, null);
@@ -97,10 +138,20 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-        LatLng initialPosition = getIntent().getParcelableExtra(INITIAL_POSITION_KEY);
-        float initialScale = getIntent().getFloatExtra(INITIAL_SCALE_KEY, 1);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, initialScale));
         map.setOnMapClickListener(this);
+        if (savedCameraPosition == null) {
+            LatLng initialPosition = getIntent().getParcelableExtra(INITIAL_POSITION_KEY);
+            float initialScale = getIntent().getFloatExtra(INITIAL_SCALE_KEY, 1);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, initialScale));
+        } else {
+            Log.wtf("mmap", "update!!!");
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(savedCameraPosition));
+            if (savedSelectedPoint != null) {
+                setSelectedPosition(savedSelectedPoint);
+            }
+            savedCameraPosition = null;
+            savedSelectedPoint = null;
+        }
     }
 
     @Override
