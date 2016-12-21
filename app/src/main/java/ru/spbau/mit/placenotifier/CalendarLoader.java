@@ -98,26 +98,29 @@ public class CalendarLoader {
     public static class EventDescriptor {
 
         private static final String[] PROJECTION = {Events.TITLE, Events.DESCRIPTION,
-                Events.DTSTART, Events.DTEND, Events.EVENT_LOCATION};
+                Events.DTSTART, Events.DTEND, Events.EVENT_LOCATION, Events._ID};
         private static final int TITLE_INDEX = 0;
         private static final int DESCRIPTION_INDEX = 1;
         private static final int START_INDEX = 2;
         private static final int END_INDEX = 3;
         private static final int LOCATION_INDEX = 4;
+        private static final int ID_INDEX = 5;
 
         private final String title;
         private final String description;
         private final long start;
         private final long end;
         private final String location;
+        private final String id;
 
         private EventDescriptor(String title, String description, long start, long end,
-                                String location) {
+                                String location, String id) {
             this.title = title;
             this.description = description;
             this.start = start;
             this.end = end;
             this.location = location;
+            this.id = id;
         }
 
         private static EventDescriptor readEvent(Cursor cursor) {
@@ -126,7 +129,8 @@ public class CalendarLoader {
             long start = cursor.getLong(START_INDEX);
             long end = cursor.getLong(END_INDEX);
             String location = cursor.getString(LOCATION_INDEX);
-            return new EventDescriptor(title, description, start, end, location);
+            String id = cursor.getString(ID_INDEX);
+            return new EventDescriptor(title, description, start, end, location, id);
         }
 
         public String getLocation() {
@@ -147,6 +151,10 @@ public class CalendarLoader {
 
         public String getTitle() {
             return title;
+        }
+
+        public String getId() {
+            return id;
         }
     }
 }
