@@ -48,22 +48,17 @@ class ServiceReminder {
         reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
     }
 
-    private boolean checkPermissions(int one, int two) {
-        return (one == PERMISSION_GRANTED && two == PERMISSION_GRANTED);
-    }
-
 
     private boolean requestPermission(Activity main) {
-        int permissionOne = ContextCompat.checkSelfPermission(main,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        int permissionTwo = ContextCompat.checkSelfPermission(main,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
-        if (checkPermissions(permissionOne, permissionTwo))
+        if (ContextCompat.checkSelfPermission(main,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(main,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED)
             return true;
         ActivityCompat.requestPermissions(main,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        return checkPermissions(permissionOne, permissionTwo);
+        return false;
     }
 
     private void sendNotification(Activity main, List<Alarm> result) throws SecurityException {
