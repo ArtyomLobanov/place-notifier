@@ -2,8 +2,8 @@ package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
@@ -23,11 +23,11 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 class ServiceReminder {
 
+    private static final long MILLISEC_IN_MINUTE = 60000;
     private Timer reminder;
     private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
-    private static final long MILLISEC_IN_MINUTE = 60000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
@@ -47,7 +47,6 @@ class ServiceReminder {
         };
         reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
     }
-
 
     private boolean requestPermission(Activity main) {
         if (ContextCompat.checkSelfPermission(main,
