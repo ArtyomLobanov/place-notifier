@@ -1,12 +1,12 @@
 package ru.spbau.mit.placenotifier;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v7.app.NotificationCompat;
 import android.os.Handler;
+import android.support.v7.app.NotificationCompat;
 
 import java.util.List;
 import java.util.Timer;
@@ -16,11 +16,11 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class ServiceReminder {
 
+    private static final long MILLISEC_IN_MINUTE = 60000;
     private Timer reminder;
     private TimerTask task;
     private Handler handler;
     private AlarmManager manager;
-    private static final long MILLISEC_IN_MINUTE = 60000;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
@@ -42,8 +42,9 @@ class ServiceReminder {
     }
 
     private void sendNotification(Activity main, List<Alarm> result) {
-        if (result == null)
+        if (result == null) {
             return;
+        }
         /*need some check if there is a time and there is a place*/
         for (Alarm notif : result) {
             NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
