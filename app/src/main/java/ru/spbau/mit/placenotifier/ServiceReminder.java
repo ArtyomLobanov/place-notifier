@@ -74,6 +74,9 @@ class ServiceReminder {
 
         Long time = System.currentTimeMillis();
 
+        if (location == null)
+            return;
+
         for (Alarm notif : result) {
             if (!notif.getPlacePredicate().apply(location) ||
                     !notif.getTimePredicate().apply(time) || !notif.isActive())

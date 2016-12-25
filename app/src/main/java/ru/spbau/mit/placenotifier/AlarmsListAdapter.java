@@ -71,16 +71,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
 
     @Override
     public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == MainActivity.ALARM_CREATING_REQUEST_CODE
-                && resultCode == Activity.RESULT_OK && data != null) {
-            remove(AlarmEditor.getPrototype(data));
-            Alarm alarm = AlarmEditor.getResult(data);
-            if (filter.apply(alarm)) {
-                add(alarm);
-            }
-            alarmManager.updateAlarm(AlarmEditor.getResult(data));
-            sort(comparator);
-        }
+        refresh();
     }
 
     /**
@@ -140,7 +131,7 @@ class AlarmsListAdapter extends ArrayAdapter<Alarm>
                         .setPrototype(alarm)
                         .build(resultRepeater.getParentActivity());
                 resultRepeater.getParentActivity()
-                        .startActivityForResult(intent, MainActivity.ALARM_CREATING_REQUEST_CODE);
+                        .startActivityForResult(intent, MainActivity.ALARM_CHANGING_REQUEST_CODE);
             }
         }
     }

@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
     static final int ALARM_CREATING_REQUEST_CODE = 566;
+    static final int ALARM_CHANGING_REQUEST_CODE = 239;
 
     private DrawerLayout drawerLayout;
     private List<ResultRepeater.ResultListener> listeners;
@@ -102,16 +103,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == ALARM_CREATING_REQUEST_CODE) {
+                AlarmManager alarmManager = new AlarmManager(this);
+                alarmManager.insert(AlarmEditor.getResult(data));
+            } else if (requestCode == ALARM_CHANGING_REQUEST_CODE) {
+                AlarmManager alarmManager = new AlarmManager(this);
+                alarmManager.updateAlarm(AlarmEditor.getResult(data));
+            }
+        }
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
-        }
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        if (data != null && requestCode == ALARM_CREATING_REQUEST_CODE) {
-            AlarmManager alarmManager = new AlarmManager(this);
-            alarmManager.insert(AlarmEditor.getResult(data));
         }
     }
 
