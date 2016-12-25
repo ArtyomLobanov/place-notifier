@@ -96,6 +96,10 @@ public class CalendarLoader {
             return owner;
         }
 
+        public String getId() {
+            return id;
+        }
+
         @Override
         public String toString() {
             return name + " (" + owner + ")";

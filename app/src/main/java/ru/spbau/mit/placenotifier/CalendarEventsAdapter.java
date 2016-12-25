@@ -57,13 +57,19 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
         return view;
     }
 
-    public void setCalendar(@NonNull CalendarDescriptor calendar) {
-        this.calendar = calendar;
-        new AsyncLoader().execute();
+    void setCalendar(@NonNull CalendarDescriptor calendar) {
+        if (this.calendar != calendar) {
+            this.calendar = calendar;
+            new AsyncLoader().execute();
+        }
+    }
+
+    public CalendarDescriptor getCalendar() {
+        return calendar;
     }
 
     @NonNull
-    public List<EventDescriptor> getSelectedEvents() {
+    List<EventDescriptor> getSelectedEvents() {
         List<EventDescriptor> list = new ArrayList<>();
         //noinspection Convert2streamapi
         for (EventDescriptor descriptor : eventsList) {

@@ -16,17 +16,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
+    private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
+    private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
+
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (currentFragment != null) {
+            outState.putSerializable(CURRENT_FRAGMENT_CLASS_KEY, currentFragment.getClass());
+            Bundle fragmentState = new Bundle();
+            currentFragment.onSaveInstanceState(fragmentState);
+            outState.putBundle(CURRENT_FRAGMENT_STATE_KEY, fragmentState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        if (state == null) {
+            return;
+        }
+        Serializable serializable = state.getSerializable(CURRENT_FRAGMENT_CLASS_KEY);
+        Class<? extends Fragment> fragmentClass = null;
+        if (!(serializable instanceof Class)) {
+            return;
+        }
+        //noinspection unchecked
+        fragmentClass = (Class<? extends Fragment>) serializable;
+        Fragment fragment = null;
+        try {
+            fragment = fragmentClass.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Bad fragment was used", e);
+        }
+        Bundle fragmentState = state.getBundle(CURRENT_FRAGMENT_STATE_KEY);
+        if (fragmentState != null) {
+            fragment.setArguments(fragmentState);
+        }
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        currentFragment = fragment;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return true;
     }
@@ -87,10 +134,9 @@ public class MainActivity extends AppCompatActivity
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
-
         FragmentManager m = getFragmentManager();
         m.beginTransaction().replace(R.id.container, fragment).commit();
-
+        currentFragment = fragment;
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
