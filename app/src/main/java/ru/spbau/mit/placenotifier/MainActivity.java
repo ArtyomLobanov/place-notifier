@@ -23,8 +23,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
+    static final int ALARM_CREATING_REQUEST_CODE = 566;
+
     private DrawerLayout drawerLayout;
-    private List<ResultListener> listeners;
+    private List<ResultRepeater.ResultListener> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         listeners = new ArrayList<>();
 
+        new ServiceReminder(this);
     }
 
     @Override
@@ -62,13 +65,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_create_alarm) {
+            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
+        }
         return true;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
         Fragment fragment;
-        switch (item.getItemId()) {
+        switch (id) {
             case R.id.active_alarms_menu:
                 fragment = new AlarmsList();
                 break;
@@ -98,18 +106,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
-        for (ResultListener listener : listeners) {
+        for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
+        }
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (data != null && requestCode == ALARM_CREATING_REQUEST_CODE) {
+            AlarmManager alarmManager = new AlarmManager(this);
+            alarmManager.insert(AlarmEditor.getResult(data));
         }
     }
 
-    @Override
     public Activity getParentActivity() {
         return this;
     }
 
-    @Override
-    public void addResultListener(@NonNull ResultListener listener) {
+    public void addResultListener(@NonNull ResultRepeater.ResultListener listener) {
         listeners.add(listener);
     }
 }
