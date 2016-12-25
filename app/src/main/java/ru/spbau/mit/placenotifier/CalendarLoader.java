@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class CalendarLoader {
         contentResolver = context.getContentResolver();
     }
 
-    private boolean checkPermissions() {
+    boolean checkPermissions() {
         int status = ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR);
         return status == PackageManager.PERMISSION_GRANTED;
     }
@@ -61,7 +63,7 @@ public class CalendarLoader {
         return events;
     }
 
-    public static class CalendarDescriptor {
+    public static class CalendarDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Calendars._ID, Calendars.NAME,
                 Calendars.ACCOUNT_NAME};
@@ -95,7 +97,7 @@ public class CalendarLoader {
         }
     }
 
-    public static class EventDescriptor {
+    public static class EventDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Events.TITLE, Events.DESCRIPTION,
                 Events.DTSTART, Events.DTEND, Events.EVENT_LOCATION, Events._ID};

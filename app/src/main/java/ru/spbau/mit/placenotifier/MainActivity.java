@@ -1,13 +1,16 @@
 package ru.spbau.mit.placenotifier;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new InfoFragment();
                 break;
             case R.id.settings_menu:
+                forTest();
                 fragment = new SettingsFragment();
                 break;
             default:
@@ -97,6 +101,27 @@ public class MainActivity extends AppCompatActivity
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
+        }
+    }
+
+    void forTest() {
+        CalendarLoader cl = new CalendarLoader(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 0);
+            return;
+        }
+        List<CalendarLoader.CalendarDescriptor> dlist = cl.getAvailableCalendars();
+        for (CalendarLoader.CalendarDescriptor d : dlist) {
+            List<CalendarLoader.EventDescriptor> evnts = cl.getEvents(d);
+            AlarmManager m = new AlarmManager(this);
+            AlarmConverter c = new AlarmConverter(this);
+            for (CalendarLoader.EventDescriptor ds : evnts) {
+                try {
+                    m.insert(c.convert(ds));
+                } catch (Exception conversionError) {
+                    // throw new RuntimeException(conversionError);
+                }
+            }
         }
     }
 
