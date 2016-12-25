@@ -1,7 +1,6 @@
 package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -16,12 +15,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalendarLoader {
+class CalendarLoader {
 
     private final ContentResolver contentResolver;
     private final Context context;
 
-    public CalendarLoader(@NonNull Context context) {
+    CalendarLoader(@NonNull Context context) {
         this.context = context;
         contentResolver = context.getContentResolver();
     }
@@ -32,7 +31,7 @@ public class CalendarLoader {
     }
 
     @RequiresPermission(Manifest.permission.READ_CALENDAR)
-    public List<CalendarDescriptor> getAvailableCalendars() {
+    List<CalendarDescriptor> getAvailableCalendars() {
         List<CalendarDescriptor> calendars = new ArrayList<>();
         if (!checkPermissions()) {
             return calendars; // empty list
@@ -48,7 +47,7 @@ public class CalendarLoader {
     }
 
     @RequiresPermission(Manifest.permission.READ_CALENDAR)
-    public List<EventDescriptor> getEvents(CalendarDescriptor descriptor) {
+    List<EventDescriptor> getEvents(CalendarDescriptor descriptor) {
         List<EventDescriptor> events = new ArrayList<>();
         if (!checkPermissions()) {
             return events; // empty list
@@ -63,7 +62,7 @@ public class CalendarLoader {
         return events;
     }
 
-    public static class CalendarDescriptor implements Serializable {
+    static class CalendarDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Calendars._ID, Calendars.NAME,
                 Calendars.ACCOUNT_NAME};
@@ -106,7 +105,7 @@ public class CalendarLoader {
         }
     }
 
-    public static class EventDescriptor implements Serializable {
+    static class EventDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Events.TITLE, Events.DESCRIPTION,
                 Events.DTSTART, Events.DTEND, Events.EVENT_LOCATION, Events._ID};

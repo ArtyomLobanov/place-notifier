@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,18 +11,25 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
+import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
 
 public class CalendarLoaderFragment extends Fragment
         implements FragmentCompat.OnRequestPermissionsResultCallback {
@@ -57,12 +65,35 @@ public class CalendarLoaderFragment extends Fragment
         }
         if (!checkPermission(Manifest.permission.READ_CALENDAR)) {
             FragmentCompat.requestPermissions(this, NECESSARY_PERMISSIONS, PERMISSION_REQUEST);
-        }
-        if (availableCalendars == null || availableCalendars.isEmpty()) {
+        } else if (availableCalendars == null || availableCalendars.isEmpty()) {
             loadCalendarsList();
         }
+
+        CheckBox totalSelector = (CheckBox) result.findViewById(R.id.select_all_button);
+        totalSelector.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                listAdapter.selectAll();
+            } else if (listAdapter.isAllSelected()) {
+                listAdapter.deselectAll();
+            }
+        });
+
+        Button loadEventsButton = (Button) result.findViewById(R.id.import_button);
+        loadEventsButton.setEnabled(false);
+        listAdapter.addSelectionListener((adapter, selectionSize) -> {
+            String mainText = getResources().getString(R.string.import_events);
+            loadEventsButton.setText(mainText + " (" + selectionSize + ")");
+            totalSelector.setChecked(adapter.isAllSelected());
+            loadEventsButton.setEnabled(selectionSize > 0);
+        });
+        loadEventsButton.setOnClickListener(view -> {
+            //noinspection unchecked
+            new AsyncEventsLoader().execute(listAdapter.getSelectedEvents());
+        });
         return result;
     }
+
+
 
     private void restoreState(@NonNull Bundle state) {
         Bundle adapterState = state.getBundle(ADAPTER_STATE_KEY);
@@ -71,25 +102,27 @@ public class CalendarLoaderFragment extends Fragment
         }
         listAdapter.restoreState(adapterState);
         Object savedCalendarsList = state.getSerializable(CALENDARS_LIST_KEY);
-//        if (savedCalendarsList instanceof ArrayList) {
+        if (savedCalendarsList instanceof ArrayList) {
             //noinspection unchecked
             availableCalendars = (ArrayList<CalendarDescriptor>) savedCalendarsList;
             ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item, availableCalendars);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             calendarChooser.setAdapter(adapter);
-            if (listAdapter.getCalendar() == null) {
-                return;
+            if (listAdapter.getCalendar() != null) {
+                setCurrentCalendar(listAdapter.getCalendar());
             }
-            String selectedCalendarID = listAdapter.getCalendar().getId();
-            for (int i = 0; i < availableCalendars.size(); i++) {
-                if (selectedCalendarID.equals(availableCalendars.get(i).getId())) {
-                    calendarChooser.setSelection(i);
-                    break;
-                }
+        }
+    }
+
+    private void setCurrentCalendar(CalendarDescriptor descriptor) {
+        String expectedCalendarID = descriptor.getId();
+        for (int i = 0; i < availableCalendars.size(); i++) {
+            if (expectedCalendarID.equals(availableCalendars.get(i).getId())) {
+                calendarChooser.setSelection(i);
+                break;
             }
-        listAdapter.restoreState(adapterState);
-//        }
+        }
     }
 
     @Override
@@ -158,6 +191,34 @@ public class CalendarLoaderFragment extends Fragment
                     android.R.layout.simple_spinner_item, calendars);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             calendarChooser.setAdapter(adapter);
+        }
+    }
+
+    private class AsyncEventsLoader extends AsyncTask<List<EventDescriptor>, Void, Integer> {
+
+        @SafeVarargs
+        @Override
+        protected final Integer doInBackground(List<EventDescriptor>... lists) {
+            if (lists.length != 1) {
+                throw new IllegalArgumentException("Wrong number of arguments:" + lists.length);
+            }
+            AlarmConverter converter = new AlarmConverter(getActivity());
+            AlarmManager manager = new AlarmManager(getActivity());
+            int alarmCount = 0;
+            for (EventDescriptor descriptor : lists[0]) {
+                try {
+                    Alarm alarm = converter.convert(descriptor);
+                    alarmCount++;
+                    manager.updateAlarm(alarm);
+                } catch (AlarmConverter.ConversionError ignored) {}
+            }
+            return alarmCount;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            Toast.makeText(getActivity(), "Created " + integer + " alarms", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 }

@@ -19,7 +19,7 @@ import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
 import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
 
 
-public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
+class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
 
     private static final String EVENTS_LIST_KEY = "events_list_key";
     private static final String SELECTED_EVENTS_ID_SET_KEY = "selected_events_id_set_key";
@@ -28,6 +28,7 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
 
     private final CalendarLoader calendarLoader;
     private final Context context;
+    private final List<SelectionListener> listeners;
     private CalendarDescriptor calendar;
     // Don't use just List and Set to be sure, that used collections are serializable
     private HashSet<String> selectedEventsId;
@@ -36,6 +37,7 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     CalendarEventsAdapter(@NonNull Context context) {
         super(context, R.layout.alarms_list_item);
         this.context = context;
+        listeners = new ArrayList<>();
         calendarLoader = new CalendarLoader(context);
         selectedEventsId = new HashSet<>();
         eventsList = new ArrayList<>();
@@ -53,8 +55,23 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
             } else {
                 selectedEventsId.remove(descriptor.getId());
             }
+            notifySelectionChanged();
         });
         return view;
+    }
+
+    void addSelectionListener(SelectionListener listener) {
+        listeners.add(listener);
+    }
+
+    private void notifySelectionChanged() {
+        for (SelectionListener listener : listeners) {
+            listener.onSelectionChanged(this, selectedEventsId.size());
+        }
+    }
+
+    CalendarDescriptor getCalendar() {
+        return calendar;
     }
 
     void setCalendar(@NonNull CalendarDescriptor calendar) {
@@ -64,8 +81,23 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
         }
     }
 
-    public CalendarDescriptor getCalendar() {
-        return calendar;
+    void selectAll() {
+        //noinspection Convert2streamapi
+        for (EventDescriptor descriptor : eventsList) {
+            selectedEventsId.add(descriptor.getId());
+        }
+        notifySelectionChanged();
+        notifyDataSetChanged();
+    }
+
+    void deselectAll() {
+        selectedEventsId.clear();
+        notifySelectionChanged();
+        notifyDataSetChanged();
+    }
+
+    boolean isAllSelected() {
+        return selectedEventsId.size() == eventsList.size();
     }
 
     @NonNull
@@ -109,9 +141,14 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
             calendar = (CalendarDescriptor) state.getSerializable(CALENDAR_DESCRIPTOR_KEY);
             clear();
             addAll(eventsList);
+            notifySelectionChanged();
         } catch (ClassCastException e) {
             throw new RuntimeException("wrong state format", e);
         }
+    }
+
+    interface SelectionListener {
+        void onSelectionChanged(CalendarEventsAdapter adapter, int selectionSize);
     }
 
     private class AsyncLoader extends AsyncTask<Void, Void, List<EventDescriptor>> {
@@ -142,6 +179,7 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
                 selectedEventsId.clear();
                 addAll(events);
                 notifyDataSetChanged();
+                notifySelectionChanged();
             }
         }
     }

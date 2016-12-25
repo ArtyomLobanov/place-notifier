@@ -57,7 +57,7 @@ public class AlarmConverter {
                 .build();
     }
 
-    private class ConversionError extends Exception {
+    class ConversionError extends Exception {
         private ConversionError(String message, Throwable cause) {
             super(message, cause);
         }
