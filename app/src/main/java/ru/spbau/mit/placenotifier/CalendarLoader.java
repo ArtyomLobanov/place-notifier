@@ -62,7 +62,7 @@ class CalendarLoader {
         return events;
     }
 
-    static class CalendarDescriptor implements Serializable {
+    static final class CalendarDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Calendars._ID, Calendars.NAME,
                 Calendars.ACCOUNT_NAME};
@@ -105,7 +105,7 @@ class CalendarLoader {
         }
     }
 
-    static class EventDescriptor implements Serializable {
+    static final class EventDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Events.TITLE, Events.DESCRIPTION,
                 Events.DTSTART, Events.DTEND, Events.EVENT_LOCATION, Events._ID};

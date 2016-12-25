@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.Serializable;
-import java.util.Collections;
 
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 

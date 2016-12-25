@@ -10,13 +10,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
+import android.support.v13.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -50,7 +49,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         listeners = new ArrayList<>();
+    }
 
+    private boolean checkPermission(String permission) {
+        int permissionStatus = ActivityCompat.checkSelfPermission(this, permission);
+        return permissionStatus == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -87,13 +90,13 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         Serializable serializable = state.getSerializable(CURRENT_FRAGMENT_CLASS_KEY);
-        Class<? extends Fragment> fragmentClass = null;
+        Class<? extends Fragment> fragmentClass;
         if (!(serializable instanceof Class)) {
             return;
         }
         //noinspection unchecked
         fragmentClass = (Class<? extends Fragment>) serializable;
-        Fragment fragment = null;
+        Fragment fragment;
         try {
             fragment = fragmentClass.newInstance();
         } catch (Exception e) {
@@ -151,8 +154,9 @@ public class MainActivity extends AppCompatActivity
 
     void forTest() {
         CalendarLoader cl = new CalendarLoader(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 0);
+        if (checkPermission(Manifest.permission.READ_CALENDAR)) {
+            String[] request = {Manifest.permission.READ_CALENDAR};
+            ActivityCompat.requestPermissions(this, request, 0);
             return;
         }
         List<CalendarLoader.CalendarDescriptor> dlist = cl.getAvailableCalendars();
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity
                 try {
                     m.insert(c.convert(ds));
                 } catch (Exception conversionError) {
-                    // throw new RuntimeException(conversionError);
+//                    throw new RuntimeException(conversionError);
                 }
             }
         }

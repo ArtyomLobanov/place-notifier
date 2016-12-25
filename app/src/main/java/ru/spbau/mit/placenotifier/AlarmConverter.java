@@ -17,7 +17,7 @@ import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
-public class AlarmConverter {
+class AlarmConverter {
 
     private static final String CONNECTION_ERROR = "Connection error: impossible to find place";
     private static final String BAD_ADDRESS = "Bad address: place not found";
@@ -26,13 +26,11 @@ public class AlarmConverter {
 
     private Geocoder geocoder;
 
-    public AlarmConverter(Context context) {
+    AlarmConverter(Context context) {
         geocoder = new Geocoder(context);
     }
 
-    public Alarm convert(@NonNull EventDescriptor descriptor) throws ConversionError {
-        SerializablePredicate<Long> timePredicate =
-                new TimeIntervalPredicate(descriptor.getStart(), descriptor.getEnd());
+    Alarm convert(@NonNull EventDescriptor descriptor) throws ConversionError {
         List<Address> places;
         try {
             places = geocoder.getFromLocationName(descriptor.getLocation(), 2);
@@ -48,6 +46,8 @@ public class AlarmConverter {
         Beacon beacon = new AddressBeacon(places.get(0), descriptor.getLocation());
         SerializablePredicate<Location> placePredicate
                 = new BeaconPredicate(beacon, DEFAULT_SENSITIVITY);
+        SerializablePredicate<Long> timePredicate =
+                new TimeIntervalPredicate(descriptor.getStart(), descriptor.getEnd());
         return Alarm.builder().setActive(true)
                 .setName(descriptor.getTitle())
                 .setComment(descriptor.getDescription())
@@ -57,7 +57,7 @@ public class AlarmConverter {
                 .build();
     }
 
-    class ConversionError extends Exception {
+    final class ConversionError extends Exception {
         private ConversionError(String message, Throwable cause) {
             super(message, cause);
         }

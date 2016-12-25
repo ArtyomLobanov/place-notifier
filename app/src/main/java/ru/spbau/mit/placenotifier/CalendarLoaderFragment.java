@@ -2,7 +2,6 @@ package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
 import android.app.Fragment;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +22,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
@@ -92,7 +88,6 @@ public class CalendarLoaderFragment extends Fragment
         });
         return result;
     }
-
 
 
     private void restoreState(@NonNull Bundle state) {
@@ -204,15 +199,16 @@ public class CalendarLoaderFragment extends Fragment
             }
             AlarmConverter converter = new AlarmConverter(getActivity());
             AlarmManager manager = new AlarmManager(getActivity());
-            int alarmCount = 0;
+            int fails = 0;
             for (EventDescriptor descriptor : lists[0]) {
                 try {
                     Alarm alarm = converter.convert(descriptor);
-                    alarmCount++;
                     manager.updateAlarm(alarm);
-                } catch (AlarmConverter.ConversionError ignored) {}
+                } catch (AlarmConverter.ConversionError ignored) {
+                    fails++;
+                }
             }
-            return alarmCount;
+            return lists[0].size() - fails;
         }
 
         @Override

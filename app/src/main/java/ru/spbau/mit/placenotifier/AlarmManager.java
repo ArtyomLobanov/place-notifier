@@ -71,7 +71,7 @@ class AlarmManager {
         Log.i("Database:", "Alarm (id = " + alarm.getIdentifier() + ") inserted");
         BeaconPredicate bp = (BeaconPredicate) alarm.getPlacePredicate();
         TimeIntervalPredicate p = (TimeIntervalPredicate) alarm.getTimePredicate();
-        Log.i("Database:", "Place = " + ((AddressBeacon)bp.getBeacon()).getLatitude() + ") lat");
+        Log.i("Database:", "Place = " + ((AddressBeacon) bp.getBeacon()).getLatitude() + ") lat");
         String t = DateUtils.formatDateTime(context,
                 p.getFrom(), DateUtils.FORMAT_SHOW_TIME|DateUtils.FORMAT_SHOW_DATE);
         Log.i("Database:", "begin = " + t);
