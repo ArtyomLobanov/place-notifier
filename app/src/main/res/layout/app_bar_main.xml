@@ -21,10 +21,22 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:clickable="true"-->
+        <!--app:srcCompat="@android:drawable/ic_input_add"-->
+        <!--android:id="@+id/create_alarm_button"-->
+        <!--android:layout_gravity="top|end"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_margin="2dp"-->
+        <!--style="@style/Widget.Design.FloatingActionButton" />-->
+
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

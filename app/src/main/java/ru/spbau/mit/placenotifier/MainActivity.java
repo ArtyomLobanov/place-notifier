@@ -28,10 +28,14 @@ public class MainActivity extends AppCompatActivity
 
     private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
     private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
+    static final int ALARM_CREATING_REQUEST_CODE = 566;
 
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
     private Fragment currentFragment;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +53,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         listeners = new ArrayList<>();
-    }
-
-    private boolean checkPermission(String permission) {
-        int permissionStatus = ActivityCompat.checkSelfPermission(this, permission);
-        return permissionStatus == PackageManager.PERMISSION_GRANTED;
+        new ServiceReminder(this);
     }
 
     @Override
@@ -115,13 +115,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_create_alarm) {
+            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
+        }
         return true;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
         Fragment fragment;
-        switch (item.getItemId()) {
+        switch (id) {
             case R.id.active_alarms_menu:
                 fragment = new AlarmsList();
                 break;
@@ -147,30 +152,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //noinspection Convert2streamapi   (API level isn't enought)
-        for (ResultListener listener : listeners) {
+        for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
         }
-    }
-
-    void forTest() {
-        CalendarLoader cl = new CalendarLoader(this);
-        if (checkPermission(Manifest.permission.READ_CALENDAR)) {
-            String[] request = {Manifest.permission.READ_CALENDAR};
-            ActivityCompat.requestPermissions(this, request, 0);
+        if (resultCode != RESULT_OK) {
             return;
         }
-        List<CalendarLoader.CalendarDescriptor> dlist = cl.getAvailableCalendars();
-        for (CalendarLoader.CalendarDescriptor d : dlist) {
-            List<CalendarLoader.EventDescriptor> evnts = cl.getEvents(d);
-            AlarmManager m = new AlarmManager(this);
-            AlarmConverter c = new AlarmConverter(this);
-            for (CalendarLoader.EventDescriptor ds : evnts) {
-                try {
-                    m.insert(c.convert(ds));
-                } catch (Exception conversionError) {
-//                    throw new RuntimeException(conversionError);
-                }
-            }
+        if (data != null && requestCode == ALARM_CREATING_REQUEST_CODE) {
+            AlarmManager alarmManager = new AlarmManager(this);
+            alarmManager.insert(AlarmEditor.getResult(data));
         }
     }
 
@@ -179,8 +169,7 @@ public class MainActivity extends AppCompatActivity
         return this;
     }
 
-    @Override
-    public void addResultListener(@NonNull ResultListener listener) {
+    public void addResultListener(@NonNull ResultRepeater.ResultListener listener) {
         listeners.add(listener);
     }
 }
