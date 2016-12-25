@@ -103,7 +103,7 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
     private void setupListeners(@NonNull TextView time, @NonNull TextView date,
                                 @NonNull Calendar calendar) {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
-            calendar.set(Calendar.HOUR, hourOfDay);
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             updateViews();
         };
