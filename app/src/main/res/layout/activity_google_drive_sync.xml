@@ -3,13 +3,26 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    android:id="@+id/updating_progress">
+    android:id="@+id/updating_progress"
+    android:baselineAligned="false">
+
+    <Button
+        android:text="Download from Google Drive"
+        android:layout_width="187dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/download" />
+
+    <Button
+        android:text="Upload on Google Drive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/upload" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar2"
+        android:id="@+id/update_GD_progress"
         android:gravity = "center_vertical"
         android:paddingStart="0dp"
         android:padding="0dp"
@@ -17,4 +30,5 @@
         android:paddingBottom="0dp"
         android:paddingEnd="0dp"
         android:layout_gravity="center_vertical|center_horizontal" />
+
 </LinearLayout>
