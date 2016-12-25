@@ -95,6 +95,11 @@ public class CalendarLoader {
         public String getOwner() {
             return owner;
         }
+
+        @Override
+        public String toString() {
+            return name + " (" + owner + ")";
+        }
     }
 
     public static class EventDescriptor implements Serializable {

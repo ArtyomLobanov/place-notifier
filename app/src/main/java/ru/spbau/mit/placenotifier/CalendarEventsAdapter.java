@@ -135,6 +135,7 @@ public class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
                 }
                 selectedEventsId.clear();
                 addAll(events);
+                notifyDataSetChanged();
             }
         }
     }

@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new InfoFragment();
                 break;
             case R.id.settings_menu:
-                forTest();
-                fragment = new SettingsFragment();
+                fragment = new CalendarLoaderFragment();
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
