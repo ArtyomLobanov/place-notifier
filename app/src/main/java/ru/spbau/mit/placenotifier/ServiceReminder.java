@@ -1,6 +1,5 @@
 package ru.spbau.mit.placenotifier;
 
-
 import android.Manifest;
 
 import android.app.Activity;
@@ -78,7 +77,7 @@ class ServiceReminder {
 
         for (Alarm notif : result) {
             if (!notif.getPlacePredicate().apply(location) ||
-                    !notif.getTimePredicate().apply(time))
+                    !notif.getTimePredicate().apply(time) || !notif.isActive())
                 continue;
             NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(main)
                     .setSmallIcon(R.drawable.alarm)
