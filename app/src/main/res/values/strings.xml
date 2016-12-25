@@ -53,4 +53,5 @@
     <string name="import_events">Import events</string>
     <string name="select_all">Select all</string>
     <string name="find_by_name">Find by name</string>
+    <string name="import_calendar">Import calendar</string>
 </resources>

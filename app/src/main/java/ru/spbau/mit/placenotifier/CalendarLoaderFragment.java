@@ -22,7 +22,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
 import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
@@ -199,11 +201,20 @@ public class CalendarLoaderFragment extends Fragment
             }
             AlarmConverter converter = new AlarmConverter(getActivity());
             AlarmManager manager = new AlarmManager(getActivity());
+            Set<String> existingID = new HashSet<>();
+            //noinspection Convert2streamapi
+            for (Alarm alarm : manager.getAlarms()) {
+                existingID.add(alarm.getIdentifier());
+            }
             int fails = 0;
             for (EventDescriptor descriptor : lists[0]) {
                 try {
                     Alarm alarm = converter.convert(descriptor);
-                    manager.updateAlarm(alarm);
+                    if (existingID.contains(alarm.getIdentifier())) {
+                        manager.updateAlarm(alarm);
+                    } else {
+                        manager.insert(alarm);
+                    }
                 } catch (AlarmConverter.ConversionError ignored) {
                     fails++;
                 }
