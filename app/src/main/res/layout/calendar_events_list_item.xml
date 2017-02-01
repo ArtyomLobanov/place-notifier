@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/calendar_events_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/calendar_events_item_check_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/calendar_events_item_open"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="0"
+        android:background="@android:drawable/ic_menu_view" />
+
+
+</LinearLayout>

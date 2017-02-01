@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.List;
 import java.util.Timer;
@@ -71,6 +72,11 @@ class ServiceReminder {
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         else
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (location == null) {
+            Log.w("SR", "location not found");
+            return;
+        }
 
         Long time = System.currentTimeMillis();
 

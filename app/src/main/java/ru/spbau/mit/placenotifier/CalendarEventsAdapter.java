@@ -1,14 +1,23 @@
 package ru.spbau.mit.placenotifier;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +39,7 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     private final Context context;
     private final List<SelectionListener> listeners;
     private CalendarDescriptor calendar;
-    // Don't use just List and Set to be sure, that used collections are serializable
+    // Did not use just List and Set to be sure, that used collections are serializable
     private HashSet<String> selectedEventsId;
     private ArrayList<EventDescriptor> eventsList;
 
@@ -41,23 +50,6 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
         calendarLoader = new CalendarLoader(context);
         selectedEventsId = new HashSet<>();
         eventsList = new ArrayList<>();
-    }
-
-    private CheckBox createView() {
-        CheckBox view = (CheckBox) View.inflate(context, R.layout.calendar_events_list_item, null);
-        view.setOnCheckedChangeListener((compoundButton, b) -> {
-            EventDescriptor descriptor = (EventDescriptor) compoundButton.getTag();
-            if (descriptor == null) {
-                return;
-            }
-            if (b) {
-                selectedEventsId.add(descriptor.getId());
-            } else {
-                selectedEventsId.remove(descriptor.getId());
-            }
-            notifySelectionChanged();
-        });
-        return view;
     }
 
     void addSelectionListener(SelectionListener listener) {
@@ -115,13 +107,15 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        CheckBox checkBox = convertView != null ? (CheckBox) convertView : createView();
-        EventDescriptor descriptor = getItem(position);
-        Objects.requireNonNull(descriptor, "Item not found at position: " + position);
-        checkBox.setTag(descriptor);
-        checkBox.setChecked(selectedEventsId.contains(descriptor.getId()));
-        checkBox.setText(descriptor.getTitle());
-        return checkBox;
+        EventDescriptor eventDescriptor = getItem(position);
+        EventListItemHolder holder;
+        if (convertView == null) {
+            holder = new EventListItemHolder(eventDescriptor);
+        } else {
+            holder = (EventListItemHolder) convertView.getTag();
+            holder.reset(eventDescriptor);
+        }
+        return holder.view;
     }
 
     @NonNull
@@ -149,6 +143,63 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
 
     interface SelectionListener {
         void onSelectionChanged(CalendarEventsAdapter adapter, int selectionSize);
+    }
+
+    private final class EventListItemHolder implements OnCheckedChangeListener, OnClickListener {
+
+        private final CheckBox checkBox;
+        private final Button button;
+        private final View view;
+        private EventDescriptor eventDescriptor;
+
+        private EventListItemHolder(EventDescriptor eventDescriptor) {
+            view = View.inflate(context, R.layout.calendar_events_list_item, null);
+            view.setTag(this);
+
+            checkBox = (CheckBox) view.findViewById(R.id.calendar_events_item_check_box);
+            checkBox.setOnCheckedChangeListener(this);
+
+            button = (Button) view.findViewById(R.id.calendar_events_item_open);
+            button.setOnClickListener(this);
+
+            reset(eventDescriptor);
+        }
+
+        private void reset(EventDescriptor eventDescriptor) {
+            this.eventDescriptor = eventDescriptor;
+            boolean isSelected = selectedEventsId.contains(eventDescriptor.getId());
+
+            checkBox.setText(eventDescriptor.getTitle());
+            checkBox.setChecked(isSelected);
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            if (eventDescriptor == null) {
+                return;
+            }
+            if (b) {
+                selectedEventsId.add(eventDescriptor.getId());
+            } else {
+                selectedEventsId.remove(eventDescriptor.getId());
+            }
+            notifySelectionChanged();
+        }
+
+        @Override
+        public void onClick(View view) {
+            long eventID;
+            try {
+                eventID = Long.parseLong(eventDescriptor.getId());
+            } catch (NumberFormatException e) {
+                Log.e("CEA", "Bad event id format");
+                return;
+            }
+
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+            Intent intent = new Intent(Intent.ACTION_VIEW).setData(uri);
+            context.startActivity(intent);
+        }
     }
 
     private class AsyncLoader extends AsyncTask<Void, Void, List<EventDescriptor>> {
