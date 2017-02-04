@@ -2,11 +2,6 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,6 +10,7 @@ import android.location.Location;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +20,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 class AlarmManager {
     private static final String DATABASE_NAME = "MY_ALARMS3";
+
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
     private static final String NAME = "ALARM_NAME";
@@ -31,7 +28,15 @@ class AlarmManager {
     private static final String ID = "ID";
     private static final String ACTIVE = "IS_ACTIVE";
     private static final String[] COLUMNS = {ID, NAME, TIME, LOCATION, ACTIVE, COMMENT};
+
+    private static final int ID_INDEX = 0;
+    private static final int NAME_INDEX = 1;
+    private static final int TIME_INDEX = 2;
+    private static final int LOCATION_INDEX = 3;
+    private static final int ACTIVE_INDEX = 4;
+    private static final int COMMENT_INDEX = 5;
     private static final int VERSION = 1;
+
     private DBHelper dbHelper;
 
     AlarmManager(Context context) {
@@ -53,7 +58,7 @@ class AlarmManager {
     private byte[] getSerialised(SerializablePredicate<?> predicate) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            ObjectOutput oos = new ObjectOutputStream(stream);
             oos.writeObject(predicate);
             return stream.toByteArray();
         } catch (Exception e) {
@@ -61,6 +66,7 @@ class AlarmManager {
         }
     }
 
+    @SuppressWarnings("unchecked")
     List<Alarm> getAlarms() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         List<Alarm> res = new ArrayList<>();
@@ -68,10 +74,12 @@ class AlarmManager {
         int n = cur.getCount();
         cur.moveToFirst();
         for (int i = 0; i < n; i++) {
-            SerializablePredicate<Location> loc = (SerializablePredicate<Location>) getDeserialized(cur, 3);
-            SerializablePredicate<Long> time = (SerializablePredicate<Long>) getDeserialized(cur, 2);
-            res.add(new Alarm(cur.getString(1), cur.getString(5),
-                    loc, time, cur.getInt(4) > 0, cur.getString(0)));
+            SerializablePredicate<Location> loc =
+                    (SerializablePredicate<Location>) getDeserialized(cur, LOCATION_INDEX);
+            SerializablePredicate<Long> time =
+                    (SerializablePredicate<Long>) getDeserialized(cur, TIME_INDEX);
+            res.add(new Alarm(cur.getString(NAME_INDEX), cur.getString(COMMENT_INDEX),
+                    loc, time, cur.getInt(ACTIVE_INDEX) > 0, cur.getString(ID_INDEX)));
             cur.moveToNext();
         }
         cur.close();

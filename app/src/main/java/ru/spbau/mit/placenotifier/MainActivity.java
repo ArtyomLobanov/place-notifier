@@ -1,16 +1,13 @@
 package ru.spbau.mit.placenotifier;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v13.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,17 +23,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
-    private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
-    private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
-
     static final int ALARM_CREATING_REQUEST_CODE = 566;
     static final int ALARM_CHANGING_REQUEST_CODE = 239;
-
+    private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
+    private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
     private Fragment currentFragment;
-
-
 
 
     @Override

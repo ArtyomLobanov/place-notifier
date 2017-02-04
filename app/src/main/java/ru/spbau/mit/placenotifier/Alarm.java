@@ -31,6 +31,7 @@ public class Alarm implements Serializable {
         this(name, comment, placePredicate, timePredicate, isActive, context, 0);
     }
 
+    @SuppressWarnings("WeakerAccess")
     Alarm(@NonNull String name, @NonNull String comment,
           @NonNull SerializablePredicate<Location> placePredicate,
           @NonNull SerializablePredicate<Long> timePredicate,
