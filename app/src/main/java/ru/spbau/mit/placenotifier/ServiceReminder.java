@@ -93,6 +93,7 @@ class ServiceReminder {
         for (Alarm notification : result) {
             if (!notification.getPlacePredicate().apply(location)
                     || !notification.getTimePredicate().apply(time) || !notification.isActive()) {
+
                 continue;
             }
             Builder builder = (Builder) new Builder(main)

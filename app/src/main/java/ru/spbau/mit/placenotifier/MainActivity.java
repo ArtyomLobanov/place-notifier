@@ -25,8 +25,10 @@ public class MainActivity extends AppCompatActivity
 
     static final int ALARM_CREATING_REQUEST_CODE = 566;
     static final int ALARM_CHANGING_REQUEST_CODE = 239;
+    
     private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
     private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
+    
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
     private Fragment currentFragment;
