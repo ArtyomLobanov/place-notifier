@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -70,11 +70,16 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         buttonCancel = (Button) findViewById(R.id.Cancel_button);
         buttonCancel.setOnClickListener(this);
 
-        Parcelable[] array = getIntent().getParcelableArrayExtra(HOT_POINTS_KEY);
-
+        HotPoint[] hotPoints;
+        try {
+            hotPoints = (HotPoint[]) getIntent().getSerializableExtra(HOT_POINTS_KEY);
+        } catch (ClassCastException e) {
+            Log.e("PP", "Hot points loading failed");
+            hotPoints = new HotPoint[0];
+        }
         LinearLayout hotPointsPanel = (LinearLayout) findViewById(R.id.hot_points_panel);
-        for (Parcelable hotPoint : array) {
-            hotPointsPanel.addView(createButton((HotPoint) hotPoint));
+        for (HotPoint hotPoint : hotPoints) {
+            hotPointsPanel.addView(createButton(hotPoint));
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -218,7 +223,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         @NonNull
         public Intent build(@NonNull Context context) {
             Intent result = new Intent(context, PlacePicker.class);
-            result.putExtra(HOT_POINTS_KEY, hotPoints.toArray(new Parcelable[hotPoints.size()]));
+            result.putExtra(HOT_POINTS_KEY, hotPoints.toArray(new HotPoint[hotPoints.size()]));
             result.putExtra(INITIAL_POSITION_KEY, initialPosition);
             result.putExtra(INITIAL_SCALE_KEY, initialScale);
             return result;

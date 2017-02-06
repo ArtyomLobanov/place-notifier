@@ -1,39 +1,26 @@
 package ru.spbau.mit.placenotifier;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  * Should be used to contains user's favourite locations
  */
-class HotPoint implements Parcelable {
+public class HotPoint implements Serializable {
 
-    public static final Creator<HotPoint> CREATOR = new Creator<HotPoint>() {
-        @Override
-        public HotPoint createFromParcel(Parcel in) {
-            return new HotPoint(in);
-        }
 
-        @Override
-        public HotPoint[] newArray(int size) {
-            return new HotPoint[size];
-        }
-    };
-    private final String name;
-    private final LatLng position;
+    private String name;
+    private LatLng position;
 
     public HotPoint(@NonNull String name, @NonNull LatLng position) {
         this.name = name;
         this.position = position;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected HotPoint(Parcel in) {
-        name = in.readString();
-        position = in.readParcelable(LatLng.class.getClassLoader());
     }
 
     @NonNull
@@ -46,16 +33,18 @@ class HotPoint implements Parcelable {
         return position;
     }
 
-    // some magic to do it Parcelable
+    // serialization magic
 
-    @Override
-    public int describeContents() {
-        return 0;
+    @SuppressWarnings("unused")
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(name);
+        out.writeDouble(position.latitude);
+        out.writeDouble(position.longitude);
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeParcelable(position, 0);
+    @SuppressWarnings("unused")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        name = (String) in.readObject();
+        position = new LatLng(in.readDouble(), in.readDouble());
     }
 }
