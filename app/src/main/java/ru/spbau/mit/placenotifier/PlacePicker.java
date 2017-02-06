@@ -2,7 +2,6 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -24,13 +22,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+import static com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition;
+import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
+
 /**
  * Activity shows maps and offer user to choose point on it
  */
 public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener, View.OnClickListener {
-
-    private static final float DEFAULT_HOT_POINT_SCALE = 10;
 
     private static final String CAMERA_POSITION_KEY = "camera_position";
     private static final String SELECTED_POSITION_KEY = "marker_key";
@@ -111,7 +110,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
             savedCameraPosition = cameraPosition;
             savedSelectedPoint = selectedPoint;
         } else {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            map.moveCamera(newCameraPosition(cameraPosition));
             if (selectedPoint != null) {
                 setSelectedPosition(selectedPoint);
             }
@@ -123,7 +122,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         Button button = (Button) View.inflate(this, R.layout.hot_point_button, null);
         button.setOnClickListener(this);
         button.setText(point.getName());
-        button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        button.getBackground().setColorFilter(point.getColor(), PorterDuff.Mode.MULTIPLY);
         button.setTag(point);
         return button;
     }
@@ -144,9 +143,9 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         if (savedCameraPosition == null) {
             LatLng initialPosition = getIntent().getParcelableExtra(INITIAL_POSITION_KEY);
             float initialScale = getIntent().getFloatExtra(INITIAL_SCALE_KEY, 1);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, initialScale));
+            map.moveCamera(newLatLngZoom(initialPosition, initialScale));
         } else {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(savedCameraPosition));
+            map.moveCamera(newCameraPosition(savedCameraPosition));
             if (savedSelectedPoint != null) {
                 setSelectedPosition(savedSelectedPoint);
             }
@@ -172,8 +171,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
             finish();
         } else { // one of HotPoint buttons pressed
             HotPoint hotPoint = (HotPoint) v.getTag();
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(),
-                    DEFAULT_HOT_POINT_SCALE));
+            map.moveCamera(newLatLngZoom(hotPoint.getPosition(), hotPoint.getScale()));
             setSelectedPosition(hotPoint.getPosition());
         }
     }
@@ -222,8 +220,10 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
 
         @NonNull
         public Intent build(@NonNull Context context) {
+            HotPoint[] buffer = hotPoints.toArray(new HotPoint[hotPoints.size()]);
+
             Intent result = new Intent(context, PlacePicker.class);
-            result.putExtra(HOT_POINTS_KEY, hotPoints.toArray(new HotPoint[hotPoints.size()]));
+            result.putExtra(HOT_POINTS_KEY, buffer);
             result.putExtra(INITIAL_POSITION_KEY, initialPosition);
             result.putExtra(INITIAL_SCALE_KEY, initialScale);
             return result;

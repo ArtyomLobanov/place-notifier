@@ -1,5 +1,6 @@
 package ru.spbau.mit.placenotifier;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,13 +15,16 @@ import java.io.Serializable;
  */
 public class HotPoint implements Serializable {
 
-
     private String name;
     private LatLng position;
+    private int color;
+    private float scale;
 
-    public HotPoint(@NonNull String name, @NonNull LatLng position) {
+    public HotPoint(@NonNull String name, @NonNull LatLng position, int color, float scale) {
         this.name = name;
         this.position = position;
+        this.color = color;
+        this.scale = scale;
     }
 
     @NonNull
@@ -33,6 +37,14 @@ public class HotPoint implements Serializable {
         return position;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
     // serialization magic
 
     @SuppressWarnings("unused")
@@ -40,11 +52,17 @@ public class HotPoint implements Serializable {
         out.writeObject(name);
         out.writeDouble(position.latitude);
         out.writeDouble(position.longitude);
+        out.writeInt(color);
+        out.writeFloat(scale);
     }
 
     @SuppressWarnings("unused")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         name = (String) in.readObject();
         position = new LatLng(in.readDouble(), in.readDouble());
+        color = in.readInt();
+        scale = in.readInt();
     }
+
+
 }
