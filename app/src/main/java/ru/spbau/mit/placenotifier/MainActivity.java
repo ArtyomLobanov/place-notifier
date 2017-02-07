@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         switch (id) {
             case R.id.active_alarms_menu:
-                fragment = new AlarmsList();
+                fragment = new AlarmsListFragment();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
