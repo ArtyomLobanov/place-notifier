@@ -78,6 +78,7 @@ public class AlarmsListFragment extends Fragment {
             powerButton.setOnClickListener(this);
             removeButton.setOnClickListener(this);
             name.setOnClickListener(this);
+            description.setOnClickListener(this);
         }
 
         @Override
