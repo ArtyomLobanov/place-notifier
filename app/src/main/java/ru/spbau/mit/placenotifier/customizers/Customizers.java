@@ -42,6 +42,11 @@ final class Customizers {
             return this;
         }
 
+        OptionsBuilder<T> addOption(@NonNull String massage, int color, @NonNull T value) {
+            options.add(new ConstantCustomizeEngine<>(massage, color, value));
+            return this;
+        }
+
         @NonNull
         public CustomizeEngine<T> build() {
             return new AlternativeCustomizeEngine<>(title, options);

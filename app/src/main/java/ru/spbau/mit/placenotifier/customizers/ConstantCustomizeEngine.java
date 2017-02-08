@@ -8,13 +8,22 @@ import android.widget.TextView;
 import ru.spbau.mit.placenotifier.R;
 
 class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
+    private static final long USE_DEFAULT_COLOR = Long.MAX_VALUE;
 
     private final String messageText;
+    private final long backgroundColor;
     private final T result;
 
     ConstantCustomizeEngine(@NonNull String messageText, @NonNull T result) {
         this.messageText = messageText;
         this.result = result;
+        backgroundColor = USE_DEFAULT_COLOR;
+    }
+
+    ConstantCustomizeEngine(@NonNull String messageText, int backgroundColor, @NonNull T result) {
+        this.messageText = messageText;
+        this.result = result;
+        this.backgroundColor = backgroundColor;
     }
 
     @Override
@@ -26,6 +35,9 @@ class ConstantCustomizeEngine<T> implements CustomizeEngine<T> {
     public void observe(@NonNull View view) {
         TextView messageView = (TextView) view.findViewById(R.id.message_view);
         messageView.setText(messageText);
+        if (backgroundColor != USE_DEFAULT_COLOR) {
+            view.setBackgroundColor((int) backgroundColor);
+        }
     }
 
     @Override
