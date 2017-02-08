@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier.customizers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,11 +34,11 @@ class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyC
     private GoogleMap map;
     private LatLng result;
 
-    PlacePickerCustomizeEngine(@NonNull String title,
-                               @NonNull ResultRepeater resultRepeater, int id) {
+    PlacePickerCustomizeEngine(@NonNull ResultRepeater resultRepeater, int id) {
         this.resultRepeater = resultRepeater;
         this.id = id;
-        this.title = title;
+        Context context = resultRepeater.getParentActivity();
+        title = context.getString(R.string.place_picker_customize_engine_title);
         resultRepeater.addResultListener(this);
     }
 

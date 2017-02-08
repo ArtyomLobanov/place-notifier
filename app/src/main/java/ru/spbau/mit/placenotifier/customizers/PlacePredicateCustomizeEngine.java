@@ -57,36 +57,8 @@ class PlacePredicateCustomizeEngine
                         DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
     }
 
-    private static final HotPoint[] hp = {new HotPoint("spb", new LatLng(30, 60), Color.RED, 15),
-        new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14)};
-
     PlacePredicateCustomizeEngine(@NonNull ResultRepeater producer, int id) {
-        this(new AlternativeCustomizeEngine<>("Choose place somehow",
-                new PlacePickerCustomizeEngine("Choose point on map", producer, id),
-                new AddressPickerCustomizeEngine(producer, "Find place by address"),
-                new HotPointPickerCustomizeEngine(hp, "choose")));
+        this(Customizers.createCombinedBeaconCustomizeEngine(producer, id));
     }
 
     @Override

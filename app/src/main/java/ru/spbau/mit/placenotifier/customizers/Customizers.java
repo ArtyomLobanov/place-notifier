@@ -1,9 +1,18 @@
 package ru.spbau.mit.placenotifier.customizers;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
+
+import ru.spbau.mit.placenotifier.HotPoint;
+import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.ResultRepeater;
+import ru.spbau.mit.placenotifier.predicates.Beacon;
 
 final class Customizers {
 
@@ -22,9 +31,74 @@ final class Customizers {
     }
 
     /**
-    * Allow to create CustomizeEngine which let user
-    * choose something from a range of options
-    */
+     * Help you to do "atomic" changes of some customize engine.
+     * This means, that at the end of execution your customize engine
+     * will be correctly changed or will be restored to the original state.
+     *
+     * @param engine Engine, that will be changed
+     * @param task   Some instructions which change engine
+     * @return true if engine was changed correctly
+     */
+    static boolean safeExecution(@NonNull CustomizeEngine<?> engine,
+                                 @NonNull UnsafeTask task) {
+        Bundle state = engine.saveState();
+        boolean success = task.executeTask();
+        if (!success) {
+            engine.restoreState(state);
+        }
+        return success;
+    }
+
+    private static final HotPoint[] hp = {new HotPoint("spb", new LatLng(30, 60), Color.RED, 15),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14)};
+
+    @NonNull
+    static CustomizeEngine<Beacon> createCombinedBeaconCustomizeEngine(
+            @NonNull ResultRepeater producer, int id) {
+        Context context = producer.getParentActivity();
+        String title = context.getString(R.string.combined_beacon_piker_customize_engine);
+        return new AlternativeCustomizeEngine<>(title,
+                new PlacePickerCustomizeEngine(producer, id),
+                new AddressPickerCustomizeEngine(context),
+                new HotPointPickerCustomizeEngine(hp, "choose"));
+    }
+
+    interface UnsafeTask {
+
+        /**
+         * Some instructions, which can fail.
+         *
+         * @return true in case os success
+         */
+        boolean executeTask();
+    }
+
+    /**
+     * Allow to create CustomizeEngine which let user
+     * choose something from a range of options
+     */
     // It's not possible to make this class private, because
     // it's methods should me called from other places in that package
     @SuppressWarnings("WeakerAccess")
@@ -51,34 +125,5 @@ final class Customizers {
         public CustomizeEngine<T> build() {
             return new AlternativeCustomizeEngine<>(title, options);
         }
-    }
-
-    /**
-     * Help you to do "atomic" changes of some customize engine.
-     * This means, that at the end of execution your customize engine
-     * will be correctly changed or will be restored to the original state.
-     *
-     * @param engine Engine, that will be changed
-     * @param task Some instructions which change engine
-     * @return true if engine was changed correctly
-     */
-    static boolean safeExecution(@NonNull CustomizeEngine<?> engine,
-                                 @NonNull UnsafeTask task) {
-        Bundle state = engine.saveState();
-        boolean success = task.executeTask();
-        if (!success) {
-            engine.restoreState(state);
-        }
-        return success;
-    }
-
-    interface UnsafeTask {
-
-        /**
-         * Some instructions, which can fail.
-         *
-         * @return true in case os success
-         */
-        boolean executeTask();
     }
 }
