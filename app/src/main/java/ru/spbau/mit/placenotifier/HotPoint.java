@@ -28,12 +28,12 @@ public class HotPoint implements Serializable {
     }
 
     @NonNull
-    String getName() {
+    public String getName() {
         return name;
     }
 
     @NonNull
-    LatLng getPosition() {
+    public LatLng getPosition() {
         return position;
     }
 
@@ -43,6 +43,24 @@ public class HotPoint implements Serializable {
 
     public float getScale() {
         return scale;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        HotPoint hotPoint = (HotPoint) o;
+        return position.equals(hotPoint.position) && name.equals(hotPoint.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * name.hashCode() + position.hashCode();
     }
 
     // serialization magic

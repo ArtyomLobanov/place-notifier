@@ -1,5 +1,6 @@
 package ru.spbau.mit.placenotifier.customizers;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -7,6 +8,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import ru.spbau.mit.placenotifier.HotPoint;
 import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
@@ -53,10 +57,36 @@ class PlacePredicateCustomizeEngine
                         DEFAULT_RADIUS_LEFT_BOUND, DEFAULT_RADIUS_RIGHT_BOUND));
     }
 
+    private static final HotPoint[] hp = {new HotPoint("spb", new LatLng(30, 60), Color.RED, 15),
+        new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14),
+            new HotPoint("msc", new LatLng(40, 59), Color.GREEN, 14)};
+
     PlacePredicateCustomizeEngine(@NonNull ResultRepeater producer, int id) {
         this(new AlternativeCustomizeEngine<>("Choose place somehow",
                 new PlacePickerCustomizeEngine("Choose point on map", producer, id),
-                new AddressPickerCustomizeEngine(producer, "Find place by address")));
+                new AddressPickerCustomizeEngine(producer, "Find place by address"),
+                new HotPointPickerCustomizeEngine(hp, "choose")));
     }
 
     @Override
