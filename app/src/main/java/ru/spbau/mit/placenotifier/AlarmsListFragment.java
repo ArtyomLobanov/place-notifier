@@ -1,11 +1,9 @@
 package ru.spbau.mit.placenotifier;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -49,7 +47,7 @@ public class AlarmsListFragment extends Fragment {
         alarmManager = new AlarmManager(getActivity());
 
         ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
-        AlarmComparator currentComparator = (AlarmComparator) spinner.getSelectedItem();
+        Comparator<Alarm> currentComparator = (AlarmComparator) spinner.getSelectedItem();
         listAdapter = new SmartListAdapter<>(alarmManager::getAlarms, AlarmHolder::new, getActivity());
         listAdapter.setComparator(currentComparator);
         listView.setAdapter(listAdapter);

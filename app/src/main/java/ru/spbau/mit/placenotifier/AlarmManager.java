@@ -10,6 +10,7 @@ import android.location.Location;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
 class AlarmManager {
-    private static final String DATABASE_NAME = "MY_ALARMS3";
+    private static final String DATABASE_NAME = "MY_ALARMS10";
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
     private static final String NAME = "ALARM_NAME";
@@ -48,7 +49,7 @@ class AlarmManager {
     private byte[] getSerialised(SerializablePredicate<?> predicate) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(stream);
+            ObjectOutput oos = new ObjectOutputStream(stream);
             oos.writeObject(predicate);
             return stream.toByteArray();
         } catch (Exception e) {

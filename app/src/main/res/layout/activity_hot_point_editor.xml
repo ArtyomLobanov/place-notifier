@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/container"
-            layout="@layout/customize_engine_alarm"
+            layout="@layout/customize_engine_hot_point"
             android:layout_width="match_parent"
             android:layout_height="60dp" />
 

@@ -54,4 +54,6 @@
     <string name="place_picker_customize_engine_title">Choose point in map</string>
     <string name="address_picker_customize_engine_title">Find place by address</string>
     <string name="combined_beacon_piker_customize_engine">Choose place somehow</string>
+    <string name="customize_engine_hot_point_general_settings">General settings</string>
+    <string name="customize_engine_hot_point_place_settings">Place settings</string>
 </resources>

@@ -24,7 +24,7 @@ public class LatLngBeacon extends Beacon {
     public double getLongitude() {
         return longitude;
     }
-
+    //// TODO: 08.02.2017 rewrite use magic
     @NonNull
     public LatLng getLatLng() {
         if (cache == null) {

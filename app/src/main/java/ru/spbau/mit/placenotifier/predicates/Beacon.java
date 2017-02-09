@@ -29,6 +29,10 @@ public abstract class Beacon implements Serializable {
         return distanceTo(address.getLatitude(), address.getLongitude());
     }
 
+    public LatLng toLatLng() {
+        return new LatLng(getLatitude(), getLongitude());
+    }
+
     abstract double getLatitude();
 
     abstract double getLongitude();

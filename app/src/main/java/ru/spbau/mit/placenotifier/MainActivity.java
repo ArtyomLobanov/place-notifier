@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == ALARM_CREATING_REQUEST_CODE) {
                 AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.insert(AlarmEditor.getResult(data));
+                alarmManager.insert(AbstractEditor.getResult(data, Alarm.class));
             } else if (requestCode == ALARM_CHANGING_REQUEST_CODE) {
                 AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.updateAlarm(AlarmEditor.getResult(data));
+                alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
             }
         }
         //noinspection Convert2streamapi   (API level isn't enought)
