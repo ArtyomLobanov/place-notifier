@@ -50,9 +50,9 @@
 
         <include
             android:id="@+id/customize_engine_hot_point_place_setting"
-            layout="@layout/customize_engine_place_predicate"
+            layout="@layout/customize_engine_alternative"
             android:layout_width="match_parent"
-            android:layout_height="320dp" />
+            android:layout_height="200dp" />
 
     </LinearLayout>
 

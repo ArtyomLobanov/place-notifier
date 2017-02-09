@@ -28,7 +28,7 @@ public class HotPointCustomizeEngine implements CustomizeEngine<HotPoint> {
         placeEditor = Customizers.createCombinedBeaconCustomizeEngine(producer, id);
         colorEditor = Customizers.<Integer>forOptions("Choose color")
                 .addOption("Red", Color.RED, Color.RED)
-                .addOption("Green", Color.GREEN, Color.GREEN)
+                .addOption("Blue", Color.BLUE, Color.BLUE)
                 .addOption("Yellow", Color.YELLOW, Color.YELLOW)
                 .build();
     }

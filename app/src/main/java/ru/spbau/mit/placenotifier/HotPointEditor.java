@@ -15,10 +15,9 @@ public class HotPointEditor extends AbstractEditor<HotPoint> {
         onCreate(savedState, creator, HotPoint.class, R.layout.activity_hot_point_editor);
     }
 
-    public static AbstractEditor.IntentBuilder<Alarm> builder() {
-        return AbstractEditor.builder(AlarmEditor.class);
+    public static AbstractEditor.IntentBuilder<HotPoint> builder() {
+        return AbstractEditor.builder(HotPointEditor.class);
     }
-
 
 }
 
