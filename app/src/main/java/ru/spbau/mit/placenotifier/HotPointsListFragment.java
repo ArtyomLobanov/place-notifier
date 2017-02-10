@@ -1,40 +1,27 @@
 package ru.spbau.mit.placenotifier;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import ru.spbau.mit.placenotifier.SmartListAdapter.ViewHolder;
-import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 public class HotPointsListFragment extends Fragment {
 
+    private HotPointManager hotPointManager;
     private ViewGroup tableView;
+    private View createButton;
     private ResultRepeater resultRepeater;
 
     @NonNull
@@ -42,12 +29,32 @@ public class HotPointsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View result = inflater.inflate(R.layout.fragment_hot_points_list, container, false);
         tableView = (ViewGroup) result.findViewById(R.id.hot_points_list_table);
+
+        int primaryColor = ContextCompat.getColor(getActivity(), R.color.colorPrimary);
+
+        createButton = inflater.inflate(R.layout.hot_points_list_add_button, container, false);
+        createButton.setOnClickListener(createHotPoint);
+        createButton.getBackground().setColorFilter(primaryColor, Mode.MULTIPLY);
+        tableView.addView(createButton);
+
         resultRepeater = (ResultRepeater) getActivity();
-        new Loader().execute();
+        resultRepeater.addResultListener((x, y, z) -> refresh());
+
+        hotPointManager = new HotPointManager(getActivity());
+
+        refresh();
         return result;
     }
 
+    private void refresh() {
+        new Loader().execute();
+    }
+
+    @Nullable
     private View createItem(HotPoint hotPoint) {
+        if (getActivity() == null) {
+            return null;
+        }
         View view = View.inflate(getActivity(), R.layout.hot_points_list_item, null);
         view.setOnClickListener(editHotPoint);
 
@@ -63,7 +70,7 @@ public class HotPointsListFragment extends Fragment {
 
     private void updateItem(@NonNull View view, @NonNull HotPoint hotPoint) {
         view.setTag(hotPoint);
-        view.getBackground().setColorFilter(hotPoint.getColor(), PorterDuff.Mode.MULTIPLY);
+        view.getBackground().setColorFilter(hotPoint.getColor(), Mode.MULTIPLY);
 
         TextView nameView = (TextView) view.findViewById(R.id.item_name);
         nameView.setText(hotPoint.getName());
@@ -71,63 +78,42 @@ public class HotPointsListFragment extends Fragment {
     }
 
     private final View.OnClickListener editHotPoint = (v) -> {
+        Activity parent = resultRepeater.getParentActivity();
         Intent intent = HotPointEditor.builder()
                 .setPrototype((HotPoint) v.getTag())
-                .build(getActivity());
-        resultRepeater.getParentActivity()
-                .startActivityForResult(intent, MainActivity.HOT_POINT_CHANGING_REQUEST_CODE);
+                .build(parent);
+        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CHANGING_REQUEST_CODE);
     };
 
     private final View.OnClickListener deleteHotPoint = (v) -> {
-        // todo remove from database
+        View parentView = (View) v.getTag();
+        HotPoint hotPoint = (HotPoint) parentView.getTag();
         tableView.removeView((View) v.getTag());
+        hotPointManager.erase(hotPoint);
     };
 
-    private static final HotPoint[] hp = {new HotPoint("spb", new LatLng(30, 60), Color.RED, 15),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.BLUE, 14),
-            new HotPoint("msc", new LatLng(40, 59), Color.YELLOW, 14)};
+    private final View.OnClickListener createHotPoint = (v) -> {
+        Activity parent = resultRepeater.getParentActivity();
+        Intent intent = HotPointEditor.builder().build(parent);
+        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CREATING_REQUEST_CODE);
+    };
 
     private final class Loader extends AsyncTask<Void, Void, List<HotPoint>>  {
         @Override
         protected List<HotPoint> doInBackground(Void... voids) {
-            List<HotPoint> list = new ArrayList<>();
-            for (HotPoint point: hp) {
-                list.add(point);
-            }
-            return list;
+            return hotPointManager.getHotPoints();
         }
 
         @Override
         protected void onPostExecute(List<HotPoint> hotPoints) {
+            if (getActivity() == null) {
+                return;
+            }
+            tableView.removeAllViews();
             for (HotPoint hotPoint : hotPoints) {
                 tableView.addView(createItem(hotPoint));
             }
+            tableView.addView(createButton);
         }
     }
 

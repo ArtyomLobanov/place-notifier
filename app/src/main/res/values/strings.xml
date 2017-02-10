@@ -57,4 +57,5 @@
     <string name="customize_engine_hot_point_general_settings">General settings</string>
     <string name="customize_engine_hot_point_place_settings">Place settings</string>
     <string name="title_activity_hot_point_editor">Hot Point settings</string>
+    <string name="hot_points_list_title">Your hot points:</string>
 </resources>

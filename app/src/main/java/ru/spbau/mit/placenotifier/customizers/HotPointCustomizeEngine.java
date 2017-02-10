@@ -59,7 +59,8 @@ public class HotPointCustomizeEngine implements CustomizeEngine<HotPoint> {
     @NonNull
     @Override
     public HotPoint getValue() {
-        return new HotPoint(nameEditor.getValue(), placeEditor.getValue().toLatLng(), colorEditor.getValue(), 15);
+        return new HotPoint(nameEditor.getValue().toUpperCase(),
+                placeEditor.getValue().toLatLng(), colorEditor.getValue(), 15);
     }
 
     @Override

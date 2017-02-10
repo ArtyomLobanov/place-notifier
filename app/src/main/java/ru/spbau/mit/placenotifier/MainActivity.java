@@ -112,6 +112,13 @@ public class MainActivity extends AppCompatActivity
             } else if (requestCode == ALARM_CHANGING_REQUEST_CODE) {
                 AlarmManager alarmManager = new AlarmManager(this);
                 alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
+            } else if (requestCode == HOT_POINT_CREATING_REQUEST_CODE) {
+                HotPointManager hotPointManager = new HotPointManager(this);
+                hotPointManager.insert(AbstractEditor.getResult(data, HotPoint.class));
+            } else if (requestCode == HOT_POINT_CHANGING_REQUEST_CODE) {
+                HotPointManager hotPointManager = new HotPointManager(this);
+                hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
+                        AbstractEditor.getResult(data, HotPoint.class));
             }
         }
         //noinspection Convert2streamapi   (API level isn't enought)

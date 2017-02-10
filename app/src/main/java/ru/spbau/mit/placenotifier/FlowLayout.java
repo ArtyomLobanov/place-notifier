@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,13 @@ public class FlowLayout extends ViewGroup {
             a.recycle();
         }
 
+    }
+
+    @Override
+    public void addView(@Nullable View child) {
+        if (child != null) {
+            super.addView(child);
+        }
     }
 
     public FlowLayout(Context context, AttributeSet attrs) {
