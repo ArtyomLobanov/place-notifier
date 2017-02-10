@@ -130,7 +130,6 @@ class PlacePickerCustomizeEngine implements CustomizeEngine<Beacon>, OnMapReadyC
             return;
         }
         result = PlacePicker.getSelectedPoint(data);
-        map.clear();
         updateCamera();
     }
 
