@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,12 +31,11 @@ public class HotPointsListFragment extends Fragment {
         View result = inflater.inflate(R.layout.fragment_hot_points_list, container, false);
         tableView = (ViewGroup) result.findViewById(R.id.hot_points_list_table);
 
-        int primaryColor = ContextCompat.getColor(getActivity(), R.color.colorPrimary);
-
         createButton = inflater.inflate(R.layout.hot_points_list_add_button, container, false);
         createButton.setOnClickListener(createHotPoint);
-        createButton.getBackground().setColorFilter(primaryColor, Mode.MULTIPLY);
+        createButton.findViewById(R.id.inner_add_button).setOnClickListener(createHotPoint);
         tableView.addView(createButton);
+
 
         resultRepeater = (ResultRepeater) getActivity();
         resultRepeater.addResultListener((x, y, z) -> refresh());

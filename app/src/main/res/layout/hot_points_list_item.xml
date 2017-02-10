@@ -12,8 +12,9 @@
         android:id="@+id/item_name"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        android:text="erdln"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:paddingStart="30dp"
+        android:paddingEnd="5dp"/>
 
     <Button
         android:id="@+id/item_delete_button"

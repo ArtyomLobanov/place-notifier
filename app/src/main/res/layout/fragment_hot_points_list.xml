@@ -16,7 +16,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:padding="5dp">
 
         <ru.spbau.mit.placenotifier.FlowLayout
             android:layout_width="match_parent"

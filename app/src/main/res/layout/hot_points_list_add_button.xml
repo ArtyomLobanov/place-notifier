@@ -10,8 +10,8 @@
     android:paddingEnd="15dp">
 
     <Button
-        android:id="@+id/item_delete_button"
-        android:background="@drawable/add"
+        android:id="@+id/inner_add_button"
+        android:background="@drawable/add_black"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:textSize="16sp" />
