@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity
 
     static final int ALARM_CREATING_REQUEST_CODE = 566;
     static final int ALARM_CHANGING_REQUEST_CODE = 239;
+    static final int HOT_POINT_CREATING_REQUEST_CODE = 555;
+    static final int HOT_POINT_CHANGING_REQUEST_CODE = 222;
 
     private DrawerLayout drawerLayout;
     private List<ResultRepeater.ResultListener> listeners;
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new SynchronizationFragment();
                 break;
             case R.id.info_menu:
-                fragment = new InfoFragment();
+                fragment = new HotPointsListFragment();
                 break;
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
