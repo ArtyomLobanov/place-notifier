@@ -26,19 +26,15 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 class ServiceReminder {
 
-    private static final long MILLISEC_IN_MINUTE = 60000;
-    @SuppressWarnings("FieldCanBeLocal")
-    private Timer reminder;
-    @SuppressWarnings("FieldCanBeLocal")
-    private TimerTask task;
+    private static final long MILLIE_IN_MINUTE = 60000;
     private Handler handler;
     private AlarmManager manager;
 
     ServiceReminder(Activity main) {
         manager = new AlarmManager(main);
-        reminder = new Timer();
+        Timer reminder = new Timer();
         handler = new Handler();
-        task = new TimerTask() {
+        TimerTask task = new TimerTask() {
             public void run() {
                 handler.post(() -> {
                     try {
@@ -50,7 +46,7 @@ class ServiceReminder {
                 });
             }
         };
-        reminder.schedule(task, 0, MILLISEC_IN_MINUTE);
+        reminder.schedule(task, 0, MILLIE_IN_MINUTE);
     }
 
     private boolean checkPermissions(Activity activity, String... permissions) {

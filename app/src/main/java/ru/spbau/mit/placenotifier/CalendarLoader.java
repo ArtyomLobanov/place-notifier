@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 class CalendarLoader {
@@ -32,10 +33,10 @@ class CalendarLoader {
 
     @RequiresPermission(Manifest.permission.READ_CALENDAR)
     List<CalendarDescriptor> getAvailableCalendars() {
-        List<CalendarDescriptor> calendars = new ArrayList<>();
         if (!checkPermissions()) {
-            return calendars; // empty list
+            return Collections.emptyList();
         }
+        List<CalendarDescriptor> calendars = new ArrayList<>();
         //noinspection MissingPermission (already checked)
         try (Cursor cursor = contentResolver.query(Calendars.CONTENT_URI,
                 CalendarDescriptor.PROJECTION, null, null, null)) {
@@ -48,10 +49,10 @@ class CalendarLoader {
 
     @RequiresPermission(Manifest.permission.READ_CALENDAR)
     List<EventDescriptor> getEvents(CalendarDescriptor descriptor) {
-        List<EventDescriptor> events = new ArrayList<>();
         if (!checkPermissions()) {
-            return events; // empty list
+            return Collections.emptyList();
         }
+        List<EventDescriptor> events = new ArrayList<>();
         //noinspection MissingPermission (already checked)
         try (Cursor cursor = contentResolver.query(Events.CONTENT_URI,
                 EventDescriptor.PROJECTION, Events.CALENDAR_ID + " = ? ", new String[]{descriptor.id}, null)) {
@@ -89,10 +90,6 @@ class CalendarLoader {
 
         public String getName() {
             return name;
-        }
-
-        public String getOwner() {
-            return owner;
         }
 
         public String getId() {
@@ -151,11 +148,11 @@ class CalendarLoader {
             return end;
         }
 
-        public long getStart() {
+        long getStart() {
             return start;
         }
 
-        public String getDescription() {
+        String getDescription() {
             return description;
         }
 

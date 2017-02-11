@@ -215,7 +215,7 @@ public class CalendarLoaderFragment extends Fragment
                     } else {
                         manager.insert(alarm);
                     }
-                } catch (AlarmConverter.ConversionError ignored) {
+                } catch (AlarmConverter.ConversionException ignored) {
                     fails++;
                 }
             }

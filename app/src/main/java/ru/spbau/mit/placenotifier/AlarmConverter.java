@@ -30,15 +30,15 @@ class AlarmConverter {
         geocoder = new Geocoder(context);
     }
 
-    Alarm convert(@NonNull EventDescriptor descriptor) throws ConversionError {
+    Alarm convert(@NonNull EventDescriptor descriptor) throws ConversionException {
         List<Address> places;
         try {
             places = geocoder.getFromLocationName(descriptor.getLocation(), 2);
         } catch (IOException e) {
-            throw new ConversionError(CONNECTION_ERROR, e);
+            throw new ConversionException(CONNECTION_ERROR, e);
         }
         if (places == null || places.isEmpty()) {
-            throw new ConversionError(BAD_ADDRESS);
+            throw new ConversionException(BAD_ADDRESS);
         }
         if (places.size() > 1) {
             Log.w("CONVERTING", AMBIGUOUS_ADDRESS + " \"" + descriptor.getLocation() + "\"");
@@ -57,12 +57,12 @@ class AlarmConverter {
                 .build();
     }
 
-    final class ConversionError extends Exception {
-        private ConversionError(String message, Throwable cause) {
+    final class ConversionException extends Exception {
+        private ConversionException(String message, Throwable cause) {
             super(message, cause);
         }
 
-        private ConversionError(String message) {
+        private ConversionException(String message) {
             super(message);
         }
     }
