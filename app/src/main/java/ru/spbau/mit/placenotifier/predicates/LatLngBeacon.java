@@ -4,32 +4,40 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class LatLngBeacon extends Beacon {
 
-    private final double latitude;
-    private final double longitude;
-    private transient LatLng cache;
+    private LatLng latLng;
 
 
     public LatLngBeacon(@NonNull LatLng location) {
-        latitude = location.latitude;
-        longitude = location.longitude;
-        cache = location;
+        latLng = location;
     }
 
     public double getLatitude() {
-        return latitude;
+        return latLng.latitude;
     }
 
     public double getLongitude() {
-        return longitude;
+        return latLng.longitude;
     }
-    //// TODO: 08.02.2017 rewrite use magic
+
     @NonNull
     public LatLng getLatLng() {
-        if (cache == null) {
-            cache = new LatLng(latitude, longitude);
-        }
-        return cache;
+        return latLng;
+    }
+
+    @SuppressWarnings("unused")
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeDouble(latLng.latitude);
+        out.writeDouble(latLng.longitude);
+    }
+
+    @SuppressWarnings("unused")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        latLng = new LatLng(in.readDouble(), in.readDouble());
     }
 }

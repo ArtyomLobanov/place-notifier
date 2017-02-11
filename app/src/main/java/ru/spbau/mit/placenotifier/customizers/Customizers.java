@@ -1,15 +1,11 @@
 package ru.spbau.mit.placenotifier.customizers;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
-import ru.spbau.mit.placenotifier.HotPoint;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.predicates.Beacon;

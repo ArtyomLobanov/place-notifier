@@ -8,10 +8,10 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
-import android.os.Handler;
 
 import java.util.List;
 import java.util.Timer;
@@ -50,7 +50,7 @@ class ServiceReminder {
 
     private boolean requestPermission(Activity main) {
         if (ContextCompat.checkSelfPermission(main,
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED &&
+                Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(main,
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED)
             return true;

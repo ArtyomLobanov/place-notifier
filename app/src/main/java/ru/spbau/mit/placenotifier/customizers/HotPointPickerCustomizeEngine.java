@@ -37,6 +37,21 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private int selectedIndex;
     private String filter;
+    private final TextWatcher filterWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            filter = editable.toString().toUpperCase();
+            applyFilter();
+        }
+    };
 
     HotPointPickerCustomizeEngine(Context context) {
         views = new ArrayList<>();
@@ -181,18 +196,4 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         state.putString(FILTER_KEY, filter);
         return state;
     }
-
-    private final TextWatcher filterWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            filter = editable.toString().toUpperCase();
-            applyFilter();
-        }
-    };
 }

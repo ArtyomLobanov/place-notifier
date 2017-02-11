@@ -44,16 +44,13 @@ public class PlacePicker extends FragmentActivity {
     private GoogleMap map;
     private Marker marker;
     private Button buttonOK;
-
-    private CameraPosition savedCameraPosition;
-    private LatLng savedSelectedPoint;
-
     private final OnClickListener onHotPointClicked = v -> {
         HotPoint hotPoint = (HotPoint) v.getTag();
         map.moveCamera(newLatLngZoom(hotPoint.getPosition(), hotPoint.getScale()));
         setSelectedPosition(hotPoint.getPosition());
     };
-
+    private CameraPosition savedCameraPosition;
+    private LatLng savedSelectedPoint;
     private final OnMapReadyCallback onMapReadyCallback = (googleMap) -> {
         map = googleMap;
         map.setOnMapClickListener(this::setSelectedPosition);
@@ -167,24 +164,6 @@ public class PlacePicker extends FragmentActivity {
         return result;
     }
 
-    private final class HotPointsLoader extends AsyncTask<Void, Void, List<HotPoint>> {
-        @Override
-        protected List<HotPoint> doInBackground(Void... voids) {
-            HotPointManager hotPointManager = new HotPointManager(PlacePicker.this);
-            return hotPointManager.getHotPoints();
-        }
-
-        @Override
-        protected void onPostExecute(List<HotPoint> hotPoints) {
-            if (hotPoints == null) {
-                return;
-            }
-            for (HotPoint hotPoint : hotPoints) {
-                hotPointsPanel.addView(createItemView(hotPoint));
-            }
-        }
-    }
-
     /**
      * Special class to create Intent for starting PlacePiker easier
      */
@@ -217,6 +196,24 @@ public class PlacePicker extends FragmentActivity {
             result.putExtra(INITIAL_POSITION_KEY, initialPosition);
             result.putExtra(INITIAL_SCALE_KEY, initialScale);
             return result;
+        }
+    }
+
+    private final class HotPointsLoader extends AsyncTask<Void, Void, List<HotPoint>> {
+        @Override
+        protected List<HotPoint> doInBackground(Void... voids) {
+            HotPointManager hotPointManager = new HotPointManager(PlacePicker.this);
+            return hotPointManager.getHotPoints();
+        }
+
+        @Override
+        protected void onPostExecute(List<HotPoint> hotPoints) {
+            if (hotPoints == null) {
+                return;
+            }
+            for (HotPoint hotPoint : hotPoints) {
+                hotPointsPanel.addView(createItemView(hotPoint));
+            }
         }
     }
 }

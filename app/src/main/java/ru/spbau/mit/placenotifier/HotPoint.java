@@ -1,6 +1,5 @@
 package ru.spbau.mit.placenotifier;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;

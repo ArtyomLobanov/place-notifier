@@ -20,7 +20,8 @@ import java.util.Collection;
 import ru.spbau.mit.placenotifier.SmartListAdapter.Creator;
 import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 
-public class AbstractEditor<T extends Serializable> extends AppCompatActivity implements ResultRepeater {
+public class AbstractEditor<T extends Serializable> extends AppCompatActivity
+        implements ResultRepeater {
 
     private static final String RESULT_KEY = "result_key";
     private static final String PROTOTYPE_KEY = "prototype_key";
@@ -37,7 +38,7 @@ public class AbstractEditor<T extends Serializable> extends AppCompatActivity im
 
     @NonNull
     protected static <T extends Serializable> IntentBuilder<T>
-            builder(@NonNull Class<? extends AbstractEditor<T>> editorClass) {
+    builder(@NonNull Class<? extends AbstractEditor<T>> editorClass) {
         return new IntentBuilder<>(editorClass);
     }
 

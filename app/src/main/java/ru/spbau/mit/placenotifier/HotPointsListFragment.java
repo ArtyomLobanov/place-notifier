@@ -3,13 +3,11 @@ package ru.spbau.mit.placenotifier;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,26 @@ public class HotPointsListFragment extends Fragment {
 
     private HotPointManager hotPointManager;
     private ViewGroup tableView;
+    private final View.OnClickListener deleteHotPoint = (v) -> {
+        View parentView = (View) v.getTag();
+        HotPoint hotPoint = (HotPoint) parentView.getTag();
+        tableView.removeView((View) v.getTag());
+        hotPointManager.erase(hotPoint);
+    };
     private View createButton;
     private ResultRepeater resultRepeater;
+    private final View.OnClickListener editHotPoint = (v) -> {
+        Activity parent = resultRepeater.getParentActivity();
+        Intent intent = HotPointEditor.builder()
+                .setPrototype((HotPoint) v.getTag())
+                .build(parent);
+        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CHANGING_REQUEST_CODE);
+    };
+    private final View.OnClickListener createHotPoint = (v) -> {
+        Activity parent = resultRepeater.getParentActivity();
+        Intent intent = HotPointEditor.builder().build(parent);
+        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CREATING_REQUEST_CODE);
+    };
 
     @NonNull
     @Override
@@ -77,28 +93,7 @@ public class HotPointsListFragment extends Fragment {
         nameView.setTag(hotPoint);
     }
 
-    private final View.OnClickListener editHotPoint = (v) -> {
-        Activity parent = resultRepeater.getParentActivity();
-        Intent intent = HotPointEditor.builder()
-                .setPrototype((HotPoint) v.getTag())
-                .build(parent);
-        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CHANGING_REQUEST_CODE);
-    };
-
-    private final View.OnClickListener deleteHotPoint = (v) -> {
-        View parentView = (View) v.getTag();
-        HotPoint hotPoint = (HotPoint) parentView.getTag();
-        tableView.removeView((View) v.getTag());
-        hotPointManager.erase(hotPoint);
-    };
-
-    private final View.OnClickListener createHotPoint = (v) -> {
-        Activity parent = resultRepeater.getParentActivity();
-        Intent intent = HotPointEditor.builder().build(parent);
-        parent.startActivityForResult(intent, MainActivity.HOT_POINT_CREATING_REQUEST_CODE);
-    };
-
-    private final class Loader extends AsyncTask<Void, Void, List<HotPoint>>  {
+    private final class Loader extends AsyncTask<Void, Void, List<HotPoint>> {
         @Override
         protected List<HotPoint> doInBackground(Void... voids) {
             return hotPointManager.getHotPoints();

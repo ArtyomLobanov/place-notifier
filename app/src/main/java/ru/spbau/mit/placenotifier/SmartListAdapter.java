@@ -17,13 +17,13 @@ import java.util.List;
 class SmartListAdapter<T> extends ArrayAdapter<T> {
 
 
-    private final Predicate<T> DEFAULT_FILTER = x -> true;
-    private final Comparator<T> DEFAULT_COMPARATOR = (x, y) -> x.hashCode() - y.hashCode();
+    private final Predicate<T> defaultFilter = x -> true;
+    private final Comparator<T> defaultComparator = (x, y) -> x.hashCode() - y.hashCode();
 
     private final DataLoader<List<T>> loader;
     private final Creator<ViewHolder<T>> holdersCreator;
-    private Comparator<T> comparator = DEFAULT_COMPARATOR;
-    private Predicate<T> filter = DEFAULT_FILTER;
+    private Comparator<T> comparator = defaultComparator;
+    private Predicate<T> filter = defaultFilter;
 
     SmartListAdapter(@NonNull DataLoader<List<T>> loader,
                      @NonNull Creator<ViewHolder<T>> holdersCreator, @NonNull Context context) {
@@ -34,7 +34,7 @@ class SmartListAdapter<T> extends ArrayAdapter<T> {
     }
 
     void setComparator(@Nullable Comparator<T> comparator) {
-        this.comparator = (comparator == null? DEFAULT_COMPARATOR : comparator);
+        this.comparator = (comparator == null ? defaultComparator : comparator);
         resort();
     }
 
@@ -44,7 +44,7 @@ class SmartListAdapter<T> extends ArrayAdapter<T> {
     }
 
     void setFilter(@Nullable Predicate<T> filter) {
-        this.filter = (filter == null? DEFAULT_FILTER : filter);
+        this.filter = (filter == null ? defaultFilter : filter);
         refresh();
     }
 
