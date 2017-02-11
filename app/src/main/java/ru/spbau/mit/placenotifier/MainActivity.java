@@ -106,19 +106,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == ALARM_CREATING_REQUEST_CODE) {
-                AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.insert(AbstractEditor.getResult(data, Alarm.class));
-            } else if (requestCode == ALARM_CHANGING_REQUEST_CODE) {
-                AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
-            } else if (requestCode == HOT_POINT_CREATING_REQUEST_CODE) {
-                HotPointManager hotPointManager = new HotPointManager(this);
-                hotPointManager.insert(AbstractEditor.getResult(data, HotPoint.class));
-            } else if (requestCode == HOT_POINT_CHANGING_REQUEST_CODE) {
-                HotPointManager hotPointManager = new HotPointManager(this);
-                hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
-                        AbstractEditor.getResult(data, HotPoint.class));
+            switch (requestCode) {
+                case ALARM_CREATING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.insert(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case ALARM_CHANGING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case HOT_POINT_CREATING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.insert(AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
+                case HOT_POINT_CHANGING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
+                            AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
             }
         }
         //noinspection Convert2streamapi   (API level isn't enought)
