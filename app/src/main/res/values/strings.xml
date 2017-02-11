@@ -59,4 +59,5 @@
     <string name="title_activity_hot_point_editor">Hot Point settings</string>
     <string name="hot_points_list_title">Your hot points:</string>
     <string name="choose_by_hot_point">Choose by hot point</string>
+    <string name="find_hot_point">Find hot point</string>
 </resources>

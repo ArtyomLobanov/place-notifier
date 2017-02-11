@@ -5,8 +5,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -23,19 +26,24 @@ import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private static final String SELECTED_HOT_POINT_KEY = "selected_hot_point";
+    private static final String FILTER_KEY = "filter";
     private static final int NO_SELECTION = -1;
 
     private List<HotPoint> hotPoints;
 
     private ViewGroup container;
+    private EditText filterInput;
     private List<View> views;
+
     private int selectedIndex;
+    private String filter;
 
     HotPointPickerCustomizeEngine(Context context) {
         views = new ArrayList<>();
         HotPointManager hotPointManager = new HotPointManager(context);
         hotPoints = hotPointManager.getHotPoints();
         selectedIndex = NO_SELECTION;
+        filter = "";
     }
 
     private void setSelected(int index) {
@@ -49,6 +57,19 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             }
         }
         selectedIndex = index;
+    }
+
+    private void applyFilter() {
+        if (views.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < views.size(); i++) {
+            if (hotPoints.get(i).getName().startsWith(filter)) {
+                views.get(i).setVisibility(View.VISIBLE);
+            } else {
+                views.get(i).setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -65,6 +86,9 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             container.removeAllViews();
             container = null;
         }
+        if (filterInput != null) {
+            filterInput.removeTextChangedListener(filterWatcher);
+        }
     }
 
     @Override
@@ -77,7 +101,12 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             views.add(createAndAddView(i, hotPoints.get(i), container));
         }
 
+        filterInput = (EditText) view.findViewById(R.id.filter_input);
+        filterInput.setText(filter);
+        filterInput.addTextChangedListener(filterWatcher);
+
         setSelected(selectedIndex);
+        applyFilter();
     }
 
     private View createAndAddView(int index, @NonNull HotPoint hotPoint, @NonNull ViewGroup group) {
@@ -108,7 +137,9 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         LatLng position = ((LatLngBeacon) value).getLatLng();
         for (int i = 0; i < hotPoints.size(); i++) {
             if (position.equals(hotPoints.get(i).getPosition())) {
+                filter = hotPoints.get(i).getName();
                 setSelected(i);
+                applyFilter();
                 return true;
             }
         }
@@ -122,13 +153,18 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             setSelected(NO_SELECTION);
             return;
         }
-        if (!(data instanceof HotPoint)) {
+        filter = state.getString(FILTER_KEY);
+        if (!(data instanceof HotPoint) || filter == null) {
             throw new IllegalStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
+        }
+        if (filterInput != null) {
+            filterInput.setText(filter);
         }
         HotPoint selectedPoint = (HotPoint) data;
         for (int i = 0; i < hotPoints.size(); i++) {
             if (selectedPoint.equals(hotPoints.get(i))) {
                 setSelected(i);
+                applyFilter();
                 return;
             }
         }
@@ -142,6 +178,21 @@ class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         if (selectedIndex != NO_SELECTION) {
             state.putSerializable(SELECTED_HOT_POINT_KEY, hotPoints.get(selectedIndex));
         }
+        state.putString(FILTER_KEY, filter);
         return state;
     }
+
+    private final TextWatcher filterWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            filter = editable.toString().toUpperCase();
+            applyFilter();
+        }
+    };
 }

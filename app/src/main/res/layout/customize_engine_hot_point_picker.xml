@@ -7,21 +7,37 @@
 
     <TextView
         android:text="@string/choose_by_hot_point"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:layout_marginStart="10dp" />
 
     <ru.spbau.mit.placenotifier.FlowLayout
         android:id="@+id/customize_hot_point_picker_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         app:paddingH="5"
-        app:paddingV="5">
+        app:paddingV="5"
+        android:paddingBottom="5dp">
 
 
     </ru.spbau.mit.placenotifier.FlowLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:inputType="textPersonName"
+        android:id="@+id/filter_input"
+        android:hint="@string/find_hot_point"
+        android:layout_height="30dp"
+        android:minLines="1"
+        android:textSize="14sp"
+        android:background="@drawable/hot_point_button"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"/>
+
 </LinearLayout>
