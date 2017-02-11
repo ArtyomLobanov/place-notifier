@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_create_alarm) {
-            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            Intent intent = AlarmEditor.prepareIntent(null, MainActivity.this);
             startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
         }
         return true;

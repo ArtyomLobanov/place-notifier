@@ -1,7 +1,6 @@
 package ru.spbau.mit.placenotifier;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -32,17 +31,6 @@ public class AbstractEditor<T extends Serializable> extends AppCompatActivity
     private Class<T> objectType;
 
     @NonNull
-    public static IntentBuilder<?> builder() {
-        throw new UnsupportedOperationException();
-    }
-
-    @NonNull
-    protected static <T extends Serializable> IntentBuilder<T>
-    builder(@NonNull Class<? extends AbstractEditor<T>> editorClass) {
-        return new IntentBuilder<>(editorClass);
-    }
-
-    @NonNull
     public static <T> T getResult(@NonNull Intent data, @NonNull Class<T> expectedType) {
         Object o = data.getSerializableExtra(RESULT_KEY);
         if (!expectedType.isInstance(o)) {
@@ -61,6 +49,10 @@ public class AbstractEditor<T extends Serializable> extends AppCompatActivity
             throw new BadDataFormatException("Result not found");
         }
         return expectedType.cast(o);
+    }
+
+    protected static void putPrototype(@NonNull Intent data, @NonNull Serializable prototype) {
+        data.putExtra(PROTOTYPE_KEY, prototype);
     }
 
     @Override
@@ -158,28 +150,6 @@ public class AbstractEditor<T extends Serializable> extends AppCompatActivity
         //noinspection Convert2streamapi  (not supported at current API level)
         for (ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
-        }
-    }
-
-    static final class IntentBuilder<T extends Serializable> {
-        private T prototype;
-        private Class<? extends AbstractEditor> editorClass;
-
-        private IntentBuilder(@NonNull Class<? extends AbstractEditor> editorClass) {
-            this.editorClass = editorClass;
-        }
-
-        IntentBuilder setPrototype(@NonNull T value) {
-            prototype = value;
-            return this;
-        }
-
-        Intent build(@NonNull Context context) {
-            Intent intent = new Intent(context, editorClass);
-            if (prototype != null) {
-                intent.putExtra(PROTOTYPE_KEY, prototype);
-            }
-            return intent;
         }
     }
 

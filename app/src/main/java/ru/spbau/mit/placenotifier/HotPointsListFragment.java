@@ -30,14 +30,12 @@ public class HotPointsListFragment extends Fragment {
     private ResultRepeater resultRepeater;
     private final View.OnClickListener editHotPoint = (v) -> {
         Activity parent = resultRepeater.getParentActivity();
-        Intent intent = HotPointEditor.builder()
-                .setPrototype((HotPoint) v.getTag())
-                .build(parent);
+        Intent intent = HotPointEditor.prepareIntent((HotPoint) v.getTag(), parent);
         parent.startActivityForResult(intent, MainActivity.HOT_POINT_CHANGING_REQUEST_CODE);
     };
     private final View.OnClickListener createHotPoint = (v) -> {
         Activity parent = resultRepeater.getParentActivity();
-        Intent intent = HotPointEditor.builder().build(parent);
+        Intent intent = HotPointEditor.prepareIntent(null, parent);
         parent.startActivityForResult(intent, MainActivity.HOT_POINT_CREATING_REQUEST_CODE);
     };
 

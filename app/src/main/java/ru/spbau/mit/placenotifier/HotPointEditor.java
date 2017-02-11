@@ -1,6 +1,9 @@
 package ru.spbau.mit.placenotifier;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.spbau.mit.placenotifier.SmartListAdapter.Creator;
@@ -9,8 +12,15 @@ import ru.spbau.mit.placenotifier.customizers.HotPointCustomizeEngine;
 
 public class HotPointEditor extends AbstractEditor<HotPoint> {
 
-    public static AbstractEditor.IntentBuilder<HotPoint> builder() {
-        return AbstractEditor.builder(HotPointEditor.class);
+    // Weaker type of prototype may cause an error,
+    // because AlarmEditor intended to edit Alarm
+    @SuppressWarnings("TypeMayBeWeakened")
+    public static Intent prepareIntent(@Nullable HotPoint prototype, @NonNull Context context) {
+        Intent intent = new Intent(context, HotPointEditor.class);
+        if (prototype != null) {
+            putPrototype(intent, prototype);
+        }
+        return intent;
     }
 
     @Override

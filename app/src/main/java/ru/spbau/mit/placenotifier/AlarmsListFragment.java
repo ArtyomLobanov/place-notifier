@@ -96,9 +96,7 @@ public class AlarmsListFragment extends Fragment {
                 }
                 alarmManager.updateAlarm(changedAlarm);
             } else {
-                Intent intent = AlarmEditor.builder()
-                        .setPrototype(alarm)
-                        .build(getActivity());
+                Intent intent = AlarmEditor.prepareIntent(alarm, getActivity());
                 resultRepeater.getParentActivity()
                         .startActivityForResult(intent, MainActivity.ALARM_CHANGING_REQUEST_CODE);
             }
