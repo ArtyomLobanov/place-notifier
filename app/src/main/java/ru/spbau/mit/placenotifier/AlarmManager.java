@@ -19,7 +19,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
 class AlarmManager {
-    private static final String DATABASE_NAME = "MY_ALARMS10";
+    private static final String DATABASE_NAME = "MY_ALARMS11";
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
     private static final String NAME = "ALARM_NAME";
