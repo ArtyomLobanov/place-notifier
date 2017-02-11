@@ -21,10 +21,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
 import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
@@ -39,7 +41,13 @@ public class CalendarLoaderFragment extends Fragment
 
     private CalendarEventsAdapter listAdapter;
     private Spinner calendarChooser;
-    private ArrayList<CalendarDescriptor> availableCalendars;
+    // guaranteed serializable
+    private List<CalendarDescriptor> availableCalendars;
+
+    @NonNull
+    private static <T> List<T> toSerializableList(@NonNull List<T> list) {
+        return list instanceof Serializable ? list : new ArrayList<>(list);
+    }
 
     private boolean checkPermission(String permission) {
         int permissionStatus = ActivityCompat.checkSelfPermission(getActivity(), permission);
@@ -91,24 +99,28 @@ public class CalendarLoaderFragment extends Fragment
         return result;
     }
 
-
     private void restoreState(@NonNull Bundle state) {
         Bundle adapterState = state.getBundle(ADAPTER_STATE_KEY);
         if (adapterState == null) {
             throw new RuntimeException("Unexpected state format");
         }
         listAdapter.restoreState(adapterState);
-        Object savedCalendarsList = state.getSerializable(CALENDARS_LIST_KEY);
-        if (savedCalendarsList instanceof ArrayList) {
-            //noinspection unchecked
-            availableCalendars = (ArrayList<CalendarDescriptor>) savedCalendarsList;
-            ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, availableCalendars);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            calendarChooser.setAdapter(adapter);
-            if (listAdapter.getCalendar() != null) {
-                setCurrentCalendar(listAdapter.getCalendar());
-            }
+
+        // we know type, because we own hands saved that list
+        //noinspection unchecked
+        List<CalendarDescriptor> savedCalendarsList =
+                (List<CalendarDescriptor>) state.getSerializable(CALENDARS_LIST_KEY);
+
+        if (savedCalendarsList == null) {
+            savedCalendarsList = Collections.emptyList();
+        }
+        availableCalendars = toSerializableList(savedCalendarsList);
+        ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, availableCalendars);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        calendarChooser.setAdapter(adapter);
+        if (listAdapter.getCalendar() != null) {
+            setCurrentCalendar(listAdapter.getCalendar());
         }
     }
 
@@ -143,7 +155,7 @@ public class CalendarLoaderFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putBundle(ADAPTER_STATE_KEY, listAdapter.saveState());
         if (availableCalendars != null) {
-            outState.putSerializable(CALENDARS_LIST_KEY, availableCalendars);
+            outState.putSerializable(CALENDARS_LIST_KEY, (Serializable) availableCalendars);
         }
     }
 
@@ -179,13 +191,8 @@ public class CalendarLoaderFragment extends Fragment
             if (calendars == null) {
                 return;
             }
-            if (calendars instanceof ArrayList) {
-                availableCalendars = (ArrayList<CalendarDescriptor>) calendars;
-            } else {
-                availableCalendars = new ArrayList<>(calendars);
-            }
             ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item, calendars);
+                    android.R.layout.simple_spinner_item, toSerializableList(calendars));
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             calendarChooser.setAdapter(adapter);
         }
@@ -201,7 +208,7 @@ public class CalendarLoaderFragment extends Fragment
             }
             AlarmConverter converter = new AlarmConverter(getActivity());
             AlarmManager manager = new AlarmManager(getActivity());
-            Set<String> existingID = new HashSet<>();
+            Collection<String> existingID = new HashSet<>();
             //noinspection Convert2streamapi
             for (Alarm alarm : manager.getAlarms()) {
                 existingID.add(alarm.getIdentifier());
