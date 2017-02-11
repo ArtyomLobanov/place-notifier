@@ -3,10 +3,12 @@ package ru.spbau.mit.placenotifier;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
@@ -94,6 +96,8 @@ public class AbstractEditor<T extends Serializable> extends AppCompatActivity im
         });
         button.setFocusableInTouchMode(true);
         button.requestFocus();
+        int primaryColor = ContextCompat.getColor(this, R.color.colorPrimary);
+        button.getBackground().setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
     }
 
     private void setupInitialState() {

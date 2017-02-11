@@ -22,11 +22,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         app:paddingH="5"
-        app:paddingV="5"
-        android:paddingBottom="5dp">
-
-
-    </ru.spbau.mit.placenotifier.FlowLayout>
+        app:paddingV="5"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -38,6 +34,7 @@
         android:textSize="14sp"
         android:background="@drawable/hot_point_button"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp"/>
+        android:paddingEnd="10dp"
+        android:layout_marginBottom="3dp"/>
 
 </LinearLayout>
