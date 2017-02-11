@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,10 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -43,6 +46,18 @@ public class CalendarLoaderFragment extends Fragment
     private Spinner calendarChooser;
     // guaranteed serializable
     private List<CalendarDescriptor> availableCalendars;
+    private Context context;
+    private final OnItemSelectedListener calendarChooserListener = new OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            listAdapter.setCalendar(availableCalendars.get(i));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    };
 
     @NonNull
     static <T> List<T> toSerializableList(@NonNull List<T> list) {
@@ -50,7 +65,7 @@ public class CalendarLoaderFragment extends Fragment
     }
 
     private boolean checkPermission(String permission) {
-        int permissionStatus = ActivityCompat.checkSelfPermission(getActivity(), permission);
+        int permissionStatus = ActivityCompat.checkSelfPermission(context, permission);
         return permissionStatus == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -59,17 +74,19 @@ public class CalendarLoaderFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View result = inflater.inflate(R.layout.fragment_calendar_loader, container, false);
         ListView listView = (ListView) result.findViewById(R.id.calendar_events_list);
-        listAdapter = new CalendarEventsAdapter(getActivity());
+        context = getActivity();
+        listAdapter = new CalendarEventsAdapter(context);
         listView.setAdapter(listAdapter);
         setRetainInstance(true);
-
         calendarChooser = (Spinner) result.findViewById(R.id.calendar_chooser);
+        calendarChooser.setOnItemSelectedListener(calendarChooserListener);
+
         Bundle savedState = getArguments();
-        calendarChooser.setOnItemSelectedListener(new CalendarChooserListener());
         if (savedState != null) {
             restoreState(savedState);
         }
         if (!checkPermission(Manifest.permission.READ_CALENDAR)) {
+            Log.e("PERMISSION", "have no permission");
             FragmentCompat.requestPermissions(this, NECESSARY_PERMISSIONS, PERMISSION_REQUEST);
         } else if (availableCalendars == null || availableCalendars.isEmpty()) {
             loadCalendarsList();
@@ -115,7 +132,7 @@ public class CalendarLoaderFragment extends Fragment
             savedCalendarsList = Collections.emptyList();
         }
         availableCalendars = toSerializableList(savedCalendarsList);
-        ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item, availableCalendars);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         calendarChooser.setAdapter(adapter);
@@ -159,18 +176,6 @@ public class CalendarLoaderFragment extends Fragment
         }
     }
 
-    private class CalendarChooserListener implements Spinner.OnItemSelectedListener {
-
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            listAdapter.setCalendar(availableCalendars.get(i));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        }
-    }
-
     private class AsyncCalendarsLoader extends AsyncTask<Void, Void, List<CalendarDescriptor>> {
 
         @Override
@@ -179,7 +184,7 @@ public class CalendarLoaderFragment extends Fragment
                 return null;
             }
             try {
-                CalendarLoader loader = new CalendarLoader(getActivity());
+                CalendarLoader loader = new CalendarLoader(context);
                 return loader.getAvailableCalendars();
             } catch (Exception e) {
                 return null;
@@ -191,7 +196,8 @@ public class CalendarLoaderFragment extends Fragment
             if (calendars == null) {
                 return;
             }
-            ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(getActivity(),
+            availableCalendars = toSerializableList(calendars);
+            ArrayAdapter<CalendarDescriptor> adapter = new ArrayAdapter<>(context,
                     android.R.layout.simple_spinner_item, toSerializableList(calendars));
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             calendarChooser.setAdapter(adapter);
@@ -206,8 +212,8 @@ public class CalendarLoaderFragment extends Fragment
             if (lists.length != 1) {
                 throw new IllegalArgumentException("Wrong number of arguments:" + lists.length);
             }
-            AlarmConverter converter = new AlarmConverter(getActivity());
-            AlarmManager manager = new AlarmManager(getActivity());
+            AlarmConverter converter = new AlarmConverter(context);
+            AlarmManager manager = new AlarmManager(context);
             Collection<String> existingID = new HashSet<>();
             //noinspection Convert2streamapi
             for (Alarm alarm : manager.getAlarms()) {
@@ -231,7 +237,7 @@ public class CalendarLoaderFragment extends Fragment
 
         @Override
         protected void onPostExecute(Integer integer) {
-            Toast.makeText(getActivity(), "Created " + integer + " alarms", Toast.LENGTH_SHORT)
+            Toast.makeText(context, "Created " + integer + " alarms", Toast.LENGTH_SHORT)
                     .show();
         }
     }

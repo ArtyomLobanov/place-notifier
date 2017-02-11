@@ -5,11 +5,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.CalendarContract.Calendars;
 import android.provider.CalendarContract.Events;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,36 +34,43 @@ class CalendarLoader {
         return status == PackageManager.PERMISSION_GRANTED;
     }
 
-    @RequiresPermission(Manifest.permission.READ_CALENDAR)
-    List<CalendarDescriptor> getAvailableCalendars() {
+    @NonNull
+    private <T> List<T> readFromUri(@NonNull ObjectReader<T> reader, @NonNull Uri uri,
+                                    @Nullable String[] projection, @Nullable String selection,
+                                    @Nullable String[] args) {
         if (!checkPermissions()) {
             return Collections.emptyList();
         }
-        List<CalendarDescriptor> calendars = new ArrayList<>();
+        List<T> result = new ArrayList<>();
         //noinspection MissingPermission (already checked)
-        try (Cursor cursor = contentResolver.query(Calendars.CONTENT_URI,
-                CalendarDescriptor.PROJECTION, null, null, null)) {
+        try (Cursor cursor = contentResolver.query(uri, projection, selection, args, null)) {
             while (cursor != null && cursor.moveToNext()) {
-                calendars.add(CalendarDescriptor.readCalendar(cursor));
+                result.add(reader.read(cursor));
             }
         }
-        return calendars;
+        return result;
     }
 
     @RequiresPermission(Manifest.permission.READ_CALENDAR)
+    @NonNull
+    List<CalendarDescriptor> getAvailableCalendars() {
+        return readFromUri(CalendarDescriptor::readCalendar, Calendars.CONTENT_URI,
+                CalendarDescriptor.PROJECTION, null, null);
+    }
+
+    @RequiresPermission(Manifest.permission.READ_CALENDAR)
+    @NonNull
     List<EventDescriptor> getEvents(CalendarDescriptor descriptor) {
-        if (!checkPermissions()) {
-            return Collections.emptyList();
-        }
-        List<EventDescriptor> events = new ArrayList<>();
-        //noinspection MissingPermission (already checked)
-        try (Cursor cursor = contentResolver.query(Events.CONTENT_URI,
-                EventDescriptor.PROJECTION, Events.CALENDAR_ID + " = ? ", new String[]{descriptor.id}, null)) {
-            while (cursor != null && cursor.moveToNext()) {
-                events.add(EventDescriptor.readEvent(cursor));
-            }
-        }
-        return events;
+        final String selection = Events.CALENDAR_ID + " = ? ";
+        final String[] selectionArs = {descriptor.id};
+        Log.wtf("getEvents", "get");
+        return readFromUri(EventDescriptor::readEvent, Events.CONTENT_URI,
+                EventDescriptor.PROJECTION, selection, selectionArs);
+    }
+
+    @FunctionalInterface
+    private interface ObjectReader<T> {
+        T read(Cursor cursor);
     }
 
     static final class CalendarDescriptor implements Serializable {

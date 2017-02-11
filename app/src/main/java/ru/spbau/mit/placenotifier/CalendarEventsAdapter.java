@@ -56,6 +56,7 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
 
     void addSelectionListener(SelectionListener listener) {
         listeners.add(listener);
+        listener.onSelectionChanged(this, selectedEventsId.size());
     }
 
     private void notifySelectionChanged() {
