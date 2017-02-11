@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -141,8 +142,8 @@ public class PlacePicker extends FragmentActivity {
     }
 
     @NonNull
-    private Button createButton(@NonNull HotPoint point) {
-        Button button = (Button) View.inflate(this, R.layout.hot_point_button, null);
+    private View createItemView(@NonNull HotPoint point) {
+        TextView button = (TextView) View.inflate(this, R.layout.hot_point_view, null);
         button.setOnClickListener(onHotPointClicked);
         button.setText(point.getName());
         button.getBackground().setColorFilter(point.getColor(), PorterDuff.Mode.MULTIPLY);
@@ -179,7 +180,7 @@ public class PlacePicker extends FragmentActivity {
                 return;
             }
             for (HotPoint hotPoint : hotPoints) {
-                hotPointsPanel.addView(createButton(hotPoint));
+                hotPointsPanel.addView(createItemView(hotPoint));
             }
         }
     }

@@ -4,7 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/hot_point_button"
-    android:padding="5dp">
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,8 +14,8 @@
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textAllCaps="true"
-        android:paddingStart="30dp"
-        android:paddingEnd="5dp"/>
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"/>
 
     <Button
         android:id="@+id/item_delete_button"

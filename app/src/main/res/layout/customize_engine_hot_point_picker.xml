@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/customize_hot_point_picker_title"
+        android:text="@string/choose_by_hot_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -14,14 +14,14 @@
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
-        <ru.spbau.mit.placenotifier.FlowLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/customize_hot_point_picker_container"
-            app:paddingH="5"
-            app:paddingV="5">
+    <ru.spbau.mit.placenotifier.FlowLayout
+        android:id="@+id/customize_hot_point_picker_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:paddingH="5"
+        app:paddingV="5">
 
 
-        </ru.spbau.mit.placenotifier.FlowLayout>
+    </ru.spbau.mit.placenotifier.FlowLayout>
 </LinearLayout>

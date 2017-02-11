@@ -30,6 +30,7 @@ public class HotPointCustomizeEngine implements CustomizeEngine<HotPoint> {
                 .addOption("Red", Color.RED, Color.RED)
                 .addOption("Blue", Color.BLUE, Color.BLUE)
                 .addOption("Yellow", Color.YELLOW, Color.YELLOW)
+                .addOption("Magenta", Color.MAGENTA, Color.MAGENTA)
                 .build();
     }
 

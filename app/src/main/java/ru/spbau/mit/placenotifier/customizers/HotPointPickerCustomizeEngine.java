@@ -1,46 +1,52 @@
 package ru.spbau.mit.placenotifier.customizers;
 
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.spbau.mit.placenotifier.HotPoint;
+import ru.spbau.mit.placenotifier.HotPointManager;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 
-public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
+class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
 
     private static final String SELECTED_HOT_POINT_KEY = "selected_hot_point";
     private static final int NO_SELECTION = -1;
 
-    private final HotPoint[] hotPoints;
-    private final String title;
+    private List<HotPoint> hotPoints;
 
     private ViewGroup container;
-    private Button[] buttons;
+    private List<View> views;
     private int selectedIndex;
 
-    public HotPointPickerCustomizeEngine(HotPoint[] hotPoints, String title) {
-        this.hotPoints = hotPoints;
-        this.title = title;
+    HotPointPickerCustomizeEngine(Context context) {
+        views = new ArrayList<>();
+        HotPointManager hotPointManager = new HotPointManager(context);
+        hotPoints = hotPointManager.getHotPoints();
+        selectedIndex = NO_SELECTION;
     }
 
     private void setSelected(int index) {
-        if (buttons != null) {
+        if (!views.isEmpty()) {
             if (selectedIndex != NO_SELECTION) {
-                buttons[selectedIndex].setTypeface(null, Typeface.NORMAL);
-                buttons[selectedIndex].setEnabled(true);
+                int color = hotPoints.get(selectedIndex).getColor();
+                views.get(selectedIndex).getBackground().setColorFilter(color, Mode.MULTIPLY);
             }
-            buttons[index].setEnabled(false);
-            buttons[index].setTypeface(null, Typeface.BOLD);
+            if (index != NO_SELECTION) {
+                views.get(index).getBackground().setColorFilter(Color.GRAY, Mode.MULTIPLY);
+            }
         }
         selectedIndex = index;
     }
@@ -51,12 +57,10 @@ public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     }
 
     private void clean() {
-        if (buttons != null) {
-            for (Button button : buttons) {
-                button.setOnClickListener(null);
-            }
-            buttons = null;
+        for (View view : views) {
+            view.setOnClickListener(null);
         }
+        views.clear();
         if (container != null) {
             container.removeAllViews();
             container = null;
@@ -67,25 +71,22 @@ public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     public void observe(@NonNull View view) {
         clean();
 
-        TextView titleView = (TextView) view.findViewById(R.id.customize_hot_point_picker_title);
-        titleView.setText(title);
-
         container = (ViewGroup) view.findViewById(R.id.customize_hot_point_picker_container);
-        buttons = new Button[hotPoints.length];
-        for (int i = 0; i < hotPoints.length; i++) {
-            buttons[i] = createAndAddButton(i, container);
+        container.removeAllViews();
+        for (int i = 0; i < hotPoints.size(); i++) {
+            views.add(createAndAddView(i, hotPoints.get(i), container));
         }
+
         setSelected(selectedIndex);
     }
 
-    private Button createAndAddButton(int index, @NonNull ViewGroup parent) {
-        HotPoint hotPoint = hotPoints[index];
-        Button button = (Button) View.inflate(parent.getContext(), R.layout.hot_point_button, null);
-        button.setOnClickListener(v -> setSelected(index));
-        button.setText(hotPoint.getName());
-        button.getBackground().setColorFilter(hotPoint.getColor(), PorterDuff.Mode.MULTIPLY);
-        parent.addView(button);
-        return button;
+    private View createAndAddView(int index, @NonNull HotPoint hotPoint, @NonNull ViewGroup group) {
+        TextView view = (TextView) View.inflate(group.getContext(), R.layout.hot_point_view, null);
+        view.setOnClickListener(v -> setSelected(index));
+        view.setText(hotPoint.getName());
+        view.getBackground().setColorFilter(hotPoint.getColor(), Mode.MULTIPLY);
+        group.addView(view);
+        return view;
     }
 
     @Override
@@ -99,14 +100,14 @@ public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         if (selectedIndex == NO_SELECTION) {
             throw new IllegalStateException(ON_NOT_READY_STATE_EXCEPTION_MESSAGE);
         }
-        return new LatLngBeacon(hotPoints[selectedIndex].getPosition());
+        return new LatLngBeacon(hotPoints.get(selectedIndex).getPosition());
     }
 
     @Override
     public boolean setValue(@NonNull Beacon value) {
         LatLng position = ((LatLngBeacon) value).getLatLng();
-        for (int i = 0; i < hotPoints.length; i++) {
-            if (position.equals(hotPoints[i].getPosition())) {
+        for (int i = 0; i < hotPoints.size(); i++) {
+            if (position.equals(hotPoints.get(i).getPosition())) {
                 setSelected(i);
                 return true;
             }
@@ -125,8 +126,8 @@ public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
             throw new IllegalStateException(ON_WRONG_SAVED_STATE_FORMAT_EXCEPTION_MESSAGE);
         }
         HotPoint selectedPoint = (HotPoint) data;
-        for (int i = 0; i < hotPoints.length; i++) {
-            if (selectedPoint.equals(hotPoints[i])) {
+        for (int i = 0; i < hotPoints.size(); i++) {
+            if (selectedPoint.equals(hotPoints.get(i))) {
                 setSelected(i);
                 return;
             }
@@ -139,7 +140,7 @@ public class HotPointPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     public Bundle saveState() {
         Bundle state = new Bundle();
         if (selectedIndex != NO_SELECTION) {
-            state.putSerializable(SELECTED_HOT_POINT_KEY, hotPoints[selectedIndex]);
+            state.putSerializable(SELECTED_HOT_POINT_KEY, hotPoints.get(selectedIndex));
         }
         return state;
     }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class HotPointManager {
+public class HotPointManager {
     private static final String DATABASE_NAME = "HOT_POINTS_DATABASE";
     private static final String NAME = "NAME";
     private static final String COLOR = "COLOR";
@@ -30,11 +30,11 @@ class HotPointManager {
     private static final int VERSION = 1;
     private DBHelper dbHelper;
 
-    HotPointManager(Context context) {
+    public HotPointManager(Context context) {
         dbHelper = new DBHelper(context);
     }
 
-    List<HotPoint> getHotPoints() {
+    public List<HotPoint> getHotPoints() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         List<HotPoint> res = new ArrayList<>();
         try (Cursor cur = database.query(DATABASE_NAME, COLUMNS, null, null, null, null, null)) {

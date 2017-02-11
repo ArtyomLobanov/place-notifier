@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:background="@drawable/hot_point_button"
+    android:visibility="visible"
+    android:textColor="@android:color/black"
+    android:textAllCaps="true" />
