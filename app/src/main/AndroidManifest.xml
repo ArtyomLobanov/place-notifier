@@ -50,9 +50,7 @@
             android:name=".AlarmEditor"
             android:theme="@style/AppTheme"
             android:label="@string/title_activity_notification_editor"/>
-        <activity
-            android:name=".GoogleDriveSync"
-            android:label="Syncronization with GD"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
