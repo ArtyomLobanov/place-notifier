@@ -19,7 +19,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -38,9 +40,10 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     private final Context context;
     private final List<SelectionListener> listeners;
     private CalendarDescriptor calendar;
-    // Did not use just List and Set to be sure, that used collections are serializable
-    private HashSet<String> selectedEventsId;
-    private ArrayList<EventDescriptor> eventsList;
+
+    // should use one of serializable collection
+    private Collection<String> selectedEventsId;
+    private List<EventDescriptor> eventsList;
 
     CalendarEventsAdapter(@NonNull Context context) {
         super(context, R.layout.alarms_list_item);
@@ -73,7 +76,7 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     }
 
     void selectAll() {
-        //noinspection Convert2streamapi
+        //noinspection Convert2streamapi (not supported by current API level)
         for (EventDescriptor descriptor : eventsList) {
             selectedEventsId.add(descriptor.getId());
         }
@@ -94,7 +97,7 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     @NonNull
     List<EventDescriptor> getSelectedEvents() {
         List<EventDescriptor> list = new ArrayList<>();
-        //noinspection Convert2streamapi
+        //noinspection Convert2streamapi (not supported by current API level)
         for (EventDescriptor descriptor : eventsList) {
             if (selectedEventsId.contains(descriptor.getId())) {
                 list.add(descriptor);
@@ -120,17 +123,17 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
     @NonNull
     public Bundle saveState() {
         Bundle state = new Bundle();
-        state.putSerializable(EVENTS_LIST_KEY, eventsList);
-        state.putSerializable(SELECTED_EVENTS_ID_SET_KEY, selectedEventsId);
+        state.putSerializable(EVENTS_LIST_KEY, (Serializable) eventsList);
+        state.putSerializable(SELECTED_EVENTS_ID_SET_KEY, (Serializable) selectedEventsId);
         state.putSerializable(CALENDAR_DESCRIPTOR_KEY, calendar);
         return state;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") // We know types because we own hands save that objects
     public void restoreState(@NonNull Bundle state) {
         try {
-            eventsList = (ArrayList<EventDescriptor>) state.getSerializable(EVENTS_LIST_KEY);
-            selectedEventsId = (HashSet<String>) state.getSerializable(SELECTED_EVENTS_ID_SET_KEY);
+            eventsList = (List<EventDescriptor>) state.getSerializable(EVENTS_LIST_KEY);
+            selectedEventsId = (Collection<String>) state.getSerializable(SELECTED_EVENTS_ID_SET_KEY);
             calendar = (CalendarDescriptor) state.getSerializable(CALENDAR_DESCRIPTOR_KEY);
             clear();
             addAll(eventsList);
@@ -220,12 +223,8 @@ class CalendarEventsAdapter extends ArrayAdapter<EventDescriptor> {
         protected void onPostExecute(@Nullable List<EventDescriptor> events) {
             clear();
             if (events != null) {
-                if (events instanceof ArrayList) {
-                    eventsList = (ArrayList<EventDescriptor>) events;
-                } else {
-                    eventsList.clear();
-                    eventsList.addAll(events);
-                }
+                eventsList.clear();
+                eventsList.addAll(events);
                 selectedEventsId.clear();
                 addAll(events);
                 notifyDataSetChanged();

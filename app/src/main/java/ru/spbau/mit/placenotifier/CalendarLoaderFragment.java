@@ -45,7 +45,7 @@ public class CalendarLoaderFragment extends Fragment
     private List<CalendarDescriptor> availableCalendars;
 
     @NonNull
-    private static <T> List<T> toSerializableList(@NonNull List<T> list) {
+    static <T> List<T> toSerializableList(@NonNull List<T> list) {
         return list instanceof Serializable ? list : new ArrayList<>(list);
     }
 

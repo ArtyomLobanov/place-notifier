@@ -19,7 +19,7 @@ import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
 
 class AlarmManager {
-    private static final String DATABASE_NAME = "MY_ALARMS3";
+    private static final String DATABASE_NAME = "MY_ALARMS13";
 
     private static final String TIME = "TIME_PREDICATE";
     private static final String LOCATION = "LOCATION_PREDICATE";
@@ -66,7 +66,6 @@ class AlarmManager {
         }
     }
 
-    @SuppressWarnings("unchecked")
     List<Alarm> getAlarms() {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         List<Alarm> res = new ArrayList<>();
@@ -74,8 +73,10 @@ class AlarmManager {
         int n = cur.getCount();
         cur.moveToFirst();
         for (int i = 0; i < n; i++) {
+            //noinspection unchecked (type is explicitly specified by table format)
             SerializablePredicate<Location> loc =
                     (SerializablePredicate<Location>) getDeserialized(cur, LOCATION_INDEX);
+            //noinspection unchecked (type is explicitly specified by table format)
             SerializablePredicate<Long> time =
                     (SerializablePredicate<Long>) getDeserialized(cur, TIME_INDEX);
             res.add(new Alarm(cur.getString(NAME_INDEX), cur.getString(COMMENT_INDEX),
