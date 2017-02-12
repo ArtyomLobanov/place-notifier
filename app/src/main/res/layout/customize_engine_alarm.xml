@@ -27,7 +27,7 @@
             android:id="@+id/customize_engine_alarm_comment_input"
             layout="@layout/customize_engine_string"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="wrap_content" />
 
         <include
             android:id="@+id/customize_engine_alarm_status"

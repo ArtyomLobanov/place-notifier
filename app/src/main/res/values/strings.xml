@@ -50,5 +50,8 @@
     <string name="customize_engine_alarm_general_settings">General settings</string>
     <string name="customize_engine_alarm_time_settings">Time settings</string>
     <string name="customize_engine_notification_place_settings">Place settings</string>
+    <string name="import_events">Import events</string>
+    <string name="select_all">Select all</string>
     <string name="find_by_name">Find by name</string>
+    <string name="import_calendar">Import calendar</string>
 </resources>
