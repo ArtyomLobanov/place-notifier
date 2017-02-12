@@ -25,10 +25,12 @@ public class MainActivity extends AppCompatActivity
 
     static final int ALARM_CREATING_REQUEST_CODE = 566;
     static final int ALARM_CHANGING_REQUEST_CODE = 239;
-    
+    static final int HOT_POINT_CREATING_REQUEST_CODE = 555;
+    static final int HOT_POINT_CHANGING_REQUEST_CODE = 222;
+
     private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
     private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
-    
+
     private DrawerLayout drawerLayout;
     private List<ResultListener> listeners;
     private Fragment currentFragment;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_create_alarm) {
-            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            Intent intent = AlarmEditor.prepareIntent(null, MainActivity.this);
             startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
         }
         return true;
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         switch (id) {
             case R.id.active_alarms_menu:
-                fragment = new AlarmsList();
+                fragment = new AlarmsListFragment();
                 break;
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new CalendarLoaderFragment();
                 break;
             case R.id.info_menu:
-                fragment = new InfoFragment();
+                fragment = new HotPointsListFragment();
                 break;
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
@@ -152,12 +154,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == ALARM_CREATING_REQUEST_CODE) {
-                AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.insert(AlarmEditor.getResult(data));
-            } else if (requestCode == ALARM_CHANGING_REQUEST_CODE) {
-                AlarmManager alarmManager = new AlarmManager(this);
-                alarmManager.updateAlarm(AlarmEditor.getResult(data));
+            switch (requestCode) {
+                case ALARM_CREATING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.insert(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case ALARM_CHANGING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case HOT_POINT_CREATING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.insert(AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
+                case HOT_POINT_CHANGING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
+                            AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
             }
         }
         //noinspection Convert2streamapi   (API level isn't enought)
