@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 
-@SuppressWarnings("unused")
 public class Alarm implements Serializable {
     private static final String DEFAULT_DEVICE_ID = "unidentified_device";
 
@@ -24,22 +23,6 @@ public class Alarm implements Serializable {
     private final SerializablePredicate<Location> placePredicate;
     private final SerializablePredicate<Long> timePredicate;
 
-    Alarm(@NonNull String name, @NonNull String comment,
-          @NonNull SerializablePredicate<Location> placePredicate,
-          @NonNull SerializablePredicate<Long> timePredicate,
-          boolean isActive, @NonNull Context context) {
-        this(name, comment, placePredicate, timePredicate, isActive, context, 0);
-    }
-
-    Alarm(@NonNull String name, @NonNull String comment,
-          @NonNull SerializablePredicate<Location> placePredicate,
-          @NonNull SerializablePredicate<Long> timePredicate,
-          boolean isActive, @NonNull Context context, long salt) {
-        this(name, comment, placePredicate, timePredicate, isActive,
-                createIdentifier(context, salt));
-    }
-
-    @SuppressWarnings("WeakerAccess")
     Alarm(@NonNull String name, @NonNull String comment,
           @NonNull SerializablePredicate<Location> placePredicate,
           @NonNull SerializablePredicate<Long> timePredicate,
@@ -97,9 +80,8 @@ public class Alarm implements Serializable {
         return identifier;
     }
 
-    @SuppressWarnings("WeakerAccess")
     @NonNull
-    public AlarmBuilder change() {
+    AlarmBuilder change() {
         return new AlarmBuilder(this);
     }
 
