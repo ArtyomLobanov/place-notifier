@@ -11,8 +11,8 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
@@ -103,7 +103,7 @@ class TimeIntervalCustomizeEngine implements CustomizeEngine<SerializablePredica
     private void setupListeners(@NonNull TextView time, @NonNull TextView date,
                                 @NonNull Calendar calendar) {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
-            calendar.set(Calendar.HOUR, hourOfDay);
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             updateViews();
         };

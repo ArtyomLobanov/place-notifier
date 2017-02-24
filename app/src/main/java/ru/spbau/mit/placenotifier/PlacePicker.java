@@ -2,18 +2,18 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -22,31 +22,51 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition;
+import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
 /**
  * Activity shows maps and offer user to choose point on it
  */
-public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
-        GoogleMap.OnMapClickListener, View.OnClickListener {
-
-    private static final float DEFAULT_HOT_POINT_SCALE = 10;
+public class PlacePicker extends FragmentActivity {
 
     private static final String CAMERA_POSITION_KEY = "camera_position";
     private static final String SELECTED_POSITION_KEY = "marker_key";
 
-    private static final String HOT_POINTS_KEY = "hot_points";
     private static final String INITIAL_POSITION_KEY = "initial_position";
     private static final String INITIAL_SCALE_KEY = "initial_scale";
     private static final String RESULT_KEY = "result";
 
+    private ViewGroup hotPointsPanel;
+
     private GoogleMap map;
     private Marker marker;
     private Button buttonOK;
-    private Button buttonCancel;
-
+    private final OnClickListener onHotPointClicked = v -> {
+        HotPoint hotPoint = (HotPoint) v.getTag();
+        map.moveCamera(newLatLngZoom(hotPoint.getPosition(), hotPoint.getScale()));
+        setSelectedPosition(hotPoint.getPosition());
+    };
     private CameraPosition savedCameraPosition;
     private LatLng savedSelectedPoint;
+    private final OnMapReadyCallback onMapReadyCallback = (googleMap) -> {
+        map = googleMap;
+        map.setOnMapClickListener(this::setSelectedPosition);
+        if (savedCameraPosition == null) {
+            LatLng initialPosition = getIntent().getParcelableExtra(INITIAL_POSITION_KEY);
+            float initialScale = getIntent().getFloatExtra(INITIAL_SCALE_KEY, 1);
+            map.moveCamera(newLatLngZoom(initialPosition, initialScale));
+        } else {
+            map.moveCamera(newCameraPosition(savedCameraPosition));
+            if (savedSelectedPoint != null) {
+                setSelectedPosition(savedSelectedPoint);
+            }
+            savedCameraPosition = null;
+            savedSelectedPoint = null;
+        }
+    };
 
     @NonNull
     public static IntentBuilder builder() {
@@ -65,28 +85,33 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
 
         buttonOK = (Button) findViewById(R.id.OK_button);
         buttonOK.setEnabled(false);
-        buttonOK.setOnClickListener(this);
+        buttonOK.setOnClickListener((v) -> {
+            setResult(RESULT_OK, prepareResult());
+            finish();
+        });
 
-        buttonCancel = (Button) findViewById(R.id.Cancel_button);
-        buttonCancel.setOnClickListener(this);
+        hotPointsPanel = (ViewGroup) findViewById(R.id.hot_points_panel);
 
-        Parcelable[] array = getIntent().getParcelableArrayExtra(HOT_POINTS_KEY);
-
-        LinearLayout hotPointsPanel = (LinearLayout) findViewById(R.id.hot_points_panel);
-        for (Parcelable hotPoint : array) {
-            hotPointsPanel.addView(createButton((HotPoint) hotPoint));
-        }
+        Button buttonCancel = (Button) findViewById(R.id.Cancel_button);
+        buttonCancel.setOnClickListener((v) -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapFragment);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(onMapReadyCallback);
+
+        new HotPointsLoader().execute();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         if (map != null) {
             outState.putParcelable(CAMERA_POSITION_KEY, map.getCameraPosition());
-            outState.putParcelable(SELECTED_POSITION_KEY, marker.getPosition());
+            if (marker != null) {
+                outState.putParcelable(SELECTED_POSITION_KEY, marker.getPosition());
+            }
         } else {
             outState.putParcelable(CAMERA_POSITION_KEY, savedCameraPosition);
             outState.putParcelable(SELECTED_POSITION_KEY, savedSelectedPoint);
@@ -106,7 +131,7 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
             savedCameraPosition = cameraPosition;
             savedSelectedPoint = selectedPoint;
         } else {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            map.moveCamera(newCameraPosition(cameraPosition));
             if (selectedPoint != null) {
                 setSelectedPosition(selectedPoint);
             }
@@ -114,11 +139,11 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     }
 
     @NonNull
-    private Button createButton(@NonNull HotPoint point) {
-        Button button = (Button) View.inflate(this, R.layout.hot_point_button, null);
-        button.setOnClickListener(this);
+    private View createItemView(@NonNull HotPoint point) {
+        TextView button = (TextView) View.inflate(this, R.layout.hot_point_view, null);
+        button.setOnClickListener(onHotPointClicked);
         button.setText(point.getName());
-        button.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        button.getBackground().setColorFilter(point.getColor(), PorterDuff.Mode.MULTIPLY);
         button.setTag(point);
         return button;
     }
@@ -132,45 +157,11 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         marker = map.addMarker(new MarkerOptions().position(position));
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-        map.setOnMapClickListener(this);
-        if (savedCameraPosition == null) {
-            LatLng initialPosition = getIntent().getParcelableExtra(INITIAL_POSITION_KEY);
-            float initialScale = getIntent().getFloatExtra(INITIAL_SCALE_KEY, 1);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, initialScale));
-        } else {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(savedCameraPosition));
-            if (savedSelectedPoint != null) {
-                setSelectedPosition(savedSelectedPoint);
-            }
-            savedCameraPosition = null;
-            savedSelectedPoint = null;
-        }
-    }
-
-    @Override
-    public void onMapClick(@NonNull LatLng latLng) {
-        setSelectedPosition(latLng);
-    }
-
-    @Override
-    public void onClick(@NonNull View v) {
-        if (v == buttonOK) {
-            Intent result = new Intent();
-            result.putExtra(RESULT_KEY, marker.getPosition());
-            setResult(RESULT_OK, result);
-            finish();
-        } else if (v == buttonCancel) {
-            setResult(RESULT_CANCELED);
-            finish();
-        } else { // one of HotPoint buttons pressed
-            HotPoint hotPoint = (HotPoint) v.getTag();
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(hotPoint.getPosition(),
-                    DEFAULT_HOT_POINT_SCALE));
-            setSelectedPosition(hotPoint.getPosition());
-        }
+    @NonNull
+    private Intent prepareResult() {
+        Intent result = new Intent();
+        result.putExtra(RESULT_KEY, marker.getPosition());
+        return result;
     }
 
     /**
@@ -179,28 +170,12 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
     @SuppressWarnings({"WeakerAccess", "unused"})
     public static final class IntentBuilder {
 
-        private final ArrayList<HotPoint> hotPoints;
         private LatLng initialPosition;
         private float initialScale;
 
         private IntentBuilder() {
-            hotPoints = new ArrayList<>();
             initialScale = 1;
             initialPosition = new LatLng(0, 0);
-        }
-
-        @NonNull
-        public IntentBuilder addHotPoint(@NonNull HotPoint hotPoint) {
-            hotPoints.add(hotPoint);
-            return this;
-        }
-
-        @NonNull
-        public IntentBuilder addAllHotPoint(@NonNull Iterable<HotPoint> collection) {
-            for (HotPoint hotPoint : collection) {
-                hotPoints.add(hotPoint);
-            }
-            return this;
         }
 
         @NonNull
@@ -218,10 +193,27 @@ public class PlacePicker extends FragmentActivity implements OnMapReadyCallback,
         @NonNull
         public Intent build(@NonNull Context context) {
             Intent result = new Intent(context, PlacePicker.class);
-            result.putExtra(HOT_POINTS_KEY, hotPoints.toArray(new Parcelable[hotPoints.size()]));
             result.putExtra(INITIAL_POSITION_KEY, initialPosition);
             result.putExtra(INITIAL_SCALE_KEY, initialScale);
             return result;
+        }
+    }
+
+    private final class HotPointsLoader extends AsyncTask<Void, Void, List<HotPoint>> {
+        @Override
+        protected List<HotPoint> doInBackground(Void... voids) {
+            HotPointManager hotPointManager = new HotPointManager(PlacePicker.this);
+            return hotPointManager.getHotPoints();
+        }
+
+        @Override
+        protected void onPostExecute(List<HotPoint> hotPoints) {
+            if (hotPoints == null) {
+                return;
+            }
+            for (HotPoint hotPoint : hotPoints) {
+                hotPointsPanel.addView(createItemView(hotPoint));
+            }
         }
     }
 }

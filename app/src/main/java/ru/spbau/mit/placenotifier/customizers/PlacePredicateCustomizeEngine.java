@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
@@ -54,9 +54,7 @@ class PlacePredicateCustomizeEngine
     }
 
     PlacePredicateCustomizeEngine(@NonNull ResultRepeater producer, int id) {
-        this(new AlternativeCustomizeEngine<>("Choose place somehow",
-                new PlacePickerCustomizeEngine("Choose point on map", producer, id),
-                new AddressPickerCustomizeEngine(producer, "Find place by address")));
+        this(Customizers.createCombinedBeaconCustomizeEngine(producer, id));
     }
 
     @Override

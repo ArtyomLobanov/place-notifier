@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,17 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ResultRepeater {
 
     static final int ALARM_CREATING_REQUEST_CODE = 566;
+    static final int ALARM_CHANGING_REQUEST_CODE = 239;
+    static final int HOT_POINT_CREATING_REQUEST_CODE = 555;
+    static final int HOT_POINT_CHANGING_REQUEST_CODE = 222;
+
+    private static final String CURRENT_FRAGMENT_CLASS_KEY = "fragment_class";
+    private static final String CURRENT_FRAGMENT_STATE_KEY = "fragment_state";
 
     private DrawerLayout drawerLayout;
-    private List<ResultRepeater.ResultListener> listeners;
+    private List<ResultListener> listeners;
+    private Fragment currentFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         listeners = new ArrayList<>();
-
         new ServiceReminder(this);
     }
 
@@ -64,9 +72,50 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (currentFragment != null) {
+            outState.putSerializable(CURRENT_FRAGMENT_CLASS_KEY, currentFragment.getClass());
+            Bundle fragmentState = new Bundle();
+            currentFragment.onSaveInstanceState(fragmentState);
+            outState.putBundle(CURRENT_FRAGMENT_STATE_KEY, fragmentState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        if (state == null) {
+            return;
+        }
+        Serializable serializable = state.getSerializable(CURRENT_FRAGMENT_CLASS_KEY);
+        Class<? extends Fragment> fragmentClass;
+        if (!(serializable instanceof Class)) {
+            return;
+        }
+        //noinspection unchecked
+        fragmentClass = (Class<? extends Fragment>) serializable;
+        Fragment fragment;
+        try {
+            fragment = fragmentClass.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Bad fragment was used", e);
+        }
+        Bundle fragmentState = state.getBundle(CURRENT_FRAGMENT_STATE_KEY);
+        if (fragmentState != null) {
+            fragment.setArguments(fragmentState);
+        }
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        currentFragment = fragment;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_create_alarm) {
-            Intent intent = AlarmEditor.builder().build(MainActivity.this);
+            Intent intent = AlarmEditor.prepareIntent(null, MainActivity.this);
             startActivityForResult(intent, ALARM_CREATING_REQUEST_CODE);
         }
         return true;
@@ -78,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         switch (id) {
             case R.id.active_alarms_menu:
-                fragment = new AlarmsList();
+                fragment = new AlarmsListFragment();
                 break;
             case R.id.google_drive:
                 fragment = new GoogleDriveFragment();
@@ -86,8 +135,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.synchronization_menu:
                 fragment = new SynchronizationFragment();
                 break;
+            case R.id.calendar_import_menu:
+                fragment = new CalendarLoaderFragment();
+                break;
             case R.id.info_menu:
-                fragment = new InfoFragment();
+                fragment = new HotPointsListFragment();
                 break;
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
@@ -95,29 +147,47 @@ public class MainActivity extends AppCompatActivity
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
         }
-
         FragmentManager m = getFragmentManager();
         m.beginTransaction().replace(R.id.container, fragment).commit();
-
+        currentFragment = fragment;
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            switch (requestCode) {
+                case ALARM_CREATING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.insert(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case ALARM_CHANGING_REQUEST_CODE: {
+                    AlarmManager alarmManager = new AlarmManager(this);
+                    alarmManager.updateAlarm(AbstractEditor.getResult(data, Alarm.class));
+                    break;
+                }
+                case HOT_POINT_CREATING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.insert(AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
+                case HOT_POINT_CHANGING_REQUEST_CODE: {
+                    HotPointManager hotPointManager = new HotPointManager(this);
+                    hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
+                            AbstractEditor.getResult(data, HotPoint.class));
+                    break;
+                }
+            }
+        }
         //noinspection Convert2streamapi   (API level isn't enought)
         for (ResultRepeater.ResultListener listener : listeners) {
             listener.onResult(requestCode, resultCode, data);
         }
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        if (data != null && requestCode == ALARM_CREATING_REQUEST_CODE) {
-            AlarmManager alarmManager = new AlarmManager(this);
-            alarmManager.insert(AlarmEditor.getResult(data));
-        }
     }
 
+    @Override
     public Activity getParentActivity() {
         return this;
     }

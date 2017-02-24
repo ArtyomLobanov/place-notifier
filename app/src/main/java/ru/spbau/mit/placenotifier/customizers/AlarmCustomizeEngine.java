@@ -7,9 +7,9 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.Alarm;
 import ru.spbau.mit.placenotifier.R;
+import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.predicates.ConstPredicate;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 

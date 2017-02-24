@@ -13,24 +13,18 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="@color/colorPrimary"
-            android:text="@string/customize_engine_alarm_general_settings"
+            android:text="@string/customize_engine_hot_point_general_settings"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <include
-            android:id="@+id/customize_engine_alarm_name_input"
+            android:id="@+id/customize_engine_hot_point_name_input"
             layout="@layout/customize_engine_string"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
 
         <include
-            android:id="@+id/customize_engine_alarm_comment_input"
-            layout="@layout/customize_engine_string"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <include
-            android:id="@+id/customize_engine_alarm_status"
+            android:id="@+id/customize_engine_hot_point_color_chooser"
             layout="@layout/customize_engine_alternative"
             android:layout_width="match_parent"
             android:layout_height="60dp" />
@@ -50,41 +44,15 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="@color/colorPrimary"
-            android:text="@string/customize_engine_alarm_time_settings"
+            android:text="@string/customize_engine_hot_point_place_settings"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <include
-            android:id="@+id/customize_engine_alarm_time_setting"
+            android:id="@+id/customize_engine_hot_point_place_setting"
             layout="@layout/customize_engine_alternative"
             android:layout_width="match_parent"
-            android:layout_height="120dp" />
-
-    </LinearLayout>
-
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="30dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/colorPrimary"
-            android:text="@string/customize_engine_notification_place_settings"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-        <include
-            android:id="@+id/customize_engine_alarm_place_setting"
-            layout="@layout/customize_engine_place_predicate"
-            android:layout_width="match_parent"
-            android:layout_height="320dp" />
+            android:layout_height="200dp" />
 
     </LinearLayout>
 

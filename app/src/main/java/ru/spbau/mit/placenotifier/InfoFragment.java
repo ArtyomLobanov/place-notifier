@@ -11,6 +11,6 @@ public class InfoFragment extends Fragment {
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
-        return inflater.inflate(R.layout.fragment_info, container, false);
+        return inflater.inflate(R.layout.customize_engine_hot_point_picker, container, false);
     }
 }

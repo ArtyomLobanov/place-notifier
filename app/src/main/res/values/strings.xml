@@ -50,5 +50,17 @@
     <string name="customize_engine_alarm_general_settings">General settings</string>
     <string name="customize_engine_alarm_time_settings">Time settings</string>
     <string name="customize_engine_notification_place_settings">Place settings</string>
+    <string name="import_events">Import events</string>
+    <string name="select_all">Select all</string>
     <string name="find_by_name">Find by name</string>
+    <string name="place_picker_customize_engine_title">Choose point in map</string>
+    <string name="address_picker_customize_engine_title">Find place by address</string>
+    <string name="combined_beacon_piker_customize_engine">Choose place somehow</string>
+    <string name="customize_engine_hot_point_general_settings">General settings</string>
+    <string name="customize_engine_hot_point_place_settings">Place settings</string>
+    <string name="title_activity_hot_point_editor">Hot Point settings</string>
+    <string name="hot_points_list_title">Your hot points:</string>
+    <string name="choose_by_hot_point">Choose by hot point</string>
+    <string name="find_hot_point">Find hot point</string>
+    <string name="import_calendar">Import calendar</string>
 </resources>

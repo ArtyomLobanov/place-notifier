@@ -24,7 +24,7 @@ public interface CustomizeEngine<T> {
      * Define type of view, which can be observed by this CustomizeEngine.
      *
      * @return id of XML layout that should be used on view creating
-     *         which will be observed by this CustomizeEngine
+     * which will be observed by this CustomizeEngine
      */
     @LayoutRes
     int expectedViewLayout();
@@ -39,7 +39,7 @@ public interface CustomizeEngine<T> {
 
     /**
      * @return if observed view is in right state to create instance of T.
-     *         false if there is no observed view
+     * false if there is no observed view
      */
     boolean isReady();
 
@@ -47,8 +47,8 @@ public interface CustomizeEngine<T> {
      * Define type of view, which can be observed by this CustomizeEngine.
      *
      * @return instance of T which is defined now in observed view
-     * @exception WrongStateException if observed view is absent or isn't in
-     *         right state to create object. Use {@link #isReady}
+     * @throws WrongStateException if observed view is absent or isn't in
+     *                             right state to create object. Use {@link #isReady}
      */
     @NonNull
     T getValue();

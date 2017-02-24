@@ -36,6 +36,7 @@ class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
     AlternativeCustomizeEngine(@NonNull String title, CustomizeEngine<T>... customizers) {
         this.customizers = Arrays.asList(customizers);
         this.title = title;
+        currentPageCache = customizers.length / 2;
     }
 
     AlternativeCustomizeEngine(@NonNull String title,
@@ -44,6 +45,7 @@ class AlternativeCustomizeEngine<T> implements CustomizeEngine<T> {
         copy.addAll(customizers);
         this.customizers = Collections.unmodifiableList(copy);
         this.title = title;
+        currentPageCache = customizers.size() / 2;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.spbau.mit.placenotifier.customizers;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.List;
 
-import ru.spbau.mit.placenotifier.ResultRepeater;
 import ru.spbau.mit.placenotifier.R;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
@@ -28,7 +28,7 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     private static final String RESULT_KEY = "result_key";
 
 
-    private final ResultRepeater resultRepeater;
+    private final Context context;
     private final InputListener inputListener;
     private final String titleMessage;
     private EditText input;
@@ -37,12 +37,17 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
     private Address result;
     private String request;
 
-    AddressPickerCustomizeEngine(ResultRepeater resultRepeater, String titleMessage) {
-        this.resultRepeater = resultRepeater;
-        inputListener = new InputListener();
+    @SuppressWarnings("WeakerAccess")
+    AddressPickerCustomizeEngine(Context context, String titleMessage) {
+        this.context = context;
         this.titleMessage = titleMessage;
+        inputListener = new InputListener();
         monitor = new Monitor();
         request = "";
+    }
+
+    AddressPickerCustomizeEngine(Context context) {
+        this(context, context.getString(R.string.address_picker_customize_engine_title));
     }
 
     @Override
@@ -222,7 +227,7 @@ class AddressPickerCustomizeEngine implements CustomizeEngine<Beacon> {
         protected List<Address> doInBackground(Void... params) {
             List<Address> addresses;
             try {
-                Geocoder geocoder = new Geocoder(resultRepeater.getParentActivity());
+                Geocoder geocoder = new Geocoder(context);
                 addresses = geocoder.getFromLocationName(request, 2);
             } catch (Exception e) {
                 return null;
