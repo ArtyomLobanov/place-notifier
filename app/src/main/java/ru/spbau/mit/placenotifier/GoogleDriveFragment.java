@@ -35,11 +35,14 @@ import java.util.List;
 
 public class GoogleDriveFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    ProgressBar progress;
-    AlarmManager manager;
-    Button download;
-    Button upload;
+    private ProgressBar progress;
+    private AlarmManager manager;
+    private Button download;
+    private Button upload;
     private GoogleApiClient client;
+    final private Query query = new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
+            "placenotifier"))
+            .build();
 
     @NonNull
     @Override
@@ -72,6 +75,7 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
             try {
                 result.startResolutionForResult(this.getActivity(), 0);
             } catch (IntentSender.SendIntentException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -127,10 +131,7 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
         protected Void doInBackground(Void... voids) {
             try {
                 DriveFolder appFolder = com.google.android.gms.drive.Drive.DriveApi.getAppFolder(client);
-                MetadataBuffer buffer = appFolder.queryChildren(client,
-                        new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
-                                "placenotifier"))
-                                .build())
+                MetadataBuffer buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 if (buffer.getCount() > 0) {
                     DriveFile file = buffer.get(0).getDriveId().asDriveFile();
@@ -140,10 +141,7 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                 appFolder.createFile(client, new MetadataChangeSet.Builder().setTitle("placenotifier").build(), null)
                         .await();
 
-                buffer = appFolder.queryChildren(client,
-                        new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
-                                "placenotifier"))
-                                .build())
+                buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 DriveFile file = buffer.get(0).getDriveId().asDriveFile();
                 DriveContents contents = file.open(client, DriveFile.MODE_WRITE_ONLY, null).await().getDriveContents();
@@ -181,19 +179,13 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
         protected Void doInBackground(Void... voids) {
             try {
                 DriveFolder appFolder = com.google.android.gms.drive.Drive.DriveApi.getAppFolder(client);
-                MetadataBuffer buffer = appFolder.queryChildren(client,
-                        new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
-                                "placenotifier"))
-                                .build())
+                MetadataBuffer buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 if (buffer.getCount() == 0) {
                     appFolder.createFile(client, new MetadataChangeSet.Builder().setTitle("placenotifier").build(), null)
                             .await();
                 }
-                buffer = appFolder.queryChildren(client,
-                        new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
-                                "placenotifier"))
-                                .build())
+                buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 DriveFile file = buffer.get(0).getDriveId().asDriveFile();
                 DriveContents contents = file.open(client, DriveFile.MODE_READ_ONLY, null).await().getDriveContents();
