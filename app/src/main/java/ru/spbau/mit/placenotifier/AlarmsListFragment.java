@@ -48,7 +48,8 @@ public class AlarmsListFragment extends Fragment {
 
         ListView listView = (ListView) result.findViewById(R.id.alarms_list_container);
         Comparator<Alarm> currentComparator = (AlarmComparator) spinner.getSelectedItem();
-        listAdapter = new SmartListAdapter<>(alarmManager::getAlarms, AlarmHolder::new, getActivity());
+        listAdapter = new SmartListAdapter<>(alarmManager::getAlarms, R.layout.alarms_list_item,
+                AlarmHolder::new, getActivity());
         listAdapter.setComparator(currentComparator);
         listView.setAdapter(listAdapter);
 
