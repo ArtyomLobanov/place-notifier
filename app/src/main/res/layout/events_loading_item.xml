@@ -38,7 +38,6 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/imageView2"
         android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="5dp"
@@ -46,21 +45,19 @@
         android:layout_weight="0"
         android:background="@android:drawable/status_bar_item_background" />
 
-    <ImageView
+    <TextView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@android:drawable/ic_notification_overlay"
         android:id="@+id/error_signal"
         android:layout_weight="0"
-        android:visibility="gone" />
+        android:background="@android:drawable/ic_notification_overlay" />
 
-    <ImageView
+    <TextView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@android:drawable/presence_online"
         android:id="@+id/ok_signal"
         android:layout_weight="0"
-        android:visibility="gone" />
+        android:background="@mipmap/ic_launcher" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"

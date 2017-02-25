@@ -111,7 +111,8 @@ public class CalendarLoaderFragment extends Fragment
         });
         loadEventsButton.setOnClickListener(view -> {
             //noinspection unchecked
-            new AsyncEventsLoader().execute(listAdapter.getSelectedEvents());
+            startActivity(EventsLoadingActivity.prepareIntent(listAdapter.getSelectedEvents(), getActivity()));
+//            new AsyncEventsLoader().execute(listAdapter.getSelectedEvents());
         });
         return result;
     }
