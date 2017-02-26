@@ -12,7 +12,7 @@
         android:text="todo: put here magic button, which loads events from calendar" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/syncronize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Synchronize" />
