@@ -3,6 +3,7 @@ package ru.spbau.mit.placenotifier;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,7 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import ru.spbau.mit.placenotifier.CalendarLoader.CalendarDescriptor;
-import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CalendarLoaderFragment extends Fragment
         implements FragmentCompat.OnRequestPermissionsResultCallback {
@@ -41,14 +42,13 @@ public class CalendarLoaderFragment extends Fragment
 
     private static final String[] NECESSARY_PERMISSIONS = {Manifest.permission.READ_CALENDAR};
     private static final int PERMISSION_REQUEST = 13;
+    private static final int LOADING_REQUEST = 124;
 
     private CalendarEventsAdapter listAdapter;
     private Spinner calendarChooser;
     // guaranteed serializable
     private List<CalendarDescriptor> availableCalendars;
-    private Context context;
     private final OnItemSelectedListener calendarChooserListener = new OnItemSelectedListener() {
-
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             listAdapter.setCalendar(availableCalendars.get(i));
@@ -58,6 +58,7 @@ public class CalendarLoaderFragment extends Fragment
         public void onNothingSelected(AdapterView<?> adapterView) {
         }
     };
+    private Context context;
 
     @NonNull
     static <T> List<T> toSerializableList(@NonNull List<T> list) {
@@ -109,10 +110,20 @@ public class CalendarLoaderFragment extends Fragment
             totalSelector.setChecked(adapter.isAllSelected());
             loadEventsButton.setEnabled(selectionSize > 0);
         });
+
+        ResultRepeater repeater = (ResultRepeater) getActivity();
+        repeater.addResultListener((requestCode, resultCode, data) -> {
+            if (requestCode == LOADING_REQUEST && resultCode == RESULT_OK) {
+                AsyncEventsSaver saver = new AsyncEventsSaver();
+                List<Alarm> alarms = EventsLoadingActivity.getResult(data);
+                //noinspection unchecked
+                saver.execute(alarms);
+            }
+        });
         loadEventsButton.setOnClickListener(view -> {
-            //noinspection unchecked
-            startActivity(EventsLoadingActivity.prepareIntent(listAdapter.getSelectedEvents(), getActivity()));
-//            new AsyncEventsLoader().execute(listAdapter.getSelectedEvents());
+            Intent intent = EventsLoadingActivity.prepareIntent(listAdapter.getSelectedEvents(),
+                    repeater.getParentActivity());
+            repeater.getParentActivity().startActivityForResult(intent, LOADING_REQUEST);
         });
         return result;
     }
@@ -205,41 +216,28 @@ public class CalendarLoaderFragment extends Fragment
         }
     }
 
-    private class AsyncEventsLoader extends AsyncTask<List<EventDescriptor>, Void, Integer> {
+    private class AsyncEventsSaver extends AsyncTask<List<Alarm>, Void, Void> {
 
-        @SafeVarargs
         @Override
-        protected final Integer doInBackground(List<EventDescriptor>... lists) {
+        @SafeVarargs
+        protected final Void doInBackground(List<Alarm>... lists) {
             if (lists.length != 1) {
                 throw new IllegalArgumentException("Wrong number of arguments:" + lists.length);
             }
-            AlarmConverter converter = new AlarmConverter(context);
             AlarmManager manager = new AlarmManager(context);
             Collection<String> existingID = new HashSet<>();
             //noinspection Convert2streamapi
             for (Alarm alarm : manager.getAlarms()) {
                 existingID.add(alarm.getIdentifier());
             }
-            int fails = 0;
-            for (EventDescriptor descriptor : lists[0]) {
-                try {
-                    Alarm alarm = converter.convert(descriptor);
-                    if (existingID.contains(alarm.getIdentifier())) {
-                        manager.updateAlarm(alarm);
-                    } else {
-                        manager.insert(alarm);
-                    }
-                } catch (AlarmConverter.ConversionException ignored) {
-                    fails++;
+            for (Alarm alarm : lists[0]) {
+                if (existingID.contains(alarm.getIdentifier())) {
+                    manager.updateAlarm(alarm);
+                } else {
+                    manager.insert(alarm);
                 }
             }
-            return lists[0].size() - fails;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            Toast.makeText(context, "Created " + integer + " alarms", Toast.LENGTH_SHORT)
-                    .show();
+            return null;
         }
     }
 }

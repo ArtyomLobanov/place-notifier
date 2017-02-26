@@ -7,13 +7,18 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
+import ru.spbau.mit.placenotifier.Alarm.AlarmBuilder;
 import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
 import ru.spbau.mit.placenotifier.predicates.BeaconPredicate;
+import ru.spbau.mit.placenotifier.predicates.LatLngBeacon;
 import ru.spbau.mit.placenotifier.predicates.SerializablePredicate;
 import ru.spbau.mit.placenotifier.predicates.TimeIntervalPredicate;
 
@@ -44,6 +49,33 @@ class AlarmConverter {
             Log.w("CONVERTING", AMBIGUOUS_ADDRESS + " \"" + descriptor.getLocation() + "\"");
         }
         Beacon beacon = new AddressBeacon(places.get(0), descriptor.getLocation());
+        SerializablePredicate<Location> placePredicate
+                = new BeaconPredicate(beacon, DEFAULT_SENSITIVITY);
+        SerializablePredicate<Long> timePredicate =
+                new TimeIntervalPredicate(descriptor.getStart(), descriptor.getEnd());
+        return Alarm.builder().setActive(true)
+                .setName(descriptor.getTitle())
+                .setComment(descriptor.getDescription())
+                .setTimePredicate(timePredicate)
+                .setPlacePredicate(placePredicate)
+                .setIdentifier("calendar_event|" + descriptor.getId())
+                .build();
+    }
+
+    Alarm convertPartially(@NonNull EventDescriptor descriptor) {
+//        List<Address> places;
+//        try {
+//            places = geocoder.getFromLocationName(descriptor.getLocation(), 2);
+//        } catch (IOException e) {
+//            places = Collections.emptyList();
+//        }
+//        if (places == null || places.isEmpty()) {
+//            // // TODO: 26.02.2017
+//        }
+//        if (places.size() > 1) {
+//            Log.w("CONVERTING", AMBIGUOUS_ADDRESS + " \"" + descriptor.getLocation() + "\"");
+//        }
+        Beacon beacon = new LatLngBeacon(new LatLng(60, 30));
         SerializablePredicate<Location> placePredicate
                 = new BeaconPredicate(beacon, DEFAULT_SENSITIVITY);
         SerializablePredicate<Long> timePredicate =

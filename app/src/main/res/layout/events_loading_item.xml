@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/alarms_name_view"
+            android:id="@+id/original_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -28,7 +28,7 @@
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/status_message"
+            android:id="@+id/alarms_name_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
@@ -50,14 +50,14 @@
         android:layout_height="50dp"
         android:id="@+id/error_signal"
         android:layout_weight="0"
-        android:background="@android:drawable/ic_notification_overlay" />
+        android:background="@drawable/error" />
 
     <TextView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/ok_signal"
         android:layout_weight="0"
-        android:background="@mipmap/ic_launcher" />
+        android:background="@drawable/ok" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
