@@ -1,6 +1,7 @@
 package ru.spbau.mit.placenotifier;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.IntentSender;
 import android.os.AsyncTask;
@@ -35,6 +36,7 @@ import java.util.List;
 
 public class GoogleDriveFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
+    private static final int PROBLEM_RESOLING_REQUEST = 0;
     private ProgressBar progress;
     private AlarmManager manager;
     private Button download;
@@ -73,7 +75,13 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
         result.getErrorCode();
         if (result.hasResolution()) {
             try {
-                result.startResolutionForResult(this.getActivity(), 0);
+                ResultRepeater repeater = (ResultRepeater) getActivity();
+                repeater.addResultListener((requestCode, resultCode, data) -> {
+                    if (requestCode == PROBLEM_RESOLING_REQUEST && resultCode == Activity.RESULT_OK) {
+                        client.connect();
+                    }
+                });
+                result.startResolutionForResult(this.getActivity(), PROBLEM_RESOLING_REQUEST);
             } catch (IntentSender.SendIntentException e) {
                 throw new RuntimeException(e);
             }
