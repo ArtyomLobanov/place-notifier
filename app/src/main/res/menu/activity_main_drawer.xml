@@ -5,11 +5,13 @@
             <item
                 android:id="@+id/active_alarms_menu"
                 android:title="@string/active_notifications_list"
-                android:icon="@android:drawable/ic_menu_more" />
+                android:icon="@android:drawable/ic_menu_slideshow" />
+
             <item 
                 android:title="Google Drive"
                 android:id="@+id/google_drive"
                 android:icon="@drawable/common_google_signin_btn_icon_light_disabled" />
+
             <item
                 android:id="@+id/synchronization_menu"
                 android:title="@string/synchronization_menu"
@@ -19,6 +21,11 @@
                 android:id="@+id/calendar_import_menu"
                 android:title="@string/import_calendar"
                 android:icon="@android:drawable/ic_menu_my_calendar" />
+
+            <item
+                android:id="@+id/hot_points_menu"
+                android:title="@string/hot_points"
+                android:icon="@android:drawable/ic_dialog_map" />
         </menu>
     </item>
 

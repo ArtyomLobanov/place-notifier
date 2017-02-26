@@ -2,6 +2,7 @@ package ru.spbau.mit.placenotifier;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -25,9 +26,9 @@ class SmartListAdapter<T> extends ArrayAdapter<T> {
     private Comparator<T> comparator = defaultComparator;
     private Predicate<T> filter = defaultFilter;
 
-    SmartListAdapter(@NonNull DataLoader<List<T>> loader,
+    SmartListAdapter(@NonNull DataLoader<List<T>> loader, @LayoutRes int itemLayout,
                      @NonNull Creator<ViewHolder<T>> holdersCreator, @NonNull Context context) {
-        super(context, R.layout.alarms_list_item);
+        super(context, itemLayout);
         this.loader = loader;
         this.holdersCreator = holdersCreator;
         refresh();

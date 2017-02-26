@@ -54,6 +54,11 @@
             android:theme="@style/AppTheme"
             android:label="@string/title_activity_hot_point_editor"/>
 
+        <activity
+            android:name=".EventsLoadingActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/title_activity_events_loading"/>
+
     </application>
 
 </manifest>
