@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import ru.spbau.mit.placenotifier.Alarm.AlarmBuilder;
 import ru.spbau.mit.placenotifier.CalendarLoader.EventDescriptor;
 import ru.spbau.mit.placenotifier.predicates.AddressBeacon;
 import ru.spbau.mit.placenotifier.predicates.Beacon;
@@ -63,19 +62,21 @@ class AlarmConverter {
     }
 
     Alarm convertPartially(@NonNull EventDescriptor descriptor) {
-//        List<Address> places;
-//        try {
-//            places = geocoder.getFromLocationName(descriptor.getLocation(), 2);
-//        } catch (IOException e) {
-//            places = Collections.emptyList();
-//        }
-//        if (places == null || places.isEmpty()) {
-//            // // TODO: 26.02.2017
-//        }
-//        if (places.size() > 1) {
-//            Log.w("CONVERTING", AMBIGUOUS_ADDRESS + " \"" + descriptor.getLocation() + "\"");
-//        }
-        Beacon beacon = new LatLngBeacon(new LatLng(60, 30));
+        List<Address> places;
+        try {
+            places = geocoder.getFromLocationName(descriptor.getLocation(), 2);
+        } catch (IOException e) {
+            places = Collections.emptyList();
+        }
+        Beacon beacon;
+        if (places == null || places.isEmpty()) {
+            beacon = new LatLngBeacon(new LatLng(0, 0));
+        } else {
+            if (places.size() > 1) {
+                Log.w("CONVERTING", AMBIGUOUS_ADDRESS + " \"" + descriptor.getLocation() + "\"");
+            }
+            beacon = new AddressBeacon(places.get(0), descriptor.getLocation());
+        }
         SerializablePredicate<Location> placePredicate
                 = new BeaconPredicate(beacon, DEFAULT_SENSITIVITY);
         SerializablePredicate<Long> timePredicate =

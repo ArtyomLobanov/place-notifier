@@ -91,7 +91,7 @@ final class Customizers {
             options.add(new ConstantCustomizeEngine<>(massage, color, value));
             return this;
         }
- 
+
         @NonNull
         public CustomizeEngine<T> build() {
             return new AlternativeCustomizeEngine<>(title, options);

@@ -135,8 +135,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.calendar_import_menu:
                 fragment = new CalendarLoaderFragment();
                 break;
-            case R.id.info_menu:
+            case R.id.hot_points_menu:
                 fragment = new HotPointsListFragment();
+                break;
+            case R.id.info_menu:
+                fragment = new InfoFragment();
                 break;
             case R.id.settings_menu:
                 fragment = new SettingsFragment();
@@ -175,6 +178,8 @@ public class MainActivity extends AppCompatActivity
                     hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
                             AbstractEditor.getResult(data, HotPoint.class));
                     break;
+                }
+                default: {
                 }
             }
         }

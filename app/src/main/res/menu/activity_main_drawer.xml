@@ -5,7 +5,7 @@
             <item
                 android:id="@+id/active_alarms_menu"
                 android:title="@string/active_notifications_list"
-                android:icon="@android:drawable/ic_menu_more" />
+                android:icon="@android:drawable/ic_menu_slideshow" />
 
             <item
                 android:id="@+id/synchronization_menu"
@@ -16,6 +16,11 @@
                 android:id="@+id/calendar_import_menu"
                 android:title="@string/import_calendar"
                 android:icon="@android:drawable/ic_menu_my_calendar" />
+
+            <item
+                android:id="@+id/hot_points_menu"
+                android:title="@string/hot_points"
+                android:icon="@android:drawable/ic_dialog_map" />
         </menu>
     </item>
 
