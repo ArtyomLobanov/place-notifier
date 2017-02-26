@@ -7,6 +7,11 @@
                 android:title="@string/active_notifications_list"
                 android:icon="@android:drawable/ic_menu_slideshow" />
 
+            <item 
+                android:title="Google Drive"
+                android:id="@+id/google_drive"
+                android:icon="@drawable/common_google_signin_btn_icon_light_disabled" />
+
             <item
                 android:id="@+id/synchronization_menu"
                 android:title="@string/synchronization_menu"

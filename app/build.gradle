@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,17 +41,22 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
-    compile 'com.google.android.gms:play-services-appindexing:9.8.0'
+    compile 'com.google.android.gms:play-services:10.0.1'
     compile 'com.android.support:support-v4:25.0.1'
     compile 'com.android.support:support-v13:25.0.1'
+    compile 'com.google.api-client:google-api-client-xml:1.18.0-rc'
+    compile 'com.google.http-client:google-http-client-gson:1.18.0-rc'
+    compile 'com.google.api-client:google-api-client-android:1.18.0-rc'
+    compile 'com.google.apis:google-api-services-drive:v2-rev155-1.19.0'
+    compile 'pub.devrel:easypermissions:0.2.1'
+    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'checkstyle'
 
 
-task checkstyleMain (type: Checkstyle) {
+task checkstyleMain(type: Checkstyle) {
     ignoreFailures = false
     showViolations = true
     source 'src/main', 'src/release'
@@ -65,7 +71,7 @@ task checkstyleMain (type: Checkstyle) {
     configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
 }
 
-task checkstyleTest (type: Checkstyle){
+task checkstyleTest(type: Checkstyle) {
     ignoreFailures = false
     showViolations = false
     source 'src/androidTest'
@@ -80,7 +86,12 @@ task checkstyleTest (type: Checkstyle){
     configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
 }
 
-task checkstyle(dependsOn:['checkstyleMain']) {
+task checkstyle(dependsOn: ['checkstyleMain']) {
     description 'Runs Checkstyle inspection against Android sourcesets.'
     group = 'Code Quality'
+}
+
+
+configurations.all {
+    resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
 }
