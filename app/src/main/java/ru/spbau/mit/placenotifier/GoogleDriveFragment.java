@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class GoogleDriveFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private final int PROBLEM_RESOLING_REQUEST = 45;
+    private static final int PROBLEM_RESOLING_REQUEST = 45;
 
     private ProgressBar progress;
     private Button download;
@@ -91,7 +91,7 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
             try {
                 ResultRepeater repeater = (ResultRepeater) getActivity();
                 repeater.addResultListener((requestCode, resultCode, data) -> {
-                    if (requestCode == PROBLEM_RESOLING_REQUEST && resultCode == RESULT_OK) {
+                    if (requestCode == PROBLEM_RESOLING_REQUEST && resultCode == Activity.RESULT_OK) {
                         client.connect();
                     }
                 });
