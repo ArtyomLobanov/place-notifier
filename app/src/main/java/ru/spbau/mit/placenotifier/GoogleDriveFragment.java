@@ -44,6 +44,9 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
     private final int PROBLEM_RESOLING_REQUEST = 45;
 
     private ProgressBar progress;
+    private Button download;
+    private Button upload;
+
     private AlarmManager manager;
     private GoogleApiClient client;
     final private Query query = new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
@@ -56,10 +59,14 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_google_drive, container, false);
 
-        Button download = (Button) v.findViewById(R.id.download);
+        download = (Button) v.findViewById(R.id.download);
         download.setOnClickListener(t -> load());
-        Button upload = (Button) v.findViewById(R.id.upload);
+        download.setEnabled(false);
+
+        upload = (Button) v.findViewById(R.id.upload);
         upload.setOnClickListener(t -> save());
+        upload.setEnabled(false);
+
         progress = (ProgressBar)v.findViewById(R.id.update_GD_progress);
         return v;
     }
@@ -67,6 +74,9 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onConnected(Bundle bundle) {
         progress.setVisibility(View.INVISIBLE);
+        upload.setEnabled(true);
+        download.setEnabled(true);
+
     }
 
     @Override
