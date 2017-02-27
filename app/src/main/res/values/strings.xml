@@ -63,4 +63,14 @@
     <string name="choose_by_hot_point">Choose by hot point</string>
     <string name="find_hot_point">Find hot point</string>
     <string name="import_calendar">Import calendar</string>
+    <string name="title_activity_events_loading">Converting events</string>
+    <string name="hot_points">Hot points</string>
+    <string name="google_drive">Google Drive</string>
+    <string name="download_from_google_drive">Download from Google Drive</string>
+    <string name="upload_on_google_drive">Upload on Google Drive</string>
+    <string name="info">
+        This application was written by students of the Academic University.
+        See also: \n https://github.com/ArtyomLobanov/place-notifier
+        \n http://mit.spbau.ru/sewiki/index.php/PlaceNotifier
+    </string>
 </resources>

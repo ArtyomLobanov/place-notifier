@@ -53,6 +53,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         listeners = new ArrayList<>();
         new ServiceReminder(this);
+        if (savedInstanceState == null) {
+            currentFragment = new AlarmsListFragment();
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, currentFragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -85,25 +92,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        if (state == null) {
-            return;
-        }
-        Serializable serializable = state.getSerializable(CURRENT_FRAGMENT_CLASS_KEY);
-        Class<? extends Fragment> fragmentClass;
-        if (!(serializable instanceof Class)) {
-            return;
-        }
-        //noinspection unchecked
-        fragmentClass = (Class<? extends Fragment>) serializable;
         Fragment fragment;
-        try {
-            fragment = fragmentClass.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Bad fragment was used", e);
-        }
-        Bundle fragmentState = state.getBundle(CURRENT_FRAGMENT_STATE_KEY);
-        if (fragmentState != null) {
-            fragment.setArguments(fragmentState);
+        if (state == null) {
+            fragment = new AlarmsListFragment();
+        } else {
+            Serializable serializable = state.getSerializable(CURRENT_FRAGMENT_CLASS_KEY);
+            Class<? extends Fragment> fragmentClass;
+            if (!(serializable instanceof Class)) {
+                return;
+            }
+            //noinspection unchecked
+            fragmentClass = (Class<? extends Fragment>) serializable;
+            try {
+                fragment = fragmentClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Bad fragment was used", e);
+            }
+            Bundle fragmentState = state.getBundle(CURRENT_FRAGMENT_STATE_KEY);
+            if (fragmentState != null) {
+                fragment.setArguments(fragmentState);
+            }
         }
         getFragmentManager()
                 .beginTransaction()
@@ -132,17 +140,14 @@ public class MainActivity extends AppCompatActivity
             case R.id.google_drive:
                 fragment = new GoogleDriveFragment();
                 break;
-            case R.id.synchronization_menu:
-                fragment = new SynchronizationFragment();
-                break;
             case R.id.calendar_import_menu:
                 fragment = new CalendarLoaderFragment();
                 break;
-            case R.id.info_menu:
+            case R.id.hot_points_menu:
                 fragment = new HotPointsListFragment();
                 break;
-            case R.id.settings_menu:
-                fragment = new SettingsFragment();
+            case R.id.info_menu:
+                fragment = new InfoFragment();
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected MenuItem's id: " + item.getItemId());
@@ -178,6 +183,8 @@ public class MainActivity extends AppCompatActivity
                     hotPointManager.update(AbstractEditor.getPrototype(data, HotPoint.class),
                             AbstractEditor.getResult(data, HotPoint.class));
                     break;
+                }
+                default: {
                 }
             }
         }

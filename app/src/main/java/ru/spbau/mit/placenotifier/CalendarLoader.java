@@ -73,6 +73,11 @@ class CalendarLoader {
         T read(Cursor cursor);
     }
 
+    @NonNull
+    private static <T> T orDefault(@Nullable T value, @NonNull T defaultValue) {
+        return value == null? defaultValue : value;
+    }
+
     static final class CalendarDescriptor implements Serializable {
 
         private static final String[] PROJECTION = {Calendars._ID, Calendars.NAME,
@@ -85,10 +90,10 @@ class CalendarLoader {
         private final String name;
         private final String owner;
 
-        private CalendarDescriptor(String id, String name, String owner) {
+        private CalendarDescriptor(@NonNull String id, String name, String owner) {
             this.id = id;
-            this.name = name;
-            this.owner = owner;
+            this.name = orDefault(name, "");
+            this.owner = orDefault(owner, "");
         }
 
         private static CalendarDescriptor readCalendar(Cursor cursor) {
@@ -131,12 +136,12 @@ class CalendarLoader {
         private final String id;
 
         private EventDescriptor(String title, String description, long start, long end,
-                                String location, String id) {
-            this.title = title;
-            this.description = description;
+                                String location, @NonNull String id) {
+            this.title = orDefault(title, "");
+            this.description = orDefault(description, "");
             this.start = start;
             this.end = end;
-            this.location = location;
+            this.location = orDefault(location, "");
             this.id = id;
         }
 

@@ -5,34 +5,32 @@
             <item
                 android:id="@+id/active_alarms_menu"
                 android:title="@string/active_notifications_list"
-                android:icon="@android:drawable/ic_menu_more" />
+                android:icon="@drawable/table" />
+
             <item 
-                android:title="Google Drive"
+                android:title="@string/google_drive"
                 android:id="@+id/google_drive"
-                android:icon="@drawable/common_google_signin_btn_icon_light_disabled" />
-            <item
-                android:id="@+id/synchronization_menu"
-                android:title="@string/synchronization_menu"
-                android:icon="@android:drawable/ic_menu_rotate" />
+                android:icon="@drawable/cloud" />
 
             <item
                 android:id="@+id/calendar_import_menu"
                 android:title="@string/import_calendar"
-                android:icon="@android:drawable/ic_menu_my_calendar" />
+                android:icon="@drawable/calendar" />
+
+            <item
+                android:id="@+id/hot_points_menu"
+                android:title="@string/hot_points"
+                android:icon="@android:drawable/ic_dialog_map" />
         </menu>
     </item>
 
     <item android:title="@string/others_menu_group">
         <menu>
-            <item
-                android:id="@+id/settings_menu"
-                android:title="@string/settings_menu"
-                android:icon="@android:drawable/ic_menu_manage" />
 
             <item
                 android:id="@+id/info_menu"
                 android:title="@string/info_menu"
-                android:icon="@android:drawable/ic_dialog_info" />
+                android:icon="@drawable/info" />
 
         </menu>
     </item>

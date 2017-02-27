@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/info_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="todo: put some interesting information here" />
+        android:textSize="18sp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:linksClickable="true"
+        android:text="@string/info"
+        android:padding="10dp"
+        android:textColor="@android:color/black" />
 </LinearLayout>

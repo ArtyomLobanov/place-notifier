@@ -3,10 +3,13 @@ package ru.spbau.mit.placenotifier;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,14 +36,15 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class GoogleDriveFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private static final int PROBLEM_RESOLING_REQUEST = 0;
+    private static final int PROBLEM_RESOLING_REQUEST = 45;
+
     private ProgressBar progress;
     private AlarmManager manager;
-    private Button download;
-    private Button upload;
     private GoogleApiClient client;
     final private Query query = new Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,
             "placenotifier"))
@@ -52,9 +56,9 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_google_drive, container, false);
 
-        download = (Button)v.findViewById(R.id.download);
+        Button download = (Button) v.findViewById(R.id.download);
         download.setOnClickListener(t -> load());
-        upload = (Button)v.findViewById(R.id.upload);
+        Button upload = (Button) v.findViewById(R.id.upload);
         upload.setOnClickListener(t -> save());
         progress = (ProgressBar)v.findViewById(R.id.update_GD_progress);
         return v;
@@ -97,7 +101,7 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this);
         client = builder.build();
-        manager = new AlarmManager(this.getActivity());
+        manager = new AlarmManager(getActivity());
 
     }
 
@@ -137,9 +141,10 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
 
         @Override
         protected Void doInBackground(Void... voids) {
+            MetadataBuffer buffer = null;
             try {
                 DriveFolder appFolder = com.google.android.gms.drive.Drive.DriveApi.getAppFolder(client);
-                MetadataBuffer buffer = appFolder.queryChildren(client, query)
+                buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 if (buffer.getCount() > 0) {
                     DriveFile file = buffer.get(0).getDriveId().asDriveFile();
@@ -163,9 +168,12 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                 os.write(baos.toByteArray());
                 os.close();
                 contents.commit(client, null);
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                Log.e("GDF", "Uploading failed");
+            } finally {
+                if (buffer != null) {
+                    buffer.release();
+                }
             }
             return null;
         }
@@ -185,9 +193,10 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
 
         @Override
         protected Void doInBackground(Void... voids) {
+            MetadataBuffer buffer = null;
             try {
                 DriveFolder appFolder = com.google.android.gms.drive.Drive.DriveApi.getAppFolder(client);
-                MetadataBuffer buffer = appFolder.queryChildren(client, query)
+                buffer = appFolder.queryChildren(client, query)
                         .await().getMetadataBuffer();
                 if (buffer.getCount() == 0) {
                     appFolder.createFile(client, new MetadataChangeSet.Builder().setTitle("placenotifier").build(), null)
@@ -207,15 +216,17 @@ public class GoogleDriveFragment extends Fragment implements GoogleApiClient.Con
                         Alarm alarm = (Alarm) ois.readObject();
                         manager.erase(alarm);
                         manager.insert(alarm);
-                    }
-                    catch (EOFException e) {
+                    } catch (EOFException e) {
                         break;
                     }
                 }
                 ois.close();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                Log.e("GDF", "Loading failed");
+            } finally {
+                if (buffer != null) {
+                    buffer.release();
+                }
             }
             return null;
         }
