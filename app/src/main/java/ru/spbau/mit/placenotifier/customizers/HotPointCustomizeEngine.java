@@ -25,7 +25,7 @@ public class HotPointCustomizeEngine implements CustomizeEngine<HotPoint> {
     public HotPointCustomizeEngine(@NonNull ResultRepeater producer, int id) {
         nameEditor = new StringCustomizeEngine("Name of alarm",
                 StringCustomizeEngine.NOT_EMPTY);
-        placeEditor = Customizers.createCombinedBeaconCustomizeEngine(producer, id);
+        placeEditor = Customizers.createCombinedBeaconCustomizeEngine(producer, id, false);
         colorEditor = Customizers.<Integer>forOptions("Choose color")
                 .addOption("Red", Color.RED, Color.RED)
                 .addOption("Blue", Color.BLUE, Color.BLUE)

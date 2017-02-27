@@ -54,7 +54,7 @@ class PlacePredicateCustomizeEngine
     }
 
     PlacePredicateCustomizeEngine(@NonNull ResultRepeater producer, int id) {
-        this(Customizers.createCombinedBeaconCustomizeEngine(producer, id));
+        this(Customizers.createCombinedBeaconCustomizeEngine(producer, id, true));
     }
 
     @Override

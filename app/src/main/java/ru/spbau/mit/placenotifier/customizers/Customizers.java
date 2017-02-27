@@ -47,13 +47,19 @@ final class Customizers {
 
     @NonNull
     static CustomizeEngine<Beacon> createCombinedBeaconCustomizeEngine(
-            @NonNull ResultRepeater producer, int id) {
+            @NonNull ResultRepeater producer, int id, boolean hotPointsEnabled) {
         Context context = producer.getParentActivity();
         String title = context.getString(R.string.combined_beacon_piker_customize_engine);
-        return new AlternativeCustomizeEngine<>(title,
-                new AddressPickerCustomizeEngine(context),
-                new HotPointPickerCustomizeEngine(context),
-                new PlacePickerCustomizeEngine(producer, id));
+        if (hotPointsEnabled) {
+            return new AlternativeCustomizeEngine<>(title,
+                    new AddressPickerCustomizeEngine(context),
+                    new HotPointPickerCustomizeEngine(context),
+                    new PlacePickerCustomizeEngine(producer, id));
+        } else {
+            return new AlternativeCustomizeEngine<>(title,
+                    new AddressPickerCustomizeEngine(context),
+                    new PlacePickerCustomizeEngine(producer, id));
+        }
     }
 
     interface UnsafeTask {
