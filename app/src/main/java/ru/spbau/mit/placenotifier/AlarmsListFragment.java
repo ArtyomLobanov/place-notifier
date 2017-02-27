@@ -127,20 +127,6 @@ public class AlarmsListFragment extends Fragment {
             }
         },
 
-        NEWEST_FIRST("Newest first") {
-            @Override
-            public int compare(Alarm a1, Alarm a2) {
-                return a1.getIdentifier().compareTo(a2.getIdentifier());
-            }
-        },
-
-        OLDEST_FIRST("Oldest first") {
-            @Override
-            public int compare(Alarm a1, Alarm a2) {
-                return a2.getIdentifier().compareTo(a1.getIdentifier());
-            }
-        },
-
         ACTIVE_FIRST("Active first") {
             @Override
             public int compare(Alarm a1, Alarm a2) {

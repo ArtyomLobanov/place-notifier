@@ -8,6 +8,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,7 +19,7 @@ import java.util.Collection;
 import ru.spbau.mit.placenotifier.SmartListAdapter.Creator;
 import ru.spbau.mit.placenotifier.customizers.CustomizeEngine;
 
-public class AbstractEditor<T extends Serializable> extends Activity
+public class AbstractEditor<T extends Serializable> extends AppCompatActivity
         implements ResultRepeater {
 
     private static final String RESULT_KEY = "result_key";
